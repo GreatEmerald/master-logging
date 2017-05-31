@@ -1,0 +1,87 @@
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+% To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+\documentclass[a4paper,10pt]{article}
+\usepackage{fontspec} % Compile with \XeLaTeX
+\usepackage{hyperxmp} % Import license metadata
+\usepackage{titling} % Get the author for the metadata
+\usepackage{xcolor} % Grey comments
+\usepackage[colorlinks, allcolors=blue,xetex]{hyperref}
+\usepackage{graphicx}
+\usepackage{pgfgantt} % Gantt chart
+\usepackage{natbib}
+
+\bibliographystyle{apalike}
+
+\title{Tropical forest selective logging detection}
+\author{Dainius Masiliūnas}
+
+% Values copied from the license chooser, this is the only way to include it in XeTeX
+\hypersetup{
+    pdflicenseurl={http://creativecommons.org/licenses/by-sa/4.0/},
+    pdfcopyright={This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.},
+    pdfauthor={\theauthor}, % These are supposed to be the default but don't seem to be
+    pdftitle={\thetitle},
+    pdflang={en-GB}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\section{Problem definition and research questions}
+
+The research questions that the thesis will attempt to answer are:
+
+\begin{itemize}
+ \item
+ \item
+ \item
+\end{itemize}
+
+\section{Methods}
+
+\subsection{Input data}
+
+\subsection{Collection of training and validation data}
+
+\subsection{Algorithms}
+
+\subsection{Validation and visualisation}
+
+\section{Time schedule and feasibility}
+
+\subsection{Time schedule}
+
+\begin{figure}
+  \resizebox{\textwidth}{!}{
+    \begin{ganttchart}[hgrid, vgrid]{1}{26}
+      \gantttitle{2016}{13}
+      \gantttitle{2017}{13} \\
+      \gantttitlelist{5,...,30}{1} \\
+      \ganttbar{Sample collection}{1}{5} \\
+      \ganttbar{Thesis writing}{5}{11}
+      \ganttbar{Thesis writing}{14}{25} \\
+      \ganttgroup{Analysis}{4}{22} \\
+      \ganttbar{Preprocessing}{4}{7} \\
+      \ganttbar{Classification}{8}{11}
+      \ganttbar{Classification}{14}{22} \\
+      \ganttbar{Presentation}{10}{10} \\
+      \ganttmilestone{Midterm}{10} \\
+      \ganttgroup{Finalisation}{23}{26} \\
+      \ganttbar{Presentation}{26}{26} \\
+      \ganttmilestone{Thesis defence}{26}
+    \end{ganttchart}
+  }
+  \caption{Gantt chart of the time schedule. Numbers in the second line represent academic weeks (week 5 starts on October 3, 2016).}
+  \label{fig-gantt}
+\end{figure}
+
+See figure \ref{fig-gantt} for more details.
+
+\subsection{Feasibility and risks}
+
+\bibliography{bibliography}
+
+\end{document}
