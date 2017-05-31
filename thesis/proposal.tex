@@ -12,7 +12,7 @@
 
 \bibliographystyle{apalike}
 
-\title{Tropical forest selective logging detection}
+\title{Tropical forest selective logging detection through time series}
 \author{Dainius Masiliūnas}
 
 % Values copied from the license chooser, this is the only way to include it in XeTeX
@@ -30,14 +30,20 @@
 
 \section{Introduction}
 
+Selective logging is a process by which trees in a forest are cut down according to specific criteria rather than indiscriminately. This is common practice in tropical forests, where high biodiversity leads to a highly complex forest structure with trees of different sizes, shapes and properties. Trees that are interesting for logging activities are typically of a particular species or size, and tend to be spread over an area. Once a large tree is cut down, it falls on other trees. This causes a disturbance in the area, especially if only the tree stem is extracted, leaving the canopy (large branches and foliage) on top of the understory and forest floor.
+
+Selective logging contributes to forest degradation as defined by the United Nations \underline{R}educing \underline{E}missions from \underline{D}eforestation and forest \underline{D}egradation (REDD+) programme. Forests where selective logging occurs remain forests, but they are disturbed, as wood from large trees is removed from the ecosystem, and succession is initiated at the points of disturbance, resulting in the replacement of mature, climax community trees with young pioneer species. This process may be part of illegal logging, in which case the result is loss of biodiversity and lowered forest resilience. However, it could also be part of sustainable forestry practices, in which case trees are selected and logged in a way that reduces this negative impact to the forest and creates favourable conditions for succession in managed forests. Selective tree dieoff may also be caused by natural events, such as parasite infestations. In all cases, monitoring such forest degradation is a key part of the REDD+ programme.
+
+Depending on the size of the disturbance, it is possible to detect and quantify such activity from satellite imagery \citep{broadbent_recovery_2006}. That also allows for estimating the length of succession in the particular area. However, so far such estimation has only been performed on chronosequences (forest plots of different timespan since logging). Making use of the full archive of satellite imagery to construct a time series would allow for a more precise estimate of regrowth time as well as per-tree statistics, while eliminating plot-specific effects. In addition, a system could be developed that detects such selective logging events and provides for both their near-real-time monitoring and information on whether and when selective logging has occurred in the past. This would in turn enhance the knowledge on the current and past state of tropical forests, provide information on how widespread selective logging is and help quantify its effects on the tropical forest ecosystem.
+
 \section{Problem definition and research questions}
 
 The research questions that the thesis will attempt to answer are:
 
 \begin{itemize}
- \item
- \item
- \item
+ \item What data is required and which approach is appropriate for detecting known selective logging events from satellite imagery time series?
+ \item What are the possibilities of extending this approach to detect previously unknown selective logging events?
+ \item What is the recovery time of tropical forests in Bolivia after a selective logging event?
 \end{itemize}
 
 \section{Methods}
@@ -56,25 +62,28 @@ The research questions that the thesis will attempt to answer are:
 
 \begin{figure}
   \resizebox{\textwidth}{!}{
-    \begin{ganttchart}[hgrid, vgrid]{1}{26}
-      \gantttitle{2016}{13}
-      \gantttitle{2017}{13} \\
-      \gantttitlelist{5,...,30}{1} \\
-      \ganttbar{Sample collection}{1}{5} \\
-      \ganttbar{Thesis writing}{5}{11}
-      \ganttbar{Thesis writing}{14}{25} \\
-      \ganttgroup{Analysis}{4}{22} \\
-      \ganttbar{Preprocessing}{4}{7} \\
-      \ganttbar{Classification}{8}{11}
-      \ganttbar{Classification}{14}{22} \\
-      \ganttbar{Presentation}{10}{10} \\
-      \ganttmilestone{Midterm}{10} \\
-      \ganttgroup{Finalisation}{23}{26} \\
-      \ganttbar{Presentation}{26}{26} \\
-      \ganttmilestone{Thesis defence}{26}
+    \begin{ganttchart}[hgrid, vgrid]{1}{20}
+      \gantttitle{2017}{20} \\
+      \gantttitle{{\scriptsize May}}{1} \gantttitle{June}{4} \gantttitle{July}{5} \gantttitle{August}{4}
+      \gantttitle{September}{4} \gantttitle{{\scriptsize October}}{2} \\
+      \gantttitle{29}{1} \gantttitle{5}{1} \gantttitle{12}{1} \gantttitle{19}{1} \gantttitle{26}{1}
+      \gantttitle{3}{1} \gantttitle{10}{1} \gantttitle{17}{1} \gantttitle{24}{1} \gantttitle{31}{1}
+      \gantttitle{7}{1} \gantttitle{14}{1} \gantttitle{21}{1} \gantttitle{28}{1}
+      \gantttitle{4}{1} \gantttitle{11}{1} \gantttitle{18}{1} \gantttitle{25}{1}
+      \gantttitle{2}{1} \gantttitle{9}{1} \\
+      \ganttbar{Proposal writing}{1}{4} \\
+      \ganttbar{Thesis writing}{5}{19} \\
+      \ganttgroup{Analysis}{4}{17} \\
+      \ganttbar{Preprocessing}{4}{8} \\
+      \ganttbar{Regrowth analysis}{8}{11} \\
+      \ganttbar{Multisensor fusion}{10}{14} \\
+      \ganttbar{Event detection}{14}{17} \\
+      \ganttgroup{Finalisation}{18}{20} \\
+      \ganttbar{Presentation}{20}{20} \\
+      \ganttmilestone{Thesis defence}{20}
     \end{ganttchart}
   }
-  \caption{Gantt chart of the time schedule. Numbers in the second line represent academic weeks (week 5 starts on October 3, 2016).}
+  \caption{Gantt chart of the time schedule. Numbers in the third line represent the Monday of the indicated week.}
   \label{fig-gantt}
 \end{figure}
 
