@@ -24,6 +24,16 @@
     pdflang={en-GB}
 }
 
+% Define acronyms
+\newcounter{ndvicount}
+\newcommand{\ndvi}{\ifnum\value{ndvicount}=0{\underline{N}ormalised \underline{D}ifference \underline{V}egetation \underline{I}ndex (NDVI)}\else{NDVI}\fi\stepcounter{ndvicount}}
+\newcounter{reddcount}
+\newcommand{\redd}{\ifnum\value{reddcount}=0{\underline{R}educing \underline{E}missions from \underline{D}eforestation and forest \underline{D}egradation (REDD+)}\else{REDD+}\fi\stepcounter{reddcount}}
+\newcounter{laicount}
+\newcommand{\lai}{\ifnum\value{laicount}=0{\underline{L}eaf \underline{A}rea \underline{I}ndex (LAI)}\else{LAI}\fi\stepcounter{laicount}}
+\newcounter{evicount}
+\newcommand{\evi}{\ifnum\value{evicount}=0{\underline{E}nhaced \underline{V}egetation \underline{I}ndex (EVI)}\else{EVI}\fi\stepcounter{evicount}}
+
 \begin{document}
 
 \maketitle
@@ -32,7 +42,7 @@
 
 Selective logging is a process by which trees in a forest are cut down according to specific criteria rather than indiscriminately. This is common practice in tropical forests, where high biodiversity leads to a highly complex forest structure with trees of different sizes, shapes and properties. Trees that are interesting for logging activities are typically of a particular species or size, and tend to be spread over an area. Once a large tree is cut down, it falls on other trees. This causes a disturbance in the area, especially if only the tree stem is extracted, leaving the canopy (large branches and foliage) on top of the understory and forest floor.
 
-Selective logging contributes to forest degradation as defined by the United Nations \underline{R}educing \underline{E}missions from \underline{D}eforestation and forest \underline{D}egradation (REDD+) programme. Forests where selective logging occurs remain forests, but they are disturbed, as wood from large trees is removed from the ecosystem, and succession is initiated at the points of disturbance, resulting in the replacement of mature, climax community trees with young pioneer species. This process may be part of illegal logging, in which case the result is loss of biodiversity and lowered forest resilience. However, it could also be part of sustainable forestry practices, in which case trees are selected and logged in a way that reduces this negative impact to the forest and creates favourable conditions for succession in managed forests. Selective tree dieoff may also be caused by natural events, such as parasite infestations. In all cases, monitoring such forest degradation is a key part of the REDD+ programme.
+Selective logging contributes to forest degradation as defined by the United Nations \redd{} programme. Forests where selective logging occurs remain forests, but they are disturbed, as wood from large trees is removed from the ecosystem, and succession is initiated at the points of disturbance, resulting in the replacement of mature, climax community trees with young pioneer species. This process may be part of illegal logging, in which case the result is loss of biodiversity and lowered forest resilience. However, it could also be part of sustainable forestry practices, in which case trees are selected and logged in a way that reduces this negative impact to the forest and creates favourable conditions for succession in managed forests. Selective tree dieoff may also be caused by natural events, such as parasite infestations. In all cases, monitoring such forest degradation is a key part of the \redd{} programme.
 
 Depending on the size of the disturbance, it is possible to detect and quantify such activity from satellite imagery \citep{broadbent_recovery_2006}. That also allows for estimating the length of succession in the particular area. However, so far such estimation has only been performed on chronosequences (forest plots of different timespan since logging). Making use of the full archive of satellite imagery to construct a time series would allow for a more precise estimate of regrowth time as well as per-tree statistics, while eliminating plot-specific effects. In addition, a system could be developed that detects such selective logging events and provides for both their near-real-time monitoring and information on whether and when selective logging has occurred in the past. This would in turn enhance the knowledge on the current and past state of tropical forests, provide information on how widespread selective logging is and help quantify its effects on the tropical forest ecosystem.
 
@@ -50,11 +60,21 @@ The research questions that the thesis will attempt to answer are:
 
 \subsection{Input data}
 
-\subsection{Collection of training and validation data}
+\subsection{Reference data}
 
-\subsection{Algorithms}
+\subsection{Regrowth analysis}
 
-\subsection{Validation and visualisation}
+% TODO: Look at the best index for biomass estimation in the tropics; IDB suggests EVI, NDVI, (O/T)SAVI, NDBleaf (SWIR2-SWIR1); also NBR, TCARI/OSAVI, tasseled cap. VPI (vegetation productivity index) is a temporal measure of regrowth itself (how much NDVI deviates from yearly mean within the range, but the range needs to be big enough, which may not fit tropics), FCover would be OK but can't calculate.
+In order to determine how long it takes for the canopy to close after a selective logging event, it is necessary to obtain the time series of the pixel(s) of interest. The time series of \ndvi{} is most often used, but any other vegetation index or a spectral band could also be used. \ndvi{} is known to saturate at the higher value range compared to biophysical parameters such as \lai{}, so other vegetation indices, such as \evi{}, may be better suited for a more accurate estimation of canopy regrowth time. \evi{} will be used as a starting point, but other vegetation indices may also be tested, time permitting.
+
+After the construction of the time series for every known location of selective logging, the \textit{R} package \textit{BFAST} will be used to detect breaks in the time series that correspond to the logging events. Then, the package \textit{rgrowth} will be used to calculate the total time it takes for the time series to recover to the pre-logging state, i.e. the time it takes for the vegetation index to saturate again due to the canopy closing.
+
+\subsection{Event detection}
+
+% TODO: Last break, or the largest break?
+Once the approach for quantifying regrowth of known selective logging events is determined, it will be possible to apply this approach to a larger area in order to determine previously unknown selective logging or other disturbance events. The result of such event detection will be a raster showing the regrowth times of the last break in the time series. The more time it takes for the canopy to recover, the more likely the area has been affected by selective logging at some point in history. In addition, another raster showing the dates at which the break happened will be made, so that it would be possible to verify what sort of disturbance the breaks represent by referring to historical data.
+
+\subsection{Validation}
 
 \section{Time schedule and feasibility}
 
@@ -90,6 +110,14 @@ The research questions that the thesis will attempt to answer are:
 See figure \ref{fig-gantt} for more details.
 
 \subsection{Feasibility and risks}
+
+Since detection of selective logging from satellite imagery time series has not been performed in the Amazonian forests before, there are substantial risks as to whether it is feasible. Literature indicates that selectively logged sites have substantially different reflectance values compared to pristine sites \citep{broadbent_recovery_2006}, and detecting such events from Landsat data was successfully done for Asian tropical forests \citep{shimizu_using_2017}, therefore it should be possible to do so in the Amazon as well. In order to minimise this risk, the time series of multiple vegetation indices will be tested, various pixel combinations will be tried, and multisensor fusion will be attempted in order to gain more complete time series. In case it turns out that selective logging detection is not feasible after all, the thesis will focus on which methods have been attempted and why it was not possible to detect selective logging in this particular case.
+
+Since regrowth time quantification has not been performed on time series so far either, there is also a risk of whether that will be possible. Multisensor fusion would also help in this case, since having denser time series allows for more accurate quantification of regrowth time. Overall this risk is low, since regrowth time can also be estimated from the time between the time series break related to the logging event and the break related to the stop in regrowth and return to stable year-to-year conditions.
+
+Given that the thesis deals with time series data, which is by nature big data, there is a risk of image processing taking a long time. This risk will be minimised by first performing processing only in the immediate area of where selective logging is known to have occurred, no more than 9 pixels per area disturbed by a logging event. The pixels will be extracted from the full tiles, and will be stored and processed separately, as to exclude all of the irrelevant data outside of the logged areas and thus speed up processing. The event detection step will only be performed if there is sufficient time for processing more data, and no more than an extent of a single Landsat tile will be used for selective logging event detection purposes.
+
+Multisensor fusion itself is a highly complex task that requires matching the reflectance values of multiple sensors together as well as over time, therefore it carries risks of feasibility and time requirements. Therefore, even though multisensor fusion would be beneficial to more precise regrowth time estimation and ease logging event detection, it will only be performed if single-sensor solutions are deemed insufficient. The workflow will first be tested on imagery from a single sensor, and only if logging event detection or regrowth time estimation fails will multisensor fusion be attempted. In addition, for some pairs of sensors, methodology for multisensor fusion has already been well-established and thus should be much simpler. For instance, Landsat TM and ETM+ data is often fused by performing preprocessing to surface reflectance values via LEDAPS.
 
 \bibliography{bibliography}
 
