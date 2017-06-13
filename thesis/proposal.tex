@@ -9,6 +9,8 @@
 \usepackage{graphicx}
 \usepackage{pgfgantt} % Gantt chart
 \usepackage{natbib}
+%\usepackage[nohyperlinks,printonlyused]{acronym}
+\usepackage[acronym,toc,shortcuts,nohypertypes=acronym]{glossaries}
 
 \bibliographystyle{apalike}
 
@@ -26,17 +28,19 @@
 
 % Define acronyms
 \newcommand{\underletter}[1]{\textbf{#1}} % Quick toggle of underlines
-\newcounter{ndvicount}
-\newcommand{\ndvi}{\ifnum\value{ndvicount}=0{\underletter{N}ormalised \underletter{D}ifference \underletter{V}egetation \underletter{I}ndex (NDVI)}\else{NDVI}\fi\stepcounter{ndvicount}}
-\newcounter{reddcount}
-\newcommand{\redd}{\ifnum\value{reddcount}=0{\underletter{R}educing \underletter{E}missions from \underletter{D}eforestation and forest \underletter{D}egradation (REDD+)}\else{REDD+}\fi\stepcounter{reddcount}}
-\newcounter{laicount}
-\newcommand{\lai}{\ifnum\value{laicount}=0{\underletter{L}eaf \underletter{A}rea \underletter{I}ndex (LAI)}\else{LAI}\fi\stepcounter{laicount}}
-\newcounter{evicount}
-\newcommand{\evi}{\ifnum\value{evicount}=0{\underletter{E}nhaced \underletter{V}egetation \underletter{I}ndex (EVI)}\else{EVI}\fi\stepcounter{evicount}}
+\newacronym{NDVI}{NDVI}{\underletter{N}ormalised \underletter{D}ifference \underletter{V}egetation \underletter{I}ndex}
+\newacronym{REDD+}{REDD+}{\underletter{R}educing \underletter{E}missions from \underletter{D}eforestation and forest \underletter{D}egradation}
+\newacronym{LAI}{LAI}{\underletter{L}eaf \underletter{A}rea \underletter{I}ndex}
+\newacronym{EVI}{EVI}{\underletter{E}nhaced \underletter{V}egetation \underletter{I}ndex}
+\newacronym{OLI}{OLI}{\underletter{O}perational \underletter{L}and \underletter{I}mager}
+\makenoidxglossaries
+% TODO: Legacy commands, remove later
+\newcommand{\ndvi}{\ac{NDVI}}
+\newcommand{\redd}{\ac{REDD+}}
+\newcommand{\lai}{\ac{LAI}}
+\newcommand{\evi}{\ac{EVI}}
 
 \begin{document}
-
 
 \maketitle
 
@@ -44,11 +48,11 @@
 
 Selective logging is a process by which trees in a forest are cut down according to specific criteria rather than indiscriminately. This is common practice in tropical forests, where high biodiversity leads to a highly complex forest structure with trees of different sizes, shapes and properties. Trees that are interesting for logging activities are typically of a particular species or size, and tend to be spread over an area. Once a large tree is cut down, it falls on other trees. This causes a disturbance in the area, especially if only the tree stem is extracted, leaving the canopy (large branches and foliage) on top of the understory and forest floor.
 
-Selective logging contributes to forest degradation as defined by the United Nations \redd{} programme. Forests where selective logging occurs most often remain forests \citep{asner_condition_2006}, but they are disturbed, as wood from large trees is removed from the ecosystem, and succession is initiated at the points of disturbance, resulting in the replacement of mature, climax community trees with young pioneer species. This process may be part of illegal logging, in which case the result is loss of biodiversity and lowered forest resilience. However, it could also be part of sustainable forestry practices, in which case trees are selected and logged in a way that reduces this negative impact to the forest and creates favourable conditions for succession in managed forests \citep{west_forest_2014, keller_4._2004}. Selective tree dieoff may also be caused by natural events, such as windstorms and landslides \citep{frolking_forest_2009}. In all cases, monitoring such forest degradation is a key part of the \redd{} programme. It is important to monitor such activity in order to minimise illegal logging and allow for more precise estimation of existing and historical carbon stocks \citep{piponiot_carbon_2016, pinard_simulated_2000}.
+Selective logging contributes to forest degradation as defined by the United Nations \redd{} programme. Forests where selective logging occurs most often remain forests \citep{asner_condition_2006}, but they are disturbed, as wood from large trees is removed from the ecosystem, and succession is initiated at the points of disturbance, resulting in the replacement of mature, climax community trees with young pioneer species. This process may be part of illegal logging \citep{rutishauser_rapid_2015}, in which case the result is loss of biodiversity and lowered forest resilience. However, it could also be part of sustainable forestry practices, in which case trees are selected and logged in a way that reduces this negative impact to the forest and creates favourable conditions for succession in managed forests \citep{west_forest_2014, keller_4._2004}. Selective tree dieoff may also be caused by natural events, such as windstorms and landslides \citep{frolking_forest_2009}. In all cases, monitoring such forest degradation is a key part of the \redd{} programme. It is important to monitor such activity in order to minimise illegal logging and allow for more precise estimation of existing and historical carbon stocks \citep{piponiot_carbon_2016, pinard_simulated_2000}.
 
-Depending on the size of the disturbance, it is possible to detect and quantify such activity from satellite imagery \citep{shimizu_using_2017, frolking_forest_2009, broadbent_recovery_2006, keller_4._2004}. That also allows for estimating the length of succession in the particular area. However, so far such estimation has been challenging \citep{piponiot_carbon_2016} and thus it has only been performed based on chronosequences (forest plots of different timespan since logging). Making use of the full archive of satellite imagery to construct a time series would allow for a more precise estimate of regrowth time as well as per-tree statistics, while eliminating plot-specific effects. In addition, a system could be developed that detects such selective logging events and provides for both their near-real-time monitoring and information on whether and when selective logging has occurred in the past. This would in turn enhance the knowledge on the current and past state of tropical forests, provide information on how widespread selective logging is and help quantify its effects on the tropical forest ecosystem.
+Depending on the size of the disturbance, it is possible to detect and quantify such activity from satellite imagery \citep{shimizu_using_2017, frolking_forest_2009, broadbent_recovery_2006, keller_4._2004}. That also allows for estimating the length of succession in the particular area. Precise knowledge of the recovery time after selective logging is important directly for the countries in the area for setting logging policies, as well as indirectly for climate change modelling \citep{rutishauser_rapid_2015}. However, so far such estimation has been challenging \citep{piponiot_carbon_2016} and thus it has only been performed based on chronosequences (forest plots of different timespan since logging) \citep{broadbent_recovery_2006} or extrapolated from recovery rates \citep{rutishauser_rapid_2015}. Making use of the full archive of satellite imagery to construct a time series would allow for a more precise estimate of regrowth time as well as per-tree statistics, while eliminating plot-specific effects. In addition, a system could be developed that detects such selective logging events and provides for both their near-real-time monitoring and information on whether and when selective logging has occurred in the past. This would in turn enhance the knowledge on the current and past state of tropical forests, provide information on how widespread selective logging is and help quantify its effects on the tropical forest ecosystem.
 
-While full secondary forest regrowth after logging may take up to 125 years \citep{rutishauser_tree_2016}, the canopy closure at the selective logging site happens much faster, estimated at 6-3 months dependsing on the size of the disturbance \citep{broadbent_recovery_2006}. Once the canopy becomes closed, there is no more discernable difference between a logged site and a pristine forest site as seen from spaceborne optical sensors. However, knowing the precise time it takes for the canopy to close is useful, since it is an indicator of site productivity and thus is likely to correlate with biomass recovery time. In addition, knowing the location of disturbances and their canopy closure times would allow for a more accurate large-scale estimation and monitoring of biomass and carbon stocks in tropical forests by enhancing tropical forest post-logging regrowth models \citep{herault_growth_2010}. Moreover, the timespan of months rather than decades is more suitable for remote sensing applications, as it enables the use of modern sensors such as Sentinel-2 and Landsat 8 OLI for a more accurate selective logging event detection, including near-real-time detection, as well as more precise canopy closure time estimation.
+While full secondary forest regrowth after logging may take up to 125 years \citep{rutishauser_tree_2016}, the canopy closure at the selective logging site happens much faster, estimated at 6-3 months dependsing on the size of the disturbance \citep{broadbent_recovery_2006}. Once the canopy becomes closed, there is no more discernable difference between a logged site and a pristine forest site as seen from spaceborne optical sensors. However, knowing the precise time it takes for the canopy to close is useful, since it is an indicator of site productivity and thus is likely to correlate with biomass recovery time. In addition, knowing the location of disturbances and their canopy closure times would allow for a more accurate large-scale estimation and monitoring of biomass and carbon stocks in tropical forests by enhancing tropical forest post-logging regrowth models \citep{herault_growth_2010}. Moreover, the timespan of months rather than decades is more suitable for remote sensing applications, as it enables the use of modern sensors such as Sentinel-2 and Landsat 8 \ac{OLI} for a more accurate selective logging event detection, including near-real-time detection, as well as more precise canopy closure time estimation.
 % TODO: Did anyone try to use canopy closure time as an estimate of productivity?
 % TODO: Terms: canopy closure time or recovery time?
 % NOTE: What about fusing sensors by using (a) common image(s) by assuming that the differences are all due to sensors, and estimating parameters for converting one to the other?
@@ -60,7 +64,7 @@ The research questions that the thesis will attempt to answer are:
 \begin{itemize}
  \item What data is required and which approach is appropriate for detecting known selective logging events from satellite imagery time series?
  \item What are the possibilities of extending this approach to detect previously unknown selective logging events?
- \item What is the recovery time of tropical forests in Bolivia after a selective logging event?
+ \item What is the recovery time of tropical forests in the Amazon after a selective logging event?
 \end{itemize}
 
 \section{Methods}
@@ -125,6 +129,8 @@ Since regrowth time quantification has not been performed on time series so far 
 Given that the thesis deals with time series data, which is by nature big data, there is a risk of image processing taking a long time. This risk will be minimised by first performing processing only in the immediate area of where selective logging is known to have occurred, no more than 9 pixels per area disturbed by a logging event. The pixels will be extracted from the full tiles, and will be stored and processed separately, as to exclude all of the irrelevant data outside of the logged areas and thus speed up processing. The event detection step will only be performed if there is sufficient time for processing more data, and no more than an extent of a single Landsat tile will be used for selective logging event detection purposes.
 
 Multisensor fusion itself is a highly complex task that requires matching the reflectance values of multiple sensors together as well as over time, therefore it carries risks of feasibility and time requirements. Therefore, even though multisensor fusion would be beneficial to more precise regrowth time estimation and ease logging event detection, it will only be performed if single-sensor solutions are deemed insufficient. The workflow will first be tested on imagery from a single sensor, and only if logging event detection or regrowth time estimation fails will multisensor fusion be attempted. In addition, for some pairs of sensors, methodology for multisensor fusion has already been well-established and thus should be much simpler. For instance, Landsat TM and ETM+ data is often fused by performing preprocessing to surface reflectance values via LEDAPS.
+
+\printnoidxglossary[type=acronym]
 
 \bibliography{bibliography}
 
