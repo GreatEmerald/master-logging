@@ -33,6 +33,8 @@
 \newacronym{LAI}{LAI}{\underletter{L}eaf \underletter{A}rea \underletter{I}ndex}
 \newacronym{EVI}{EVI}{\underletter{E}nhaced \underletter{V}egetation \underletter{I}ndex}
 \newacronym{OLI}{OLI}{\underletter{O}perational \underletter{L}and \underletter{I}mager}
+\newacronym{NBR}{NBR}{\underletter{N}ormalised \underletter{B}urn \underletter{R}atio}
+\newacronym{NDMI}{NDMI}{\underletter{N}ormalised \underletter{D}ifference \underletter{M}oisture \underletter{I}ndex}
 \makenoidxglossaries
 % TODO: Legacy commands, remove later
 \newcommand{\ndvi}{\ac{NDVI}}
@@ -76,7 +78,8 @@ The research questions that the thesis will attempt to answer are:
 \subsection{Regrowth analysis}
 
 % TODO: Look at the best index for biomass estimation in the tropics; IDB suggests EVI, NDVI, (O/T)SAVI, NDBleaf (SWIR2-SWIR1); also NBR, TCARI/OSAVI, tasseled cap. VPI (vegetation productivity index) is a temporal measure of regrowth itself (how much NDVI deviates from yearly mean within the range, but the range needs to be big enough, which may not fit tropics), FCover would be OK but can't calculate.
-In order to determine how long it takes for the canopy to close after a selective logging event, it is necessary to obtain the time series of the pixel(s) of interest. The time series of \ndvi{} is most often used, but any other vegetation index or a spectral band could also be used. \ndvi{} is known to saturate at the higher value range compared to biophysical parameters such as \lai{}, so other vegetation indices, such as \evi{}, may be better suited for a more accurate estimation of canopy regrowth time. \evi{} will be used as a starting point, but other vegetation indices may also be tested, time permitting.
+% NDMI is difference between NIR and closer SWIR(1), NBR is between NIR and SWIR(2).
+In order to determine how long it takes for the canopy to close after a selective logging event, it is necessary to obtain the time series of the pixel(s) of interest. The time series of \ndvi{} is most often used, but any other vegetation index or a spectral band could also be used. \ndvi{} is known to saturate at the higher value range compared to biophysical parameters such as \lai{}, so other vegetation indices, such as \evi{}, may be better suited for a more accurate estimation of canopy regrowth time. Other studies that used Landsat time series for vegetation monitoring used \ac{NBR} \citep{schneibel_assessment_2017, shimizu_using_2017}, \ac{NDMI} \citep{dutrieux_reconstructing_2016} and tasseled cap transformation greenness \citep{powell_quantification_2010}. \evi{} will be used as a starting point, but other vegetation indices may also be tested, time permitting.
 
 After the construction of the time series for every known location of selective logging, the \textit{R} package \textit{BFAST} will be used to detect breaks in the time series that correspond to the logging events. Then, the package \textit{rgrowth} will be used to calculate the total time it takes for the time series to recover to the pre-logging state, i.e. the time it takes for the vegetation index to saturate again due to the canopy closing.
 
