@@ -60,6 +60,7 @@ While full secondary forest regrowth after logging may take up to 125 years \cit
 % TODO: Did anyone try to use canopy closure time as an estimate of productivity?
 % TODO: Terms: canopy closure time or recovery time?
 % NOTE: What about fusing sensors by using (a) common image(s) by assuming that the differences are all due to sensors, and estimating parameters for converting one to the other?
+% NOTE: What makes selective logging selective is that it's small scale. So could use neighbouring pixels as a refrence of undisturbed forest rather than stable history. The problem is 1) how to determine which pixels are not affected, 2) cloud cover is a wrench in the works.
 
 \section{Problem definition and research questions}
 
@@ -81,16 +82,17 @@ Additional data from the Sentinel-2 mission may also be used in case canopy regr
 
 \subsection{Reference data}
 
-% TODO: Citation?
-In order to detect selective logging, reference data about trees that have been selectively logged is required. For this, information from the Wageningen University \& Research Lidar field campaigns will be used. Two field campaigns were carried out in Guyana in 2014 and 2017. Lidar scans were taken at plots in which trees were in the process of being selectively logged. One Lidar scan was taken before and one after the event, with the scanning dates and scan locations registered. This reference data will be used as the starting point for selective logging detection and regrowth monitoring.
+In order to detect selective logging, reference data about trees that have been selectively logged is required. For this, information from the Wageningen University \& Research Lidar field campaigns will be used. Two field campaigns were carried out in Guyana in 2014 and 2017, and one field campaign in Peru in 2013. Lidar scans were taken at plots in which trees were in the process of being selectively logged. One Lidar scan was taken before and one after the event, with the scanning dates and scan locations registered \citep{gonzalez_de_tanago_estimation_2017}. This reference data will be used as the starting point for selective logging detection and regrowth monitoring.
 
 \subsection{Regrowth analysis}
 
 % TODO: Look at the best index for biomass estimation in the tropics; IDB suggests EVI, NDVI, (O/T)SAVI, NDBleaf (SWIR2-SWIR1); also NBR, TCARI/OSAVI, tasseled cap. VPI (vegetation productivity index) is a temporal measure of regrowth itself (how much NDVI deviates from yearly mean within the range, but the range needs to be big enough, which may not fit tropics), FCover would be OK but can't calculate.
 % NDMI is difference between NIR and closer SWIR(1), NBR is between NIR and SWIR(2).
+% Ben also suggests NDFI, but that requires endmembers (which then is better with Random Forest etc. etc.)
+% Would be nice if there was an index where cloud would increase the index value. Else might need to use the same masking method as for PROBA-V
 In order to determine how long it takes for the canopy to close after a selective logging event, it is necessary to obtain the time series of the pixel(s) of interest. The time series of \ndvi{} is most often used, but any other vegetation index or a spectral band could also be used. \ndvi{} is known to saturate at the higher value range compared to biophysical parameters such as \lai{}, so other vegetation indices, such as \evi{}, may be better suited for a more accurate estimation of canopy regrowth time. Other studies that used Landsat time series for vegetation monitoring used \ac{NBR} \citep{schneibel_assessment_2017, shimizu_using_2017}, \ac{NDMI} \citep{dutrieux_reconstructing_2016} and tasseled cap transformation greenness \citep{powell_quantification_2010}. \evi{} will be used as a starting point, but other vegetation indices may also be tested, time permitting.
 
-After the construction of the time series for every known location of selective logging, the \textit{R} package \textit{BFAST} \citep{verbesselt_detecting_2010} will be used to detect breaks in the time series that correspond to the logging events. Then, the package \textit{rgrowth} \citep{devries_tracking_2015} will be used to calculate the total time it takes for the time series to recover to the pre-logging state, i.e. the time it takes for the vegetation index to saturate again due to canopy closure.
+After the construction of the time series for every known location of selective logging, the \textit{R} packages \textit{BFAST} \citep{verbesselt_detecting_2010} and \textit{BFASTMonitor} \citep{verbesselt_near_2012} will be used to detect breaks in the time series that correspond to the logging events. Then, the package \textit{rgrowth} \citep{devries_tracking_2015} will be used to calculate the total time it takes for the time series to recover to the pre-logging state, i.e. the time it takes for the vegetation index to saturate again due to canopy closure.
 
 \subsection{Event detection}
 

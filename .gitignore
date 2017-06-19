@@ -219,3 +219,9 @@ TSWLatexianTemp*
 
 # expex forward references with \gathertags
 *-tags.tex
+
+*/.kile/*
+
+# custom
+thesis/*.pdf
+thesis/redd.tex
