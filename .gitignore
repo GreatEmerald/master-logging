@@ -225,3 +225,6 @@ TSWLatexianTemp*
 # custom
 thesis/*.pdf
 thesis/redd.tex
+data/reference/staging
+# Temporary: remove when final
+thesis/proposal-figures
