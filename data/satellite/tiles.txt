@@ -1,0 +1,5 @@
+Different reference datasets are covered by different Landsat tiles:
+
+Peru: Path 2; Row 68, 69
+Guyana 2014: Path 231; Row 56
+Guyana 2017: Path 230, 231; Row 57

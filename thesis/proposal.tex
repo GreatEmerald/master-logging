@@ -14,7 +14,7 @@
 
 \bibliographystyle{apalike}
 
-\title{Tropical forest selective logging detection through time series}
+\title{Amazon rainforest selective logging detection through time series}
 \author{Dainius Masiliūnas}
 
 % Values copied from the license chooser, this is the only way to include it in XeTeX
@@ -124,6 +124,8 @@ Once the approach for quantifying regrowth of known selective logging events is 
 
 A schematic view of the whole processing chain is shown in figure \ref{fig-processing}.
 
+% TODO: Think about the order. BFASTSpatial does extracting, masking, cropping in one go, the result can be a full tile or the bounding box of choice. Cropping can be done together with stacking, also via BFASTSpatial. Maybe come up with a few scenarios of what will be run?
+
 \begin{figure}
   \centering
   \begin{tikzpicture}[node distance = 0.5cm, auto]
@@ -132,22 +134,22 @@ A schematic view of the whole processing chain is shown in figure \ref{fig-proce
       \node [block, below= of l3amp] (cloud) {Cloud masking};
       \node [block, right= of cloud, fill=yellow] (bbox) {AOI bounding box calculation};
       \node [datasingle, above= of bbox] (ref) {Reference points};
-      \node [block, below= of cloud, fill=yellow] (crop) {Cropping to bounding box};
+      \node [block, below= of cloud] (vi) {Vegetation index calculation};
+      \node [block, below= of vi, fill=yellow] (crop) {Cropping to bounding box};
       \node [block, below= of crop] (stack) {Time series stacking};
-      \node [block, below= of stack] (vi) {Vegetation index calculation};
-      \node [block, below= of vi] (breaks) {Time series break detection};
+      \node [block, below= of stack] (breaks) {Time series break detection};
       \node [datasingle, below= of breaks] (break-map) {Latest significant break date map};
       \node [block, right= of breaks] (rgrowth) {Regrowth time calculation};
       \node [datasingle, below= of rgrowth] (rgrowth-map) {Regrowth time map};
       % Draw edges
       \path [line] (l3amp) -- (cloud);
       \path [line] (ref) -- (bbox);
-      \path [line] (cloud) -- (crop);
+      \path [line] (cloud) -- (vi);
       \path [line] (bbox) -- (crop);
+      \path [line] (vi) -- (crop);
       \path [line] (crop) -- (stack);
-      \path [line] (stack) -- (vi);
-      \path [line] (vi) -- (breaks);
-      \path [line] (vi) -- (rgrowth);
+      \path [line] (stack) -- (breaks);
+      \path [line] (stack) -- (rgrowth);
       \path [line] (breaks) -- (break-map);
       \path [line] (rgrowth) -- (rgrowth-map);
   \end{tikzpicture}

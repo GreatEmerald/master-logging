@@ -1,1 +1,1 @@
-This directory should contain input data. It is large and binary and thus not included. The scripts should download all the data and put it here.
+This directory should contain input data. It is large and binary and thus not included. Instead, a list of files that should be put here is included. You should download the files and put them here yourself (for example, by placing an order on the ESPA system).
