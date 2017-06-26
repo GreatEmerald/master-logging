@@ -27,4 +27,11 @@
 # That avoids the problem of mixing different batches together.
 # It also optionally removes the input data to save disk space after processing is deemed successful.
 
+# NOTE: Requires a new enough version of bfastSpatial that can handle Landsat Collection 1 data (-dev at the moment)
+library(bfastSpatial)
 
+MaskClouds = function(...)
+{
+    # Keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows
+    processLandsatBatch(mask="pixel_qa", keep=66, vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, ...)
+}
