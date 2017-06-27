@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 # Masks clouds in Landsat imagery by applying FMask output to images.
 #
 # Copyright (C) 2017  Dainius Masiliunas
@@ -29,9 +30,34 @@
 
 # NOTE: Requires a new enough version of bfastSpatial that can handle Landsat Collection 1 data (-dev at the moment)
 library(bfastSpatial)
+library(optparse)
 
-MaskClouds = function(...)
+# Command-line options
+parser = OptionParser()
+parser = add_option(parser, c("-i", "--input-dir"), type="character", default="../data/satellite",
+    help="Directory of input files. May be compressed. (Default: %default)", metavar="path")
+parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="path",
+    default="../data/intermediary/cloud-free",
+    help="Output directory. Subdirectories for each vegetation index will be created. (Default: %default)")
+parser = add_option(parser, c("-t", "--file-type"), type="character", metavar="extension",
+    default="tif",
+    help="Output file type. grd is native uncompressed, tif is lightly compresssed. (Default: %default)")
+parser = add_option(parser, c("-f", "--filter-pattern"), type="character", metavar="regex",
+    help="Pattern to filter input files on.")
+args = parse_args(parser)
+
+MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-dir"]],
+    file_type=args[["file-type"]], filter_pattern=args[["filter-pattern"]], ...)
 {
+    
     # Keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows
-    processLandsatBatch(mask="pixel_qa", keep=66, vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, ...)
+    processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=66,
+        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern, ...)
 }
+
+rasterOptions(tmpdir="/userdata2/tmp/")
+processLandsat("../data/satellite/peru/LE072310562009061401T2-SC20170623194824.tar.gz",
+    "../data/intermediary/cloud-free/peru", c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE,
+    mask="pixel_qa", keep=66, fileExt="tif")
+# The result is fine but the compression is poor. We can do better with
+# COMPRESS=DEFLATE ZLEVEL=9 SPARSE_OK=TRUE NUM_THREADS=4, so maybe run without compression first
