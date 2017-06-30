@@ -38,6 +38,8 @@
 \newacronym{TM}{TM}{\underletter{T}hematic \underletter{M}apper}
 \newacronym{ETM+}{ETM+}{\underletter{E}nhanced \underletter{T}hematic \underletter{M}apper \underletter{Plus}}
 \newacronym{WUR}{WUR}{\underletter{W}ageningen \underletter{U}niversity \& \underletter{R}esearch}
+\newacronym{GPS}{GPS}{\underletter{G}lobal \underletter{P}ositioning \underletter{S}ystem}
+\newacronym{GNSS}{GNSS}{\underletter{G}lobal \underletter{N}avigation \underletter{S}atellite \underletter{S}ystem}
 \makenoidxglossaries
 
 % Flowchart blocks
@@ -72,11 +74,11 @@ While full secondary forest regrowth after logging may take up to 125 years \cit
 
 \section{Problem definition and research questions}
 
-While satellite image time series trajectory analysis has been relatively well-established in the recent years, few studies focus on the estimation of canopy regrowth time using this technique. Most studies of tropical forest regrowth make use of chronosequences of plots with different age instead. However, time series analysis is well-suited for this purpose, because it allows detecting the disturbance time and regeneration length in a much more precise manner. In addition, time series analysis is not affected by site-specific effects, as is the case with chronosequences.
+While satellite image time series trajectory analysis has been relatively well-established in the recent years, few studies focus on the estimation of canopy closure time using this technique. Most studies of tropical forest regrowth make use of chronosequences of plots with different age instead. However, time series analysis is well-suited for this purpose, because it allows detecting the disturbance time and regeneration length in a much more precise manner. In addition, time series analysis is not affected by site-specific effects, as is the case with chronosequences.
 
 Another advantage of using satellite imagery for detecting selective logging is that it is spatially exhaustive. Satellites constantly monitor surface reflectance over the entire globe, it is not limited to a select number of test plots. Therefore a system to detect selective logging would bring information on selective logging activities in the whole Amazon rainforest, which is lacking at the moment. This is important for both \ac{REDD+} monitoring activities as well as setting local logging policy. What is more, a near-real-time selective logging monitoring system would be capable of empowering local governments to fight illegal logging more effectively. In addition, selective logging event detection, coupled with more precise estimation of canopy regrowth time, would help improve biomass estimation and carbon cycling models.
 
-The goal of this thesis is to expand the knowledge about the extent and impact of selective logging in the Amazon rainforest by detecting selective logging events and quantifying the post-logging canopy regrowth time from satellite imagery. The research questions that the thesis will aim to answer are:
+The goal of this thesis is to expand the knowledge about the extent and impact of selective logging in the Amazon rainforest by detecting selective logging events and quantifying the post-logging canopy closure time from satellite imagery. The research questions that the thesis will aim to answer are:
 
 \begin{itemize}
  \item What data is required and which approach is appropriate for detecting known selective logging events from satellite imagery time series?
@@ -88,9 +90,9 @@ The goal of this thesis is to expand the knowledge about the extent and impact o
 
 \subsection{Input data}
 
-The main data used to carry out the analysis will be data from the Landsat mission archive, specifically the Collection 1 Surface Reflectance products of Landsat 5 \ac{TM}, Landsat 7 \ac{ETM+} and Landsat 8 \ac{OLI}. These sensors produce global multispectral imagery at 30 metre spatial resolution. Depending on the date at which a selective logging event happened and which Landsat satellites were active at the time, the whole history of the selected Landsat mission imagery at the selective logging location will be retrieved for time series analysis. History before the logging event is required in order to determine the stable pre-logging history that is only affected by seasonality, whereas the imagery after the logging event is needed to determine the canopy regrowth time.
+The main data used to carry out the analysis will be data from the Landsat mission archive, specifically the Collection 1 Surface Reflectance products of Landsat 5 \ac{TM}, Landsat 7 \ac{ETM+} and Landsat 8 \ac{OLI}. These sensors produce global multispectral imagery at 30 metre spatial resolution. Depending on the date at which a selective logging event happened and which Landsat satellites were active at the time, the whole history of the selected Landsat mission imagery at the selective logging location will be retrieved for time series analysis. History before the logging event is required in order to determine the stable pre-logging history that is only affected by seasonality, whereas the imagery after the logging event is needed to determine the canopy closure time.
 
-Additional data from the Sentinel-2 mission may also be used in case canopy regrowth period extends into the period after the launch of Sentinel-2, or in case the spatial resolution of Landsat imagery is deemed insufficient for the task.
+Additional data from the Sentinel-2 mission may also be used in case the canopy regrowth period extends into the period after the launch of Sentinel-2, or in case the spatial resolution of Landsat imagery is deemed insufficient for the task.
 
 \subsection{Reference data}
 
@@ -101,30 +103,21 @@ Additional data from the Sentinel-2 mission may also be used in case canopy regr
   \label{fig-aoi}
 \end{figure}
 
-In order to detect selective logging, reference data about trees that have been selectively logged is required. For this, information from the \ac{WUR} Lidar field campaigns will be used. Two field campaigns were carried out in Guyana in 2014 and 2017, and one field campaign in Peru in 2013. Lidar scans were taken at plots in which trees were in the process of being selectively logged. One Lidar scan was taken before and one after the event, with the scanning dates and scan locations registered \citep{gonzalez_de_tanago_estimation_2017}. This reference data will be used as the starting point for selective logging detection and regrowth monitoring. The locations of the campaigns is shown in figure \ref{fig-aoi}.
+In order to detect selective logging, reference data about trees that have been selectively logged is required. For this, information from the \ac{WUR} Lidar field campaigns will be used. Two field campaigns were carried out in Guyana in 2014 and 2017, and one field campaign in Peru in 2013. Lidar scans were taken at plots in which trees were in the process of being selectively logged. One Lidar scan was taken before and one after the event, with the scanning dates and scan locations registered \citep{gonzalez_de_tanago_estimation_2017}.
 
-In addition, the data from \citet{broadbent_recovery_2006} will be used in order to directly compare the chronosequence and time series analysis methods for estimating the time of canopy closure.
+The Peru campaign included 9 plots where a selective logging event took place. Reference data from this campaign is only available in raw point format as captured by two Garmin \ac{GPS} devices. The selective logging sites and their visit time before and after the logging event are noted. There are also 7 additional points outside of the test plots that are marked as gaps, some of them with crown and trunk locations indicated. These do not have a date before logging associated with them, thus they are most likely gaps from previous selective logging activity in the area. Thus in total the Peru campaign data includes 16 points indicating where selective logging occurred.
 
-\subsection{Regrowth analysis}
+Reference data from the Guyana 2014 campaign includes 9 more selective logging plots with associated time before and after logging. The data comes from field survey sheets, which include the coordinates of each corner of each plot, as well as the centre point, towards which the crown of the selectively logged trees were made to fall. The centre points of these plots will be used in this study.
 
-% TODO: Look at the best index for biomass estimation in the tropics; IDB suggests EVI, NDVI, (O/T)SAVI, NDBleaf (SWIR2-SWIR1); also NBR, TCARI/OSAVI, tasseled cap. VPI (vegetation productivity index) is a temporal measure of regrowth itself (how much NDVI deviates from yearly mean within the range, but the range needs to be big enough, which may not fit tropics), FCover would be OK but can't calculate.
-% NDMI is difference between NIR and closer SWIR(1), NBR is between NIR and SWIR(2).
-% Ben also suggests NDFI, but that requires endmembers (which then is better with Random Forest etc. etc.)
-% Would be nice if there was an index where cloud would increase the index value. Else might need to use the same masking method as for PROBA-V
-In order to determine how long it takes for the canopy to close after a selective logging event, it is necessary to obtain the time series of the pixel(s) of interest. The time series of \ac{NDVI} is most often used, but any other vegetation index or a spectral band could also be used. \ac{NDVI} is known to saturate at the higher value range compared to biophysical parameters such as \ac{LAI}, so other vegetation indices, such as \ac{EVI}, may be better suited for a more accurate estimation of canopy regrowth time. Other studies that used Landsat time series for vegetation monitoring used \ac{NBR} \citep{schneibel_assessment_2017, shimizu_using_2017}, \ac{NDMI} \citep{dutrieux_reconstructing_2016} and tasseled cap transformation greenness \citep{powell_quantification_2010}. \ac{EVI} will be used as a starting point, but other vegetation indices may also be tested, time permitting.
+The Guyana campaign of 2017 is also in raw format from a \ac{GNSS} device. There are a total of 45 unique sampling points with an associated identification number, 6 of which have been revisited. 26 selective logging sites were scanned in this campaign, thus some of the sampling points may not be of a selectively-logged tree.
 
-After the construction of the time series for every known location of selective logging, the \textit{R} packages \textit{BFAST} \citep{verbesselt_detecting_2010} and \textit{BFASTMonitor} \citep{verbesselt_near_2012} will be used to detect breaks in the time series that correspond to the logging events. Then, the package \textit{rgrowth} \citep{devries_tracking_2015} will be used to calculate the total time it takes for the time series to recover to the pre-logging state, i.e. the time it takes for the vegetation index to saturate again due to canopy closure.
+All in all, the Lidar dataset consists of 70 points where selective logging is known or is highly likely to have occurred. This reference data will be used as the starting point for selective logging detection and canopy closure time estimation. Points at which the selective logging date is uncertain will be useful as a test of algorithm capability to detect a selective logging event and its date without such prior knowledge. The locations of the campaigns is shown in figure \ref{fig-aoi}.
 
-This processing step will be applied to all pixels within a bounding box that incorporates all pixels within a 60 m radius of the reference data on selectively logged trees. This will be done in order to account for possible inaccuracies in the GPS field measurements, as well as to cut down on the data processing time, while still leaving enough pixels to process so as to make sure that the processing chain is generic enough to handle pixels that are not hand-picked.
+In addition, the data from \citet{broadbent_recovery_2006} will be used in order to directly compare the chronosequence and time series analysis methods for estimating the time of canopy closure. This data consists of the locations and sizes of selectively logged tree gaps, with approximate date of logging, and an indication of which part of the tree (trunk or crown) was the cause of the gap.
 
-\subsection{Event detection}
+\subsection{Canopy closure time analysis}
 
-% TODO: Last break, or the largest break?
-Once the approach for quantifying regrowth of known selective logging events is determined, it will be possible to apply this approach to a larger area in order to determine previously unknown selective logging or other disturbance events. The result of such event detection will be a raster showing the regrowth times of the last significant break in the time series. The more time it takes for the canopy to recover, the more likely the area has been affected by selective logging. In addition, another raster showing the dates at which the break happened will be made, so that it would be possible to verify what sort of disturbance the breaks represent by referring to historical data.
-
-A schematic view of the whole processing chain is shown in figure \ref{fig-processing}.
-
-% TODO: Think about the order. BFASTSpatial does extracting, masking, cropping in one go, the result can be a full tile or the bounding box of choice. Cropping can be done together with stacking, also via BFASTSpatial. Maybe come up with a few scenarios of what will be run?
+% TODO: Think about the order. bfastSpatial does extracting, masking, cropping in one go, the result can be a full tile or the bounding box of choice. Cropping can be done together with stacking, also via bfastSpatial. Maybe come up with a few scenarios of what will be run?
 
 \begin{figure}
   \centering
@@ -139,8 +132,8 @@ A schematic view of the whole processing chain is shown in figure \ref{fig-proce
       \node [block, below= of crop] (stack) {Time series stacking};
       \node [block, below= of stack] (breaks) {Time series break detection};
       \node [datasingle, below= of breaks] (break-map) {Latest significant break date map};
-      \node [block, right= of breaks] (rgrowth) {Regrowth time calculation};
-      \node [datasingle, below= of rgrowth] (rgrowth-map) {Regrowth time map};
+      \node [block, right= of breaks] (rgrowth) {Canopy closure time calculation};
+      \node [datasingle, below= of rgrowth] (rgrowth-map) {Canopy closure time map};
       % Draw edges
       \path [line] (l3amp) -- (cloud);
       \path [line] (ref) -- (bbox);
@@ -157,9 +150,26 @@ A schematic view of the whole processing chain is shown in figure \ref{fig-proce
   \label{fig-processing}
 \end{figure}
 
+% TODO: Look at the best index for biomass estimation in the tropics; IDB suggests EVI, NDVI, (O/T)SAVI, NDBleaf (SWIR2-SWIR1); also NBR, TCARI/OSAVI, tasseled cap. VPI (vegetation productivity index) is a temporal measure of regrowth itself (how much NDVI deviates from yearly mean within the range, but the range needs to be big enough, which may not fit tropics), FCover would be OK but can't calculate.
+% NDMI is difference between NIR and closer SWIR(1), NBR is between NIR and SWIR(2).
+% Ben also suggests NDFI, but that requires endmembers (which then is better with Random Forest etc. etc.)
+% Would be nice if there was an index where cloud would increase the index value. Else might need to use the same masking method as for PROBA-V
+In order to determine how long it takes for the canopy to close after a selective logging event, it is necessary to obtain the time series of the pixel(s) of interest. The time series of \ac{NDVI} is most often used, but any other vegetation index or a spectral band could also be used. \ac{NDVI} is known to saturate at the higher value range compared to biophysical parameters such as \ac{LAI}, so other vegetation indices, such as \ac{EVI}, may be better suited for a more accurate estimation of canopy closure time. Other studies that used Landsat time series for vegetation monitoring used \ac{NBR} \citep{schneibel_assessment_2017, shimizu_using_2017}, \ac{NDMI} \citep{dutrieux_reconstructing_2016} and tasseled cap transformation greenness \citep{powell_quantification_2010}. \ac{EVI} will be used as a starting point, but other vegetation indices may also be tested, time permitting.
+
+After the construction of the time series for every known location of selective logging, the \textit{R} packages \textit{BFAST} \citep{verbesselt_detecting_2010} and \textit{BFASTMonitor} \citep{verbesselt_near_2012} will be used to detect breaks in the time series that correspond to the logging events. Then, the package \textit{rgrowth} \citep{devries_tracking_2015} will be used to calculate the total time it takes for the time series to recover to the pre-logging state, i.e. the time it takes for the vegetation index to saturate again due to canopy closure.
+
+This processing step will be applied to all pixels within a bounding box that incorporates all pixels within a 60 m radius of the reference data on selectively logged trees. This will be done in order to account for possible inaccuracies in the GPS field measurements, as well as to cut down on the data processing time, while still leaving enough pixels to process so as to make sure that the processing chain is generic enough to handle pixels that are not hand-picked.
+
+\subsection{Event detection}
+
+% TODO: Last break, or the largest break?
+Once the approach for quantifying the canopy closure time after known selective logging events is determined, it will be possible to apply this approach to a larger area in order to determine previously unknown selective logging or other disturbance events. The result of such event detection will be a raster showing the canopy closure times of the last significant break in the time series. The more time it takes for the canopy to recover, the more likely the area has been affected by selective logging. In addition, another raster showing the dates at which the break happened will be made, so that it would be possible to verify what sort of disturbance the breaks represent by referring to historical data.
+
+A schematic view of the whole processing chain is shown in figure \ref{fig-processing}.
+
 \subsection{Validation}
 
-The reference data will also be used for the validation of the resulting selective logging disturbance time map. Since the approximate location and date of a selective logging event is known from the reference data, the disturbance map must correspond to the reference data. The regrowth time map will be validated by comparison with \citet{broadbent_recovery_2006} and other relevant literature. For the previously unknown selective logging detection step, the resulting map and the intermediary data will be assessed visually.
+The reference data will also be used for the validation of the resulting selective logging disturbance time map. Since the approximate location and date of a selective logging event is known from the reference data, the disturbance map must correspond to the reference data. The canopy closure time map will be validated by comparison with \citet{broadbent_recovery_2006} and other relevant literature, as well as by inspecting the time series of the satellite imagery manually. For the previously unknown selective logging detection step, the resulting map and the intermediary data will be assessed visually, with high-resolution satellite imagery of the area if it is available.
 
 \section{Time schedule and feasibility}
 
@@ -180,7 +190,7 @@ The reference data will also be used for the validation of the resulting selecti
       \ganttbar{Thesis writing}{5}{19} \\
       \ganttgroup{Analysis}{4}{17} \\
       \ganttbar{Preprocessing}{4}{8} \\
-      \ganttbar{Regrowth analysis}{8}{11} \\
+      \ganttbar{Canopy closure analysis}{8}{11} \\
       \ganttbar{Multisensor fusion}{10}{14} \\
       \ganttbar{Event detection}{14}{17} \\
       \ganttgroup{Finalisation}{18}{20} \\
@@ -196,15 +206,17 @@ The minor thesis is planned to take a total of 20 weeks to complete, 14 of which
 
 \subsection{Feasibility and risks}
 
-The proposed study requires a set of satellite and reference data. The risk of having no access to satellite data is minimal, since both the Landsat and Sentinel archives as well as their preprocessing tools are freely available on the internet. In the case of Landsat imagery, a preprocessing service is available, which provides level 3 surface reflectance data on demand. In case the preprocessing service becomes unavailable or takes too long to preprocess the data, the \textit{LEDAPS} preprocessing tool will be run manually. If Sentinel-2 data will be used, it will be necessary to run its preprocessing tool (\textit{sen2cor}) manually, as there is no preprocessing service for this data yet. In the case of reference data, the availability of the \ac{WUR} Lidar plot dataset is guaranteed since the data is public as well. However, the Bolivian plot dataset from \citet{broadbent_recovery_2006} is not guaranteed to be available on time for processing. In case it is not available, only the \ac{WUR} Lidar plot dataset will be used.
+The proposed study requires a set of satellite and reference data. The risk of having no access to satellite data is minimal, since both the Landsat and Sentinel archives as well as their preprocessing tools are freely available on the internet. In the case of Landsat imagery, a preprocessing service is available, which provides level 3 surface reflectance data on demand. In case the preprocessing service becomes unavailable or takes too long to preprocess the data, the \textit{LEDAPS} preprocessing tool will be run manually. If Sentinel-2 data will be used, it will be necessary to run its preprocessing tool (\textit{sen2cor}) manually, as there is no preprocessing service for this data yet.
+
+In the case of reference data, the availability of the \ac{WUR} Lidar plot dataset is guaranteed since the data is public as well. However, the Bolivian plot dataset from \citet{broadbent_recovery_2006} is not guaranteed to be available on time for processing. In case it is not available, only the \ac{WUR} Lidar plot dataset will be used. While that would decrease the number of plots in which selective logging is known to have occurred, the \ac{WUR} Lidar dataset is still large enough (70 points) for calibration of the algorithm for detecting selective logging. The Bolivian reference dataset is more important for canopy closure time validation, however, this can also be performed by inspecting time series and making use of extra satellite imagery (preferably higher spatial resolution) of the area taken during the canopy regrowth period and immediately after the end of it.
 
 Since detection of selective logging from satellite imagery time series has not been performed in the Amazonian forests before, there are substantial risks as to whether it is feasible. Literature indicates that selectively logged sites have substantially different reflectance values compared to pristine sites \citep{broadbent_recovery_2006}, and detecting such events from Landsat data was successfully done for Asian tropical forests \citep{shimizu_using_2017}, therefore it should be possible to do so in the Amazon as well. In order to minimise this risk, the time series of multiple vegetation indices will be tested, higher resolution sensors will be tried, and multisensor fusion will be attempted in order to gain more complete time series. In the unlikely case that selective logging detection from satellite imagery is not feasible after all, the thesis will focus on which methods have been attempted and why they were insufficient in this particular case, compared to related studies that have been successful at it.
 
-Since regrowth time quantification has not been performed on Amazon rainforest time series so far either, there is also a risk of whether that will be possible. Multisensor fusion would also help in this case, since having denser time series allows for more accurate quantification of regrowth time. Overall this risk is low, since regrowth time can also be estimated from the time between the time series break related to the logging event and the break related to the stop in regrowth and return to stable year-to-year conditions.
+Since canopy closure time quantification has not been performed on Amazon rainforest time series so far either, there is also a risk of whether that will be possible. Multisensor fusion would also help in this case, since having denser time series allows for more accurate quantification of canopy closure time. Overall this risk is low, since canopy closure time can also be estimated from the time difference between the time series break related to the logging event and the break related to the stop in canopy regrowth and return to stable year-to-year conditions.
 
 Given that the thesis deals with time series data, which is by nature big data, there is a risk of image processing taking a long time. This risk will be minimised by first performing processing only in the immediate area of where selective logging is known to have occurred, no more than 25 pixels per area disturbed by a logging event. The pixels will be extracted from the full tiles, and will be stored and processed separately, as to exclude all of the irrelevant data outside of the logged areas and thus speed up processing. The previously unknown logging event detection step will only be performed if there is sufficient time for processing more data, and no more than an extent of a single Landsat tile will be used for selective logging event detection purposes.
 
-Multisensor fusion itself is a highly complex task that requires matching the reflectance values of multiple sensors together as well as over time, therefore it carries risks of feasibility and time requirements. Therefore, even though multisensor fusion would be beneficial to more precise regrowth time estimation and ease logging event detection, it will only be performed if single-sensor solutions are deemed insufficient. The workflow will first be tested on imagery from a single sensor, and only if logging event detection or regrowth time estimation fails will multisensor fusion be attempted. In addition, for some pairs of sensors, methodology for multisensor fusion has already been well-established and thus should be much simpler. For instance, Landsat TM and ETM+ data is often fused by performing preprocessing to surface reflectance values via LEDAPS.
+Multisensor fusion itself is a highly complex task that requires matching the reflectance values of multiple sensors together as well as over time, therefore it carries risks of feasibility and time requirements. Therefore, even though multisensor fusion would be beneficial to more precise canopy closure time estimation and ease logging event detection, it will only be performed if single-sensor solutions are deemed insufficient. The workflow will first be tested on imagery from a single sensor, and only if logging event detection or canopy closure time estimation fails will multisensor fusion be attempted. In addition, for some pairs of sensors, methodology for multisensor fusion has already been well-established and thus should be much simpler. For instance, Landsat TM and ETM+ data is often fused by performing preprocessing to surface reflectance values via LEDAPS.
 
 \printnoidxglossary[type=acronym]
 
