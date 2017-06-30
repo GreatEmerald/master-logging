@@ -29,6 +29,8 @@
 # It also optionally removes the input data to save disk space after processing is deemed successful.
 
 # NOTE: Requires a new enough version of bfastSpatial that can handle Landsat Collection 1 data (-dev at the moment)
+library(parallel)
+library(tools)
 library(bfastSpatial)
 library(optparse)
 
@@ -40,24 +42,33 @@ parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="
     default="../data/intermediary/cloud-free",
     help="Output directory. Subdirectories for each vegetation index will be created. (Default: %default)")
 parser = add_option(parser, c("-t", "--file-type"), type="character", metavar="extension",
-    default="tif",
+    default="grd",
     help="Output file type. grd is native uncompressed, tif is lightly compresssed. (Default: %default)")
 parser = add_option(parser, c("-f", "--filter-pattern"), type="character", metavar="regex",
     help="Pattern to filter input files on.")
+sink("/dev/null") # Silence rasterOptions
+parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
+    help=paste0("Path to a temporary directory to store results in. (Default: ",
+        rasterOptions()$tmpdir, ")"))
+sink()
 args = parse_args(parser)
 
 MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-dir"]],
-    file_type=args[["file-type"]], filter_pattern=args[["filter-pattern"]], ...)
+    file_type=args[["file-type"]], filter_pattern=args[["filter-pattern"]],
+    temp_dir=args[["temp-dir"]], ...)
 {
+    if (!is.null(temp_dir))
+        rasterOptions(tmpdir=temp_dir)
     
-    # Keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows
+    Threads = detectCores()-1
+    psnice(value = min(Threads - 1, 19))
     processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=66,
-        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern, ...)
+        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
+        mc.cores=Threads, ...)
 }
 
-rasterOptions(tmpdir="/userdata2/tmp/")
-processLandsat("../data/satellite/peru/LE072310562009061401T2-SC20170623194824.tar.gz",
-    "../data/intermediary/cloud-free/peru", c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE,
-    mask="pixel_qa", keep=66, fileExt="tif")
+MaskClouds()
+
+# Keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows
 # The result is fine but the compression is poor. We can do better with
 # COMPRESS=DEFLATE ZLEVEL=9 SPARSE_OK=TRUE NUM_THREADS=4, so maybe run without compression first

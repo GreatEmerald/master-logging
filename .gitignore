@@ -221,6 +221,8 @@ TSWLatexianTemp*
 *-tags.tex
 
 */.kile/*
+.Rhistory
+*/.Rproj.user/
 
 # custom
 thesis/*.pdf
