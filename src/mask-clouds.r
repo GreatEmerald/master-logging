@@ -30,6 +30,9 @@
 
 # NOTE: Requires a new enough version of bfastSpatial that can handle Landsat Collection 1 data (-dev at the moment)
 library(parallel)
+library(foreach)
+library(doParallel)
+library(gdalUtils)
 library(tools)
 library(bfastSpatial)
 library(optparse)
@@ -59,12 +62,28 @@ MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-di
 {
     if (!is.null(temp_dir))
         rasterOptions(tmpdir=temp_dir)
+    if (!is.null(filter_pattern))
+        filter_pattern = glob2rx(filter_pattern)
     
     Threads = detectCores()-1
     psnice(value = min(Threads - 1, 19))
     processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=66,
         vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
         mc.cores=Threads, ...)
+    
+    # Repack files and remove 20000 (NA)
+    #FileList = list.files(output_dir, recursive = TRUE, pattern = glob2rx("*.grd"), full.names = TRUE)
+    #registerDoParallel(cores = Threads)
+    #outputs = foreach(i=1:length(FileList), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
+    #{
+        #RasterFileName = FileList[i]
+        #RawRaster = raster(RasterFileName)
+        #CompressedRasterName = sub("grd", "tif", RasterFileName)
+        #subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
+            #options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+    #}
+    #unlink(FileList)
+    #unlink(list.files(output_dir, recursive = TRUE, pattern = glob2rx("*.gri"), full.names = TRUE))
 }
 
 MaskClouds()
