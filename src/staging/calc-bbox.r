@@ -19,19 +19,55 @@
 # along with the scripts.  If not, see <http://www.gnu.org/licenses/>.
 
 library(raster)
+library(rgeos)
 
-# Input: Reference raster to which to fit the bounding box to; data point CSV file.
-# Output: A list of bbox classes that define the boundaries of all data points.
+# Input: Path to CSV file that maps campaigns to projections; path to reference point CSV file; path to output CSV file.
+# Output: An enhanced CSV file with xmin, xmax, ymin, ymax columns (in respective projections).
 
-GetBBox = function(reference_raster, data_csv)
+AddExtent = function(projection_csv, data_csv, output_path)
 {
     # Get the data into R format
-    reference_raster = "../data/satellite/LE07_L1TP_231056_19990822_20170217_01_T1_sr_ndvi.tif"
-    RR = raster(reference_raster)
+    # Note that different scenes have different projections!
+    # This means we need a file to map projections to campaigns, or else reproject all rasters to a single projection.
+    projection_csv = "../data/reference/Projections.csv"
+    ProjectionMap = read.csv(projection_csv, stringsAsFactors=FALSE)
     data_csv = "../data/reference/LoggedTrees.csv"
     DataPoints = read.csv(data_csv, stringsAsFactors=FALSE)
-    coordinates(DataPoints) = ~Latitude+Longitude
+    DataPoints[["Campaign"]] = as.factor(DataPoints[["Campaign"]])
+    coordinates(DataPoints) = ~Longitude+Latitude
+    crs(DataPoints) = CRS("+proj=longlat +datum=WGS84 +no_defs")
     
-    # Reproject points to the CRS of the raster so as to get a buffer that is in fact round and of 60 m
-    a = gBuffer(DataPoints, byid=TRUE, width=res(RR)[1]*2, quadsegs=1) # Rhombus; fine, since we need the BB only
+    OutputCSV = data.frame()
+    for (i in 1:length(levels(DataPoints@data$Campaign)))
+    {
+        Campaign = levels(DataPoints@data$Campaign)[i]
+        # Select points of the current campaign
+        CampaignPoints = DataPoints[DataPoints$Campaign==Campaign,]
+        # Transform to the right projection
+        DataUTM = spTransform(CampaignPoints, crs(ProjectionMap[ProjectionMap$Campaign==Campaign, "proj4"]))
+        
+        # Buffer
+        BufferedPoints = gBuffer(DataUTM, byid=TRUE, width=75, quadsegs=1) # Rhombus; fine, since we need the BB only
+        # Could also use byid=FALSE and disaggregate() to dissolve them
+        xmin=c(); xmax=c(); ymin=c(); ymax=c()
+        for (n in 1:length(BufferedPoints))
+        {
+            # Extract extent values for writing to CSV
+            xmin = c(xmin, extent(BufferedPoints[n,])@xmin)
+            xmax = c(xmax, extent(BufferedPoints[n,])@xmax)
+            ymin = c(ymin, extent(BufferedPoints[n,])@ymin)
+            ymax = c(ymax, extent(BufferedPoints[n,])@ymax)
+        }
+        BufferedPoints@data$xmin = xmin
+        BufferedPoints@data$xmax = xmax
+        BufferedPoints@data$ymin = ymin
+        BufferedPoints@data$ymax = ymax
+        if (length(OutputCSV) == 0)
+            OutputCSV = BufferedPoints@data
+        else
+            OutputCSV = rbind(OutputCSV, BufferedPoints@data)
+    }
+    FinalCSV = read.csv(data_csv)
+    FinalCSV = cbind(FinalCSV, xmax=OutputCSV[["xmax"]]) # These need to be ordered first
+    write.csv(OutputCSV, output_path)
 }
