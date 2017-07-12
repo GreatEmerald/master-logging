@@ -1,0 +1,4 @@
+Campaign,proj4
+Peru,+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs
+Guyana2014,+proj=utm +zone=21 +datum=WGS84 +units=m +no_defs
+Guyana2017,+proj=utm +zone=21 +datum=WGS84 +units=m +no_defs
