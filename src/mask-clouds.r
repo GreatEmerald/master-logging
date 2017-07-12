@@ -48,7 +48,7 @@ parser = add_option(parser, c("-t", "--file-type"), type="character", metavar="e
     default="grd",
     help="Output file type. grd is native uncompressed, tif is lightly compresssed. (Default: %default)")
 parser = add_option(parser, c("-f", "--filter-pattern"), type="character", metavar="regex",
-    help="Pattern to filter input files on.")
+    help="Pattern to filter input files on. Should not include the extension (end with a *).")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store results in. (Default: ",
@@ -63,27 +63,36 @@ MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-di
     if (!is.null(temp_dir))
         rasterOptions(tmpdir=temp_dir)
     if (!is.null(filter_pattern))
+    {
+        GrdPattern = glob2rx(paste0(filter_pattern, "*.grd"))
+        GriPattern = glob2rx(paste0(filter_pattern, "*.gri"))
         filter_pattern = glob2rx(filter_pattern)
+    }
+    if (!exists("GrdPattern"))
+        GrdPattern = glob2rx("*.grd")
+    if (!exists("GriPattern"))
+        GriPattern = glob2rx("*.gri")
     
-    Threads = detectCores()-1
+    Threads = 11#detectCores()-1
     psnice(value = min(Threads - 1, 19))
-    processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=66,
-        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
-        mc.cores=Threads, ...)
+    #processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=66,
+        #vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
+        #mc.cores=Threads, ...)
     
     # Repack files and remove 20000 (NA)
-    #FileList = list.files(output_dir, recursive = TRUE, pattern = glob2rx("*.grd"), full.names = TRUE)
-    #registerDoParallel(cores = Threads)
-    #outputs = foreach(i=1:length(FileList), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
-    #{
-        #RasterFileName = FileList[i]
-        #RawRaster = raster(RasterFileName)
-        #CompressedRasterName = sub("grd", "tif", RasterFileName)
-        #subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
-            #options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
-    #}
-    #unlink(FileList)
-    #unlink(list.files(output_dir, recursive = TRUE, pattern = glob2rx("*.gri"), full.names = TRUE))
+    FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
+    print(FileList)
+    registerDoParallel(cores = Threads)
+    outputs = foreach(i=1:length(FileList), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
+    {
+        RasterFileName = FileList[i]
+        RawRaster = raster(RasterFileName)
+        CompressedRasterName = sub("grd", "tif", RasterFileName)
+        subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
+            options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+    }
+    unlink(FileList)
+    unlink(list.files(output_dir, recursive = TRUE, pattern = GriPattern, full.names = TRUE))
 }
 
 MaskClouds()
