@@ -75,21 +75,27 @@ MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-di
     
     Threads = 11#detectCores()-1
     psnice(value = min(Threads - 1, 19))
-    #processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=66,
-        #vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
-        #mc.cores=Threads, ...)
+    processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=c(66, 130),
+        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
+        mc.cores=Threads, ...)
     
-    # Repack files and remove 20000 (NA)
+    # Repack files and remove 20000 (oversaturated AKA NA)
     FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
-    print(FileList)
     registerDoParallel(cores = Threads)
     outputs = foreach(i=1:length(FileList), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
     {
         RasterFileName = FileList[i]
-        RawRaster = raster(RasterFileName)
         CompressedRasterName = sub("grd", "tif", RasterFileName)
-        subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
-            options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+        if (file.exists(CompressedRasterName))
+        {
+            print(paste("Skipping", CompressedRasterName, "because it already exists"))
+        } else
+        {
+            print(paste("Repacking", CompressedRasterName))
+            RawRaster = raster(RasterFileName)
+            subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
+                options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+        }
     }
     unlink(FileList)
     unlink(list.files(output_dir, recursive = TRUE, pattern = GriPattern, full.names = TRUE))
