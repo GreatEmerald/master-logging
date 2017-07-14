@@ -73,11 +73,11 @@ MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-di
     if (!exists("GriPattern"))
         GriPattern = glob2rx("*.gri")
     
-    Threads = 11#detectCores()-1
+    Threads = 10#detectCores()-1
     psnice(value = min(Threads - 1, 19))
     processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=c(66, 130),
         vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
-        mc.cores=Threads, ...)
+        mc.cores=Threads, e=extent(172785, 433215, 533385, 747015), ...)
     
     # Repack files and remove 20000 (oversaturated AKA NA)
     FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
