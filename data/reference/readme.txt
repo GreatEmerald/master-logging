@@ -16,3 +16,6 @@ Note: Peru dataset included a database and GPS measurements. Database entries ha
 Note: Peru dataset consists of individual points for each plot, as well as canopy gaps, but they do not always match. Gaps outside plots are listed separately. If both crown and base gaps are listed, crown position gets twice the weight.
 
 Note: Peru dataset GPS coordinates were calculated by getting the centroid of all points in the same scanning session, and then getting the centroid of all scanning sessions' centroid plus the location of the associated gap (if any).
+
+
+The .geojson files are polygon convex hulls of the points above, generated with QGIS. There is one file per campaign.
