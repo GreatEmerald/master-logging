@@ -51,22 +51,24 @@ GetSentinel2Info = function(filenames)
 }
 
 # Utility function to save space and increase readablity
-GetRasterByBand(file_df, band)
+GetRasterByBand = function(file_df, band)
 {
-    return(raster(file_df["filename", file_df$band == band]))
+    print(paste("Returning raster of:", file_df[file_df$band == band, "filename"]))
+    return(raster(file_df[file_df$band == band, "filename"]))
 }
 
 # Utility function to save space and increase readablity
-GetOutputFilename(file_df, vi_name)
+GetOutputFilename = function(file_df, vi_name)
 {
-    SampleFilename = file_df["filename", file_df$band == "B08"]
-    NewFilename = sub("_B08_", paste0("_", vi_name ,"_") basename(SampleFilename))
+    SampleFilename = file_df[file_df$band == "B08", "filename"]
+    NewFilename = sub("_B08_", paste0("_", vi_name, "_"), basename(SampleFilename))
+    print(paste("Writing to file:", NewFilename))
     return(file.path(dirname(SampleFilename), NewFilename))
 }
 
 # Input: path to a granule (the directory with a timestamp), list of VIs to generate
 # This function is a dispatcher to VI-specific functions
-S2CalcIndicesGranule = function(path, indices=c("EVI", "NBR", "MSAVI", "NDMI", "NDVI"), threads=1)
+S2CalcIndicesGranule = function(path, indices=c("EVI", "NBR", "MSAVI", "NDMI", "NDVI"))
 {
     R10m = list.files(file.path(path, "R10m"), glob2rx("*.tif"), full.names=TRUE)
     R20m = list.files(file.path(path, "R20m"), glob2rx("*.tif"), full.names=TRUE)
@@ -76,78 +78,100 @@ S2CalcIndicesGranule = function(path, indices=c("EVI", "NBR", "MSAVI", "NDMI", "
     R20m = GetSentinel2Info(R20m)
     UniqueGranuleIDs = levels(R10m$granule)
     
-    psnice(value = min(threads - 1, 19))
-    registerDoParallel(threads)
-    
     for (GranuleID in 1:length(UniqueGranuleIDs))
     {
-        Unique10m = R10m[,R10m$granule == GranuleID]
-        Unique20m = R20m[,R20m$granule == GranuleID]
+        Unique10m = R10m[R10m$granule == UniqueGranuleIDs[GranuleID],]
+        Unique20m = R20m[R20m$granule == UniqueGranuleIDs[GranuleID],]
         
-        foreach (index=iter(indices), .inorder=FALSE, .packages="raster", .verbose=TRUE) %dopar%
+        foreach (index=iter(indices), .inorder=FALSE, .packages="raster", .verbose=TRUE) %do%
         {
+            print(paste("Index to be calculated:", index))
             switch(index,
                 EVI=CalcEVI(Unique10m),
                 MSAVI=CalcMSAVI(Unique10m),
                 NDVI=CalcNDVI(Unique10m),
                 NDMI=CalcNDMI(Unique10m, Unique20m),
-                NBR=CalcNDMI(Unique10m, Unique20m),
+                NBR=CalcNBR(Unique10m, Unique20m),
                 stop(paste("Unknown index requested:", index)))
         }
     }
 }
 
-CalcEVI(file_df)
+CalcEVI = function(file_df)
 {
     EVI = function(red, nir, blue)
     {
-        2.5 * (nir-red) / (nir+6*red-7.5*blue+1)
+        red = red/10000
+        nir = nir/10000
+        blue = blue/10000
+        2.5 * (nir-red) / (nir+6*red-7.5*blue+1) * 10000
     }
+    print("Calculating EVI...")
     overlay(GetRasterByBand(file_df, "B04"), GetRasterByBand(file_df, "B08"), GetRasterByBand(file_df, "B02"),
-        fun=EVI, filename=GetOutputFilename(file_df, "EVI"), datatype="FLT4S", progress="text",
+        fun=EVI, filename=GetOutputFilename(file_df, "EVI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
 }
 
-CalcMSAVI(file_df)
+CalcMSAVI = function(file_df)
 {
     MSAVI = function(red, nir)
     {
-        (2*nir+1 - sqrt((2*nir+1)^2 - 8*(nir-red)))/2
+        red = red/10000
+        nir = nir/10000
+        (2*nir+1 - sqrt((2*nir+1)^2 - 8*(nir-red)))/2 * 10000
     }
     overlay(GetRasterByBand(file_df, "B04"), GetRasterByBand(file_df, "B08"),
-        fun=MSAVI, filename=GetOutputFilename(file_df, "MSAVI"), datatype="FLT4S", progress="text",
+        fun=MSAVI, filename=GetOutputFilename(file_df, "MSAVI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
 }
 
-CalcNDVI(file_df)
+CalcNDVI = function(file_df)
 {
     NDVI = function(red, nir)
     {
-        (nir-red)/(nir+red)
+        (nir-red)/(nir+red) * 10000
     }
     overlay(GetRasterByBand(file_df, "B04"), GetRasterByBand(file_df, "B08"),
-        fun=NDVI, filename=GetOutputFilename(file_df, "NDVI"), datatype="FLT4S", progress="text",
+        fun=NDVI, filename=GetOutputFilename(file_df, "NDVI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
 }
 
-CalcNDMI(file_10_df, file_20_df)
+CalcNDMI = function(file_10_df, file_20_df)
 {
     NDMI = function(swir, nir)
     {
-        (nir-swir)/(nir+swir)
+        (nir-swir)/(nir+swir) * 10000
     }
     overlay(disaggregate(GetRasterByBand(file_20_df, "B11"), 2, "bilinear"), GetRasterByBand(file_10_df, "B08"),
-        fun=NDMI, filename=GetOutputFilename(file_10_df, "NDMI"), datatype="FLT4S", progress="text",
+        fun=NDMI, filename=GetOutputFilename(file_10_df, "NDMI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
 }
 
-CalcNBR(file_10_df, file_20_df)
+CalcNBR = function(file_10_df, file_20_df)
 {
     NBR = function(swir2, nir)
     {
-        (nir-swir2)/(nir+swir2)
+        (nir-swir2)/(nir+swir2) * 10000
     }
     overlay(disaggregate(GetRasterByBand(file_20_df, "B12"), 2, "bilinear"), GetRasterByBand(file_10_df, "B08"),
-        fun=NBR, filename=GetOutputFilename(file_10_df, "NBR"), datatype="FLT4S", progress="text",
+        fun=NBR, filename=GetOutputFilename(file_10_df, "NBR"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+}
+
+# Run S2CalcIndicesGranule over many files
+S2CalcIndicesBatch = function(path, pattern=NULL, threads=8, ...)
+{
+    if (!is.null(pattern))
+    {
+        Directories = list.files(path, glob2rx(pattern), full.names=TRUE)
+        psnice(value = min(threads - 1, 19))
+        registerDoParallel(threads)
+        
+        foreach (Directory=iter(Directories), .inorder=FALSE, .packages="raster", .verbose=TRUE) %dopar%
+            S2CalcIndicesGranule(Directory, ...)
+    }
+    else
+        S2CalcIndicesGranule(path, ...)
+
+    
 }

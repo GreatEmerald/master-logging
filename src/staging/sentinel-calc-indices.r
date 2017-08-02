@@ -42,5 +42,6 @@ source("preprocessing/sentinel-calc-indices.r")
 
 if (!is.null(args[["temp-dir"]]))
         rasterOptions(tmpdir=args[["temp-dir"]])
-
-S2CalcIndicesGranule(args[["input-directory"]], threads=args[["threads"]])
+#rasterOptions(chunksize=5e+07, maxmemory=5e+08)
+        
+S2CalcIndicesBatch(args[["input-directory"]], pattern=args[["pattern"]], threads=args[["threads"]])
