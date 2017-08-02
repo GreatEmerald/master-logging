@@ -41,7 +41,6 @@ S2ApplyMaskToGranule = function(path, output_dir, mask_values=c(0:3, 7:10), reso
     }
     Mask = raster(MaskFile)
     Mask10 = disaggregate(Mask, 2)
-    spplot(Mask)
     
     masker = function(x, y)
     {
@@ -58,7 +57,7 @@ S2ApplyMaskToGranule = function(path, output_dir, mask_values=c(0:3, 7:10), reso
         else
             CurrentMask = Mask
         
-        Bands = list.files(ID, pattern=glob2rx(paste0("S2A_USER_MSI_L2A_*_B??_", size, "m.jp2")), full.names=TRUE, recursive=TRUE)
+        Bands = list.files(ID, pattern=glob2rx(paste0("*L2A_*_B??_", size, "m.jp2")), full.names=TRUE, recursive=TRUE)
         OutputDir = file.path(output_dir, paste0("R", size, "m"))
         if (!file.exists(OutputDir))
             dir.create(OutputDir, recursive=TRUE)
