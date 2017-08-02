@@ -28,10 +28,17 @@ S2ApplyMaskToGranule = function(path, output_dir, mask_values=c(0:3, 7:10), reso
 {
     # NOTE: mask_values default to paranoid values. You might want to exclude 2 (dark areas, usually cloud shadows though)
     # and 7 (low probability that it's cloud)
+    
+    # Find mask file: old style
     ID = file.path(path, "IMG_DATA")
     MaskFile = list.files(ID, pattern=glob2rx("*SCL_L2A*20m.jp2"), full.names=TRUE)
+    # New style
     if (length(MaskFile) <= 0)
-        stop(paste("Could not find mask file in directory", ID))
+    {
+        MaskFile = list.files(file.path(ID, "R20m"), pattern=glob2rx("L2A_*_SCL_20m.jp2"), full.names=TRUE)
+        if (length(MaskFile) <= 0)
+            stop(paste("Could not find mask file in directory", ID))
+    }
     Mask = raster(MaskFile)
     Mask10 = disaggregate(Mask, 2)
     spplot(Mask)
