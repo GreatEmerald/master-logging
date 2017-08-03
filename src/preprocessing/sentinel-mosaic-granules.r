@@ -27,9 +27,15 @@ source("preprocessing/sentinel-calc-indices.r")
 # Output: Multi-granule 10m VI files with best pixels selected (by max value of itself)
 
 # Allows specifying only two granules due to raster::mosaic limitations
-S2MosaicVI(input_dir, pattern, output_dir, granule_a="21NUE", granule_b="21NUF")
+S2MosaicVI = function(input_dir, pattern, output_dir, granule_a="21NUE", granule_b="21NUF")
 {
     Files = list.files(input_dir, glob2rx(pattern), full.names=TRUE)
+    
+    GetOutputFilename = function(sample_file, granule)
+    {
+        return(file.path(output_dir, sub(granule, "99ZZZ", basename(sample_file))))
+    }
+    
     FileInfo = GetSentinel2Info(Files)
     RasterA = FileInfo[FileInfo$granule == granule_a,"filename"]
     RasterB = FileInfo[FileInfo$granule == granule_b,"filename"]
@@ -37,10 +43,38 @@ S2MosaicVI(input_dir, pattern, output_dir, granule_a="21NUE", granule_b="21NUF")
     {
         if (nrow(RasterB) <= 0)
             stop(paste("Could not find either of the rasters to mosaic in", input_dir, pattern))
-        #else
-            #file.copy(RasterB, )
+        
+        warning(paste("Only one granule found; output is a copy of" RasterB))
+        file.copy(RasterB, GetOutputFilename(RasterB, granule_b))
     }
+    else if (nrow(RasterB) <= 0)
+    {
+        warning(paste("Only one granule found; output is a copy of" RasterA))
+        file.copy(RasterA, GetOutputFilename(RasterA, granule_a))
+    }
+    else
+    {
+        Mosaic = mosaic(raster(RasterA), raster(RasterB), fun=max, progress="text",
+            filename=GetOutputFilename(RasterA, granule_a), datatype="INT2S",
+            options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+    }
+}
+
+S2MosaicVIs = function(input_dir, output_dir, VIs = c("EVI", "MSAVI", "NBR", "NDMI", "NDVI"), threads=1, ...)
+{
+    Directories = list.files(input_dir, full.names=TRUE)
     
-    Mosaic = mosaic(raster(RasterA), raster(RasterB), fun=max,
-        filename=file.path(output_dir, sub(granule_a, "99ZZZ", basename(RasterA))))
+    psnice(value = min(threads - 1, 19))
+    registerDoParallel(threads)
+    
+    foreach (Directory = iter(Directories), .inorder=FALSE, .verbose=TRUE, .packages="raster") %:%
+    {
+        foreach (VI = iter(VIs), .inorder=FALSE, .verbose=TRUE, .packages="raster") %dopar%
+        {
+            OutputSubdirectory = file.path(output_dir, basename(Directory))
+            if (!file.exists(OutputSubdirectory))
+                dir.create(OutputSubdirectory)
+            S2MosaicVI(Directory, paste0("*", VI, "*"), OutputSubdirectory, ...)
+        }
+    }
 }

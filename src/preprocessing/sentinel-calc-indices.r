@@ -34,7 +34,13 @@ GetGranuleID = function(name)
 # Utility function to get the band name (BNN) by parsing a filename. A bee?!
 GetBandName = function(name)
 {
-    return(grep(glob2rx("B??"), unlist(strsplit(name, "_")), value=TRUE))
+    Result = grep(glob2rx("B??"), unlist(strsplit(name, "_")), value=TRUE)
+    if (length(Result) == 0)
+    {
+        warning(paste("Could not extract band name from file", name))
+        return(NA)
+    }
+    return(Result)
 }
 
 # Utility function to create a data frame with "granule" and "band" from a list of filenames.

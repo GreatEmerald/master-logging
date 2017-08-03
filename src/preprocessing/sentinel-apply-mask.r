@@ -80,7 +80,7 @@ S2ApplyMaskToProduct = function(path, output_dir, temp_dir=NULL, threads=2, gran
         rasterOptions(tmpdir=temp_dir)
     
     # NOTE: Needs 2.1 GiB RAM per thread of 20m, up to 8 GiB per thread of 10m
-    rasterOptions(chunksize=1e+08, maxmemory=1e+09)
+    rasterOptions(chunksize=5e+07, maxmemory=5e+08)
     psnice(value = min(threads - 1, 19))
     registerDoParallel(threads)
     
