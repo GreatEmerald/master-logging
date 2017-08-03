@@ -5,9 +5,9 @@ library(doParallel)
 library(tools)
 rasterOptions(tmpdir="/userdata2/tmp/")
 
-FilesToCrop = list.files("../data/intermediary/cloud-free/Guyana2014/evi",
+FilesToCrop = list.files("../data/intermediary/cloud-free/Guyana2014/ndvi",
     pattern=glob2rx("*.tif"), full.names = TRUE)
-OutputDir = "../data/intermediary/cloud-free/Guyana2014b/evi"
+OutputDir = "../data/intermediary/cloud-free/Guyana2014b/ndvi"
 for (i in 1:length(FilesToCrop))
 {
     Image = raster(FilesToCrop[i])
@@ -31,5 +31,5 @@ foreach(i=1:length(FilesToCrop), .inorder = FALSE, .packages = "raster", .verbos
     print(paste("Processing:", ImageName))
     Image = raster(ImageName)
     extend(Image, EnlargeExtent, filename=paste0(OutputDir, "/", basename(ImageName)),
-        options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+        options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"), datatype="INT2S")
 }

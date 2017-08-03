@@ -63,24 +63,23 @@ StackTS = function(input_dir=args[["input-dir"]], output_dir=args[["output-dir"]
     TreeData = read.csv(extent_file, stringsAsFactors=FALSE)
     TreeData = TreeData[TreeData$Campaign==campaign,]
     
-    Threads = 2#detectCores()-1
+    Threads = detectCores()-1
     psnice(value = min(Threads - 1, 19))
-    #registerDoParallel(cores = Threads)
-    #outputs = foreach(TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "bfastSpatial",
-    #    .verbose=TRUE) %dopar%
-    #{
-    TreeDatum=TreeData[1,]
+    registerDoParallel(cores = Threads)
+    outputs = foreach(TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "bfastSpatial",
+        .verbose=TRUE) %dopar%
+    {
         # Stack the tile in memory, have to use quick to prevent stacking issues
         TileList = list.files(input_dir, pattern=glob2rx("*.tif"), full.names=TRUE)
-        TileStack = stack(TileList, quick=TRUE)
+        TileStack = stack(TileList)
         # Generate a pretty filename
         StackName = paste0(output_dir, "/", row.names(TreeDatum), "_",
             sub(":", "to", sub("&", "and", gsub(" ", "_", TreeDatum$ID))), ".grd")
         print(paste("Writing stack:", StackName))
         
         crop(TileStack, extent(TreeDatum$xmin, TreeDatum$xmax, TreeDatum$ymin, TreeDatum$ymax),
-            filename=StackName, progress="text")
-    #}
+            filename=StackName, datatype="INT2S")
+    }
 }
 
 StackTS()

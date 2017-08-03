@@ -94,7 +94,7 @@ MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-di
             print(paste("Repacking", CompressedRasterName))
             RawRaster = raster(RasterFileName)
             subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
-                options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"), datatype="INT2S")
         }
     }
     unlink(FileList)
