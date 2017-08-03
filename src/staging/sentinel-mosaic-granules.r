@@ -30,7 +30,7 @@ parser = add_option(parser, c("-i", "--input-directory"), type="character", defa
 parser = add_option(parser, c("-o", "--output-directory"), type="character", default="../data/intermediate/mosaics/Guyana2017",
     help="Output directory. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
-    default=1, help="Number of threads to use. You need 1 GiB of RAM per thread. (Default: %default)")
+    default=8, help="Number of threads to use. You need 1.4 GiB of RAM per thread. (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store uncompressed large chunks in. (Default: ",
