@@ -36,18 +36,43 @@ S2StackVITimeseriesAOI = function(input_dir, file_pattern, output_dir, aoi_file,
     
     Times = basename(dirname(VIFiles)) # This gives yyyy-mm-ddThh:mm:ss.fffZ
     # Hacky way of getting only the yyyy-mm-dd part, probably better to use lubridate
-    Dates = unlist(as.data.frame(strsplit(Times, "T"), stringsAsFactors=FALSE))
+    Dates = unlist(as.data.frame(strsplit(Times, "T"), stringsAsFactors=FALSE)[1,])
+    #print(Dates)
     
-    foreach (TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %do%
+    foreach (TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
     {
         StackName = file.path(output_dir, paste0(row.names(TreeDatum), "_",
                 sub(":", "to", sub("&", "and", gsub(" ", "_", TreeDatum$ID))), ".grd"))
-        VIStack = foreach (VIFile = VIFiles, .combine=addLayer, .multicombine=TRUE, .packages="raster", .verbose=TRUE) %dopar%
+        VIStack = foreach (VIFile = VIFiles, .combine=addLayer, .multicombine=TRUE, .packages="raster", .verbose=TRUE) %do%
         {
-            crop(raster(VIFile), extent(TreeDatum$xmin, TreeDatum$xmax, TreeDatum$ymin, TreeDatum$ymax),
-                progress="text", datatype="INT2S")
+            print(paste("Cropping file:", VIFile))
+            VIRaster = raster(VIFile)
+            AOIExtent = extent(TreeDatum$xmin, TreeDatum$xmax, TreeDatum$ymin, TreeDatum$ymax)
+#             e = intersect(extent(VIRaster), AOIExtent)
+#             if (is.null(e))
+#             {
+#                 print(paste("ERROR: No overlap between raster", VIFile, "and tree extent:"))
+#                 print(TreeDatum)
+#                 print("Raster extent was:")
+#                 print(extent(VIRaster))
+#             }
+            crop(VIRaster, AOIExtent, datatype="INT2S")
         }
         VIStack = setZ(VIStack, Dates)
         writeRaster(VIStack, filename=StackName, progress="text", datatype="INT2S")
+    }
+}
+
+# Batch function to process all VIs
+S2StackVITimeseriesAOIs = function(..., output, VIs = c("EVI", "MSAVI", "NDMI", "NBR", "NDVI"))
+{
+    foreach (VI = VIs, .inorder=FALSE, .packages="raster") %do%
+    {
+        VIPattern = paste0("*", VI, "*.tif")
+        OutputDirectory = file.path(output, VI)
+        if (!file.exists(OutputDirectory))
+            dir.create(OutputDirectory)
+            
+        S2StackVITimeseriesAOI(..., output_dir=OutputDirectory, file_pattern = VIPattern)
     }
 }
