@@ -1,0 +1,1 @@
+→Requested sr_evi products are not available. Remove oli8_collection scenes: [u'LO08_L1TP_002069_20150211_20170413_01_T2', u'LO08_L1TP_002068_20150211_20170413_01_T2'] 

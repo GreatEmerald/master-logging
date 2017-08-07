@@ -32,14 +32,12 @@ parser = add_option(parser, c("-i", "--input-directory"), type="character", defa
 parser = add_option(parser, c("-o", "--output-directory"), type="character", default="../data/intermediate/mosaics/Guyana2017",
     help="Output directory. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
-    default=1, help="Number of threads to use. You need next to no RAM per thread when using small AOIs. (Default: %default)")
-parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",
-    help="Glob for finding the vegetation index files (for example: *NDVI*.tif)")
+    default=8, help="Number of threads to use. You need next to no RAM per thread when using small AOIs. (Default: %default)")
 parser = add_option(parser, c("-f", "--extent-file"), type="character", metavar="path",
     default="../data/reference/LoggedTreeBoundaries.csv",
     help="File that contains information about logged trees and search bounding box. (Default: %default)")
-parser = add_option(parser, c("-c", "--campaign"), type="character", metavar="name",
-    help="Name of the campaign to process.")
+parser = add_option(parser, c("-c", "--campaign"), type="character", metavar="name", default="Guyana2017",
+    help="Name of the campaign to process. (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store uncompressed large chunks in. (Default: ",

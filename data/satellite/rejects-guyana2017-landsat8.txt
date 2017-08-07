@@ -1,0 +1,5 @@
+Missing Auxillary Data. Invalid IDs must be removed: ["sr_ndmi", "sr_savi", "sr", "sr_nbr2", "sr_evi", "sr_ndvi", "sr_nbr", "sr_msavi"]: ["LC08_L1GT_230057_20160227_20170329_01_T2"] 
+→Requested sr_ndmi products are not available. Remove oli8_collection scenes: [u'LO08_L1GT_231057_20150303_20170412_01_T2']
+Inputs Not Available
+→LC08_L1GT_231057_20170612_20170612_01_RT
+→LC08_L1GT_230057_20170621_20170621_01_RT
