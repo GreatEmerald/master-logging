@@ -18,23 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with the scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-
-# Input: Directory with input Landsat images, or a list of files; directory with FMask outputs, or a list of files;
-#        output directory.
-# Output: Landsat images with all clouded areas set to NA.
-
-# NOTE: Due to the big data nature, we can't process everything at once, this needs to be done in batches.
-# Therefore the script first checks if the output files already exist, if not, processes the input.
-# That avoids the problem of mixing different batches together.
-# It also optionally removes the input data to save disk space after processing is deemed successful.
-
-# NOTE: Requires a new enough version of bfastSpatial that can handle Landsat Collection 1 data (-dev at the moment)
 library(parallel)
-library(foreach)
-library(doParallel)
-library(gdalUtils)
-library(tools)
-library(bfastSpatial)
+library(raster)
 library(optparse)
 
 # Command-line options
@@ -44,11 +29,12 @@ parser = add_option(parser, c("-i", "--input-dir"), type="character", default=".
 parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="path",
     default="../data/intermediary/cloud-free",
     help="Output directory. Subdirectories for each vegetation index will be created. (Default: %default)")
-parser = add_option(parser, c("-t", "--file-type"), type="character", metavar="extension",
-    default="grd",
+parser = add_option(parser, c("-e", "--file-type"), type="character", metavar="extension", default="grd",
     help="Output file type. grd is native uncompressed, tif is lightly compresssed. (Default: %default)")
-parser = add_option(parser, c("-f", "--filter-pattern"), type="character", metavar="regex",
+parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",
     help="Pattern to filter input files on. Should not include the extension (end with a *).")
+parser = add_option(parser, c("-t", "--threads"), type="numeric", default=detectCores()-1,  metavar="num",
+    help="Number of threads to use for multicore processing. 1.6 GiB RAM is needed per thread. (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store results in. (Default: ",
@@ -56,53 +42,12 @@ parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="pa
 sink()
 args = parse_args(parser)
 
-MaskClouds = function(input_dir=args[["input-dir"]], output_dir=args[["output-dir"]],
-    file_type=args[["file-type"]], filter_pattern=args[["filter-pattern"]],
-    temp_dir=args[["temp-dir"]], ...)
-{
-    if (!is.null(temp_dir))
+source("preprocessing/landsat-mask-clouds.r")
+
+if (!is.null(args[["temp_dir"]]))
         rasterOptions(tmpdir=temp_dir)
-    if (!is.null(filter_pattern))
-    {
-        GrdPattern = glob2rx(paste0(filter_pattern, "*.grd"))
-        GriPattern = glob2rx(paste0(filter_pattern, "*.gri"))
-        filter_pattern = glob2rx(filter_pattern)
-    }
-    if (!exists("GrdPattern"))
-        GrdPattern = glob2rx("*.grd")
-    if (!exists("GriPattern"))
-        GriPattern = glob2rx("*.gri")
-    
-    Threads = 10#detectCores()-1
-    psnice(value = min(Threads - 1, 19))
-    processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=c(66, 130),
-        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
-        mc.cores=Threads, e=extent(172785, 433215, 533385, 747015), ...)
-    
-    # Repack files and remove 20000 (oversaturated AKA NA)
-    FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
-    registerDoParallel(cores = Threads)
-    outputs = foreach(i=1:length(FileList), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
-    {
-        RasterFileName = FileList[i]
-        CompressedRasterName = sub("grd", "tif", RasterFileName)
-        if (file.exists(CompressedRasterName))
-        {
-            print(paste("Skipping", CompressedRasterName, "because it already exists"))
-        } else
-        {
-            print(paste("Repacking", CompressedRasterName))
-            RawRaster = raster(RasterFileName)
-            subs(RawRaster, data.frame(id=20000, v=NA), subsWithNA=FALSE, filename=CompressedRasterName,
-                options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"), datatype="INT2S")
-        }
-    }
-    unlink(FileList)
-    unlink(list.files(output_dir, recursive = TRUE, pattern = GriPattern, full.names = TRUE))
-}
 
-MaskClouds()
+MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["temp-dir"]],
+    args[["threads"]])
 
-# Keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows
-# The result is fine but the compression is poor. We can do better with
-# COMPRESS=DEFLATE ZLEVEL=9 SPARSE_OK=TRUE NUM_THREADS=4, so maybe run without compression first
+# Could keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows (or maybe that makes NBR higher)
