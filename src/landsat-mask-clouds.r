@@ -45,7 +45,7 @@ args = parse_args(parser)
 source("preprocessing/landsat-mask-clouds.r")
 
 if (!is.null(args[["temp_dir"]]))
-        rasterOptions(tmpdir=temp_dir)
+        rasterOptions(tmpdir=args[["temp_dir"]])
 
 MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["temp-dir"]],
     args[["threads"]])

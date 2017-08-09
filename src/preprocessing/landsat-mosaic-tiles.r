@@ -29,6 +29,20 @@ LSMosaicVI = function(input_dir, pattern, output_dir, path_a, row_a, path_b, row
     # Maintain a blacklist for the second tile in pair so as not to process twice
     Blacklist = c()
     
+    # Figure out what the extent is supposed to be
+    MaxExtent = extent(NaN, NaN, NaN, NaN)
+    foreach(File = Files) %do%
+    {
+        CurrentRaster = raster(File)
+        CurrentExtent = extent(CurrentRaster)
+        MaxExtent@xmin = min(CurrentExtent@xmin, MaxExtent@xmin, na.rm=TRUE)
+        MaxExtent@ymin = min(CurrentExtent@ymin, MaxExtent@ymin, na.rm=TRUE)
+        MaxExtent@xmax = max(CurrentExtent@xmax, MaxExtent@xmax, na.rm=TRUE)
+        MaxExtent@ymax = max(CurrentExtent@ymax, MaxExtent@ymax, na.rm=TRUE)
+    }
+    rm(CurrentRaster)
+    
+    # Figure out which images are pairs of which other images
     foreach(FileIndex = 1:length(Files)) %do%
     {
         File = Files[FileIndex]
@@ -48,8 +62,8 @@ LSMosaicVI = function(input_dir, pattern, output_dir, path_a, row_a, path_b, row
             else if (nrow(PotentialPairs) <= 0)
             {
                 print(paste("Pair for file", File, "not found, extending instead."))
-                extend(raster(File), filename=file.path(output_dir, basename(File)), progress="text", datatype="INT2S",
-                    options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                extend(raster(File), MaxExtent, filename=file.path(output_dir, basename(File)), progress="text",
+                    datatype="INT2S", options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
             }
             else
             {

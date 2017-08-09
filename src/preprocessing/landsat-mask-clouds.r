@@ -67,6 +67,8 @@ MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, temp_dir
     
     # Repack files and remove 20000 (oversaturated AKA NA)
     FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
+    if (length(FileList) <= 0)
+        stop("Could not repack files: no files found to repack.")
     registerDoParallel(cores = threads)
     outputs = foreach(i=1:length(FileList), .inorder = FALSE, .packages = "raster", .verbose=TRUE) %dopar%
     {
