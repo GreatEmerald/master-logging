@@ -26,6 +26,7 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
 {
     Files = list.files(input_dir, pattern=glob2rx(pattern), full.names=TRUE)
     FileInfos = getSceneinfo(Files)
+    FileInfos = cbind(FileInfos, id=1:length(Files))
     
     # Figure out what the extent is supposed to be
     MaxExtent = extent(NaN, NaN, NaN, NaN)
@@ -96,7 +97,7 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
             }
             else
             {
-                PairFile = Files[as.numeric(rownames(PotentialPairs))]
+                PairFile = Files[PotentialPairs$id]
                 # Create a filename
                 PathRow = paste0(str_pad(FileInfo$path, 3, pad="0"), str_pad(FileInfo$row, 3, pad="0"))
                 OutputFile = file.path(output_dir, sub(PathRow, "999999", basename(File)))
