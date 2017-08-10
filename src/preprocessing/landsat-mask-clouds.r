@@ -72,6 +72,7 @@ MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, temp_dir
         mc.cores=threads, ...) # was: e=Extent
     
     # Repack files and remove 20000 (oversaturated AKA NA)
+    # TODO: move this into cropper
     FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
     if (length(FileList) <= 0)
         stop("Could not repack files: no files found to repack.")
