@@ -22,7 +22,7 @@ library(bfastSpatial)
 library(stringr)
 
 # Mosaic matching tiles of a given path/row into one (both are set to 999 in output)
-LSMosaicVI = function(input_dir, pattern, output_dir, path_a, row_a, path_b, row_b)
+LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
 {
     Files = list.files(input_dir, pattern=glob2rx(pattern), full.names=TRUE)
     FileInfos = getSceneinfo(Files)
@@ -69,6 +69,8 @@ LSMosaicVI = function(input_dir, pattern, output_dir, path_a, row_a, path_b, row
         }
     }
     
+    if (!file.exists(output_dir))
+        dir.create(output_dir)
     # Do the actual processing, in parallel
     foreach(FileIndex = 1:length(Files), .packages="raster", .inorder=FALSE) %dopar%
     {
@@ -106,5 +108,15 @@ LSMosaicVI = function(input_dir, pattern, output_dir, path_a, row_a, path_b, row
             
         }
         else print(paste("Skipping", File, "as it has already been processed."))
+    }
+}
+
+LSMosaicVIs = function(input_dir, pattern="*.tif", output_dir)
+{
+    VIDirs = list.dirs(input_dir, recursive=FALSE)
+    foreach (VIDir = VIDirs) %do%
+    {
+        OutputDir = file.path(output_dir, basename(VIDir))
+        LSMosaicVI(VIDir, pattern, OutputDir)
     }
 }
