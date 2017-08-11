@@ -3,8 +3,12 @@
 # Contains environment-specific items, so this is just for reference.
 
 # Mask clouds in Guyana 2014
-# Using -f "LE0723105620??*" is recommended, because that's a lot of disk space that it uses
-Rscript mask-clouds.r -i ../data/satellite/Guyana2014 -o ../data/intermediary/cloud-free/Guyana2014 -m /userdata2/tmp/
+# Using -p "LE0723105620??*" or "LC08??????2017*" is recommended, because that's a lot of disk space that it uses
+Rscript landsat-mask-clouds.r -i ../data/satellite/Guyana2014 -o ../data/intermediary/cloud-free/Guyana2014 -m /userdata2/tmp/
+Rscript landsat-mask-clouds.r -i ../data/satellite/Peru/ -o ../data/intermediary/cloud-free/Peru/ -m /userdata2/tmp/ -t 10
+
+# Make extents equal
 
 # Stack time series, one line per VI
 Rscript stack-ts.r -i ../data/intermediary/cloud-free/Guyana2014b/evi/ -c Guyana2014 -o ../data/intermediary/time-stacks/Guyana2014/evi/ -m /userdata2/tmp
+

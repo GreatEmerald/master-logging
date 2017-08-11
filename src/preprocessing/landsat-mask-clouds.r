@@ -35,7 +35,7 @@ library(gdalUtils)
 library(tools)
 library(bfastSpatial)
 
-MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, temp_dir, threads, campaign, ...)
+MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, threads, ...)
 {
     if (!is.null(filter_pattern))
     {

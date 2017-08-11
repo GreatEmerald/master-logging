@@ -22,11 +22,12 @@ library(bfastSpatial)
 library(stringr)
 
 # Mosaic matching tiles of a given path/row into one (both are set to 999 in output)
+# Note: this can also be used in lieu of set-common-extent.r, since it does the extending anyway.
 LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
 {
     Files = list.files(input_dir, pattern=glob2rx(pattern), full.names=TRUE)
     FileInfos = getSceneinfo(Files)
-    FileInfos = cbind(FileInfos, id=1:length(Files))
+    FileInfos = cbind(FileInfos, id=1:length(Files)) # Add an "id" column to match row number
     
     # Figure out what the extent is supposed to be
     MaxExtent = extent(NaN, NaN, NaN, NaN)
@@ -63,7 +64,7 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
             }
             else if (nrow(PotentialPairs) == 1)
             {
-                PairFile = Files[as.numeric(rownames(PotentialPairs))]
+                PairFile = Files[PotentialPairs$id]
                 # Blacklist it
                 Blacklist = c(Blacklist, PairFile)
             }

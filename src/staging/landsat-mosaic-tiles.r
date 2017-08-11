@@ -34,7 +34,7 @@ parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="
 parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",
     help="Pattern to filter input files on. (Default: %default)", default="*.tif")
 parser = add_option(parser, c("-t", "--threads"), type="numeric", default=detectCores()-1,  metavar="num",
-    help="Number of threads to use for multicore processing. 700 MiB RAM is required per thread. (Default: %default)")
+    help="Number of threads to use for multicore processing. 1 GiB RAM is required per thread. (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store results in. (Default: ",

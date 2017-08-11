@@ -47,7 +47,6 @@ source("preprocessing/landsat-mask-clouds.r")
 if (!is.null(args[["temp-dir"]]))
         rasterOptions(tmpdir=args[["temp-dir"]])
 
-MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["temp-dir"]],
-    args[["threads"]])
+MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["threads"]])
 
 # Could keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows (or maybe that makes NBR higher)
