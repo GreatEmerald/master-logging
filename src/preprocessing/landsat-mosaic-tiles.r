@@ -52,9 +52,9 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
         {
             FileInfo = FileInfos[FileIndex,]
             # Find tiles that match the date of the current tile
-            PotentialPairs = PotentialPairs[!rownames(PotentialPairs) %in% rownames(FileInfo),]
+            PotentialPairs = FileInfos[which(FileInfo$date == FileInfos$date),]
             # It will find itself too, so filter ourselves out
-            PotentialPairs = PotentialPairs[-FileIndex,]
+            PotentialPairs = PotentialPairs[!rownames(PotentialPairs) %in% rownames(FileInfo),]
             # Hopefully it only picked up the counterpart
             if (nrow(PotentialPairs) > 1)
             {
