@@ -102,9 +102,11 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
                 PathRow = paste0(str_pad(FileInfo$path, 3, pad="0"), str_pad(FileInfo$row, 3, pad="0"))
                 OutputFile = file.path(output_dir, sub(PathRow, "999999", basename(File)))
                 
-                print(paste("Mosaicking", File, "with", PairFile, "into", OutputFile))
-                Mosaic = mosaic(raster(File), raster(PairFile), fun=max, progress="text",
-                    filename=OutputFile, datatype="INT2S", options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                print(paste("Mosaicking", File, "with", PairFile))
+                Mosaic = mosaic(raster(File), raster(PairFile), fun=max, progress="text")
+                print(paste("Extending the file and writing to", OutputFile))
+                extend(Mosaic, MaxExtent, filename=OutputFile, datatype="INT2S", progress="text",
+                    options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
             }
             
         }
