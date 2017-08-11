@@ -50,4 +50,4 @@ if (!is.null(args[["temp-dir"]]))
 psnice(value = min(args[["threads"]] - 1, 19))
 registerDoParallel(cores = args[["threads"]])
 
-LSMosaicVI(args[["input-dir"]], args[["pattern"]], args[["output-dir"]])
+LSMosaicVIs(args[["input-dir"]], args[["pattern"]], args[["output-dir"]])
