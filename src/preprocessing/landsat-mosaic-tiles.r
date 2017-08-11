@@ -52,7 +52,7 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
         {
             FileInfo = FileInfos[FileIndex,]
             # Find tiles that match the date of the current tile
-            PotentialPairs = FileInfos[which(FileInfo$date == FileInfos$date),]
+            PotentialPairs = PotentialPairs[!rownames(PotentialPairs) %in% rownames(FileInfo),]
             # It will find itself too, so filter ourselves out
             PotentialPairs = PotentialPairs[-FileIndex,]
             # Hopefully it only picked up the counterpart
@@ -70,6 +70,9 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
         }
     }
     
+    print("Files with pairs (in blacklist):")
+    print(Blacklist)
+    
     if (!file.exists(output_dir))
         dir.create(output_dir)
     # Do the actual processing, in parallel
@@ -84,7 +87,7 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
             print(paste0("Run ", FileIndex, ": Potential pairs found for the file ", File, ":"))
             print(PotentialPairs)
             # It will find itself too, so filter ourselves out
-            PotentialPairs = PotentialPairs[-FileIndex,]
+            PotentialPairs = PotentialPairs[!rownames(PotentialPairs) %in% rownames(FileInfo),]
             # Hopefully it only picked up the counterpart
             if (nrow(PotentialPairs) > 1)
             {
