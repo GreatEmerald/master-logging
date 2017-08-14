@@ -97,9 +97,15 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
             }
             else if (nrow(PotentialPairs) <= 0)
             {
-                print(paste("Pair for file", File, "not found, extending instead."))
-                extend(raster(File), MaxExtent, filename=file.path(output_dir, basename(File)), progress="text",
-                    datatype="INT2S", options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                OutputFile = file.path(output_dir, basename(File))
+                if (file.exists(OutputFile))
+                    print(paste("Extended file", OutputFile, "already exists, skipping!"))
+                else
+                {
+                    print(paste("Pair for file", File, "not found, extending instead."))
+                    extend(raster(File), MaxExtent, filename=OutputFile, progress="text",
+                        datatype="INT2S", options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                }
             }
             else
             {
@@ -107,12 +113,16 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
                 # Create a filename
                 PathRow = paste0(str_pad(FileInfo$path, 3, pad="0"), str_pad(FileInfo$row, 3, pad="0"))
                 OutputFile = file.path(output_dir, sub(PathRow, "999999", basename(File)))
-                
-                print(paste("Mosaicking", File, "with", PairFile))
-                Mosaic = mosaic(raster(File), raster(PairFile), fun=max, progress="text")
-                print(paste("Extending the file and writing to", OutputFile))
-                extend(Mosaic, MaxExtent, filename=OutputFile, datatype="INT2S", progress="text",
-                    options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                if (file.exists(OutputFile))
+                    print(paste("Mosaicked file", OutputFile, "already exists, skipping!"))
+                else
+                {
+                    print(paste("Mosaicking", File, "with", PairFile))
+                    Mosaic = mosaic(raster(File), raster(PairFile), fun=max, progress="text")
+                    print(paste("Extending the file and writing to", OutputFile))
+                    extend(Mosaic, MaxExtent, filename=OutputFile, datatype="INT2S", progress="text",
+                        options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
+                }
             }
             
         }
