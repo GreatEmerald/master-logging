@@ -18,12 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with the scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-library(bfastSpatial)
-library(doParallel)
-library(foreach)
-library(iterators)
+library(raster)
 library(optparse)
-library(tools)
 
 parser = OptionParser()
 parser = add_option(parser, c("-i", "--input-dir"), type="character",
@@ -37,6 +33,8 @@ parser = add_option(parser, c("-c", "--campaign"), type="character", metavar="na
 parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="path",
     default="../data/intermediary/time-stacks",
     help="Output directory. (Default: %default)")
+parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
+    default=detectCores()-1, help="Number of threads to use. You need almost no RAM per thread when using small AOIs. (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store results in. (Default: ",
@@ -44,42 +42,13 @@ parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="pa
 sink()
 args = parse_args(parser)
 
-# Input: directory with a time series, list of points with an extent, campaign name
-# Output: a directory with cropped stacked time series per point
+if (!is.null(args[["temp-dir"]]))
+    rasterOptions(tmpdir=args[["temp-dir"]])
 
-# This is meant to run in point mode only: stack only the buffer around our known trees.
-# For this we need to load tree information with extents. And since that's a lot of data, campaigns.
-# Run once per campaign per VI. This does not recurse.
-
-# In tile mode, there is no reason to save the stack to disk, that will just eat space for no gain.
-# That is thus handled by the scripts further in the processing chain. Do not run this in that case.
-StackTS = function(input_dir=args[["input-dir"]], output_dir=args[["output-dir"]],
-    extent_file=args[["extent-file"]], campaign=args[["campaign"]], temp_dir=args[["temp-dir"]])
+if (args[["threads"]] > 0)
 {
-    if (!is.null(temp_dir))
-        rasterOptions(tmpdir=temp_dir)
-    
-    # Parse the tree data
-    TreeData = read.csv(extent_file, stringsAsFactors=FALSE)
-    TreeData = TreeData[TreeData$Campaign==campaign,]
-    
-    Threads = detectCores()-1
-    psnice(value = min(Threads - 1, 19))
-    registerDoParallel(cores = Threads)
-    outputs = foreach(TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "bfastSpatial",
-        .verbose=TRUE) %dopar%
-    {
-        # Stack the tile in memory, have to use quick to prevent stacking issues
-        TileList = list.files(input_dir, pattern=glob2rx("*.tif"), full.names=TRUE)
-        TileStack = stack(TileList)
-        # Generate a pretty filename
-        StackName = paste0(output_dir, "/", row.names(TreeDatum), "_",
-            sub(":", "to", sub("&", "and", gsub(" ", "_", TreeDatum$ID))), ".grd")
-        print(paste("Writing stack:", StackName))
-        
-        crop(TileStack, extent(TreeDatum$xmin, TreeDatum$xmax, TreeDatum$ymin, TreeDatum$ymax),
-            filename=StackName, datatype="INT2S")
-    }
+    psnice(value = min(args[["threads"]] - 1, 19))
+    registerDoParallel(cores = args[["threads"]])
 }
 
-StackTS()
+StackTSs(args[["input-dir"]], args[["output-dir"]], args[["extent-file"]], args[["campaign"]])

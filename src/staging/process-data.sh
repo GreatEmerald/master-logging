@@ -8,6 +8,7 @@ Rscript landsat-mask-clouds.r -i ../data/satellite/Guyana2014 -o ../data/interme
 Rscript landsat-mask-clouds.r -i ../data/satellite/Peru/ -o ../data/intermediary/cloud-free/Peru/ -m /userdata2/tmp/ -t 10
 
 # Make extents equal
+Rscript staging/landsat-mosaic-tiles.r -i ../data/intermediary/cloud-free/Peru/ -o ../data/intermediary/cropped/Peru/ -t 10 -m /userdata2/tmp/
 
 # Stack time series, one line per VI
 Rscript stack-ts.r -i ../data/intermediary/cloud-free/Guyana2014b/evi/ -c Guyana2014 -o ../data/intermediary/time-stacks/Guyana2014/evi/ -m /userdata2/tmp
