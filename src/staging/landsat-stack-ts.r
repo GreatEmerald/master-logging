@@ -19,6 +19,7 @@
 # along with the scripts.  If not, see <http://www.gnu.org/licenses/>.
 
 library(raster)
+library(parallel)
 library(optparse)
 
 parser = OptionParser()
