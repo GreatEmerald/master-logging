@@ -42,6 +42,8 @@ parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="pa
 sink()
 args = parse_args(parser)
 
+source("preprocessing/landsat-stack-ts.r")
+
 if (!is.null(args[["temp-dir"]]))
     rasterOptions(tmpdir=args[["temp-dir"]])
 
