@@ -34,7 +34,9 @@ parser = add_option(parser, c("-e", "--file-type"), type="character", metavar="e
 parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",
     help="Pattern to filter input files on. Should not include the extension (end with a *).")
 parser = add_option(parser, c("-t", "--threads"), type="numeric", default=detectCores()-1,  metavar="num",
-    help="Number of threads to use for multicore processing. 1.6 GiB RAM is needed per thread. (Default: %default)")
+    help="Number of threads to use for multicore processing. (Default: %default)")
+parser = add_option(parser, c("-r", "--memory"), type="numeric", default=3,  metavar="num",
+    help="Maximum RAM consumption per thread, in GiB. raster defaults use 1.6 GiB RAM per thread, but increasing it is highly beneficial (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store results in. (Default: ",
@@ -46,6 +48,8 @@ source("preprocessing/landsat-mask-clouds.r")
 
 if (!is.null(args[["temp-dir"]]))
         rasterOptions(tmpdir=args[["temp-dir"]])
+MemoryInCells = args[["memory"]]*1024*1024*1024/16
+rasterOptions(maxmemory=MemoryInCells, chunksize=MemoryInCells/4)
 
 MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["threads"]])
 

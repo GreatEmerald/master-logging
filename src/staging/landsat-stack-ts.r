@@ -24,7 +24,7 @@ library(optparse)
 
 parser = OptionParser()
 parser = add_option(parser, c("-i", "--input-dir"), type="character",
-    default="../data/intermediary/cloud-free",
+    default="../data/intermediary/cropped",
     help="Directory with cloud-free VI files. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-f", "--extent-file"), type="character", metavar="path",
     default="../data/reference/LoggedTreeBoundaries.csv",

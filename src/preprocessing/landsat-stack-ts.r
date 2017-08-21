@@ -42,7 +42,6 @@ StackTS = function(input_dir, output_dir, extent_file, campaign)
     outputs = foreach(TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "bfastSpatial",
         .verbose=TRUE) %dopar%
     {
-        # Stack the tile in memory, have to use quick to prevent stacking issues
         TileList = list.files(input_dir, pattern=glob2rx("*.tif"), full.names=TRUE)
         TileStack = stack(TileList)
         # Generate a pretty filename

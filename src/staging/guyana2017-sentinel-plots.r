@@ -39,13 +39,17 @@ ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/35_80-
 spplot(ndmi)
 
 # Other trees
-# Seems like there was a gap there before just as well! Only new gap in the extreme north-west, and it's the same as 35
+## Seems like there was a gap there before just as well! Only new gap in the extreme north-west, and it's the same as 35
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/36_40-3.grd")
 spplot(ndmi)
 # One pixel to the south maybe (but faint), also plenty of older gaps around
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/37_60-4_20-3.grd")
-spplot(ndmi)
-# Nothing: central pixel already had a gap
+spplot(ndmi) # Nothing new in NDVI
+ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/37_60-4_20-3.grd")
+spplot(ndvi) # EVI and NDMI are chaotic
+evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/37_60-4_20-3.grd")
+spplot(evi)
+## Central pixel already had a gap
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/38_20-4.grd")
 spplot(ndmi)
 ## Also already a gap
