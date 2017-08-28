@@ -26,6 +26,12 @@ library(stringr)
 LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
 {
     Files = list.files(input_dir, pattern=glob2rx(pattern), full.names=TRUE)
+    if (length(Files) <= 0)
+    {
+        warning(paste("No files matching pattern", pattern, "found in directory", input_dir, "thus skipping it."))
+        return(NULL)
+    }
+    
     FileInfos = getSceneinfo(Files)
     FileInfos = cbind(FileInfos, id=1:length(Files)) # Add an "id" column to match row number
     
