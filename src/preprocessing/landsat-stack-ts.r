@@ -38,6 +38,8 @@ StackTS = function(input_dir, output_dir, extent_file, campaign)
     # Parse the tree data
     TreeData = read.csv(extent_file, stringsAsFactors=FALSE)
     TreeData = TreeData[TreeData$Campaign==campaign,]
+    if (nrow(TreeData) <= 0)
+        stop(paste("No points found for campaign", campaign, "in file", extent_file))
     
     outputs = foreach(TreeDatum = iter(TreeData, by="row"), .inorder = FALSE, .packages = "bfastSpatial",
         .verbose=TRUE) %dopar%
