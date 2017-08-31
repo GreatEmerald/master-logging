@@ -183,7 +183,7 @@ plot(BP$bfm)
 BP = bfmPixel(TimeSeries, start=c(2017, 01), cell=14, formula=response~harmon, order=1)
 plot(BP$bfm)
 
-# 45: A lake in 2016 indeed. Hard to say if anything changed in central
+# 45: A road in 2016 indeed. Hard to say if anything changed in central
 TimeSeries = TSF("ndmi", 45)
 spplot(TimeSeries, order(getZ(TimeSeries)), par.settings = theme.novpadding)
 BP = bfmPixel(TimeSeries, start=c(2017, 01), cell=13, formula=response~harmon, order=1)
@@ -193,7 +193,7 @@ spplot(TimeSeries, order(getZ(TimeSeries)), par.settings = theme.novpadding)
 BP = bfmPixel(TimeSeries, start=c(2017, 01), cell=13, formula=response~harmon, order=1)
 plot(BP$bfm)
 
-# 46: Same lake, indeed the break was earlier.
+# 46: Same road, indeed the break was earlier.
 TimeSeries = TSF("ndmi", 46)
 spplot(TimeSeries, order(getZ(TimeSeries)), par.settings = theme.novpadding)
 BP = bfmPixel(TimeSeries, start=c(2017, 01), cell=13, formula=response~harmon, order=1)
@@ -201,7 +201,7 @@ plot(BP$bfm) ## Example of break detection
 BP = bfmPixel(TimeSeries, start=c(2016, 01), cell=13, formula=response~harmon, order=1)
 plot(BP$bfm)
 
-# 47: A canal circa 2014.
+# 47: A road circa 2014.
 TimeSeries = TSF("ndmi", 47)
 spplot(TimeSeries, order(getZ(TimeSeries)), par.settings = theme.novpadding)
 BP = bfmPixel(TimeSeries, start=c(2017, 01), cell=13, formula=response~harmon, order=1)

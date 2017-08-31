@@ -23,6 +23,7 @@ library(raster)
 # -> Looks like 40m is about right
 
 # NDVI: mostly useless; there are faint marks that something happened
+# But! It's pretty clear later on that the gaps are there
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/35_80-1_20-1_60-1.grd")
 spplot(ndvi)
 # EVI: pretty good, shows an earlier gap and then the new one
@@ -34,7 +35,7 @@ spplot(nbr)
 # MSAVI: also pretty good, both gaps are visible
 msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/35_80-1_20-1_60-1.grd")
 spplot(msavi)
-## NDMI: may be the best, both gaps are vividly standing out
+## NDMI: may be the best, both gaps are vividly standing out; but this is a shadow map!
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/35_80-1_20-1_60-1.grd")
 spplot(ndmi)
 
@@ -78,7 +79,7 @@ spplot(evi)
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/41_100-6.grd")
 spplot(ndmi) # NBR shows it a bit cleaner
 nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/41_100-6.grd")
-spplot(nbr) # Even visible from NDVI
+spplot(nbr) ## Even visible from NDVI
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/41_100-6.grd")
 spplot(ndvi) # EVI/MSAVI agrees but had shadow problems
 evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/41_100-6.grd")
@@ -96,7 +97,7 @@ spplot(evi)
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/43_80-7.grd")
 spplot(ndmi) # Poorly visible in NBR
 nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/43_80-7.grd")
-spplot(nbr) # There is a small change in NDVI
+spplot(nbr) ## There is a small change in NDVI
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/43_80-7.grd")
 spplot(ndvi) # EVI shows it too
 evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/43_80-7.grd")
@@ -106,7 +107,7 @@ ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/44_100
 spplot(ndmi) # NDVI also shows the gap deepen but later
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/44_100-8.grd")
 spplot(ndvi)
-# There already was a huge clearing; looks like it's a former (c. 2016) riverbed/lake
+# There already was a huge clearing; looks like it's a former (c. 2016) logging road
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/45_80-10_20-8.grd")
 spplot(ndmi)
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/45_80-10_20-8.grd")
@@ -120,7 +121,7 @@ ndvi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/
 spplot(ndvi)
 evi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/", glob2rx("46*.grd"), full.names=TRUE))
 spplot(evi)
-# And also was already a clearing (this is right on a canal)
+# And also was already a clearing (this is right on a road)
 ndmi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/", glob2rx("47*.grd"), full.names=TRUE))
 spplot(ndmi) # NDVI looks pretty beautiful, but not super useful
 ndvi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/", glob2rx("47*.grd"), full.names=TRUE))
@@ -135,7 +136,7 @@ ndmi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/
 spplot(ndmi)
 # Nothing, existing gaps disappeared
 ndmi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/", glob2rx("50*.grd"), full.names=TRUE))
-spplot(ndmi)
+spplot(ndmi) ## Actually could be a new gap, but only one non-cloudy image for NDVI
 ndvi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/", glob2rx("50*.grd"), full.names=TRUE))
 spplot(ndvi) # EVI is weird
 evi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/", glob2rx("50*.grd"), full.names=TRUE))
@@ -143,7 +144,7 @@ spplot(evi)
 msavi = brick(list.files("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/", glob2rx("50*.grd"), full.names=TRUE))
 spplot(msavi)
 
-## Overall, MSAVI==EVI, NBR==NDMI, NDVI only sees huge changes
+## Overall, MSAVI==EVI, NBR==NDMI, NDVI only sees huge changes i.e. soil in gaps
 ## We can see 6/16(15) gaps, ~60cm with NDVI, ~80cm with NDMI
-## all 100cm visible except ones above canals, some 80cms visible, one 60cm faintly visible, others not or in clearings
+## all 100cm visible except ones next to roads, some 80cms visible, one 60cm faintly visible, others not or in clearings
 ## On Landsat, these would be 1 pixel max, rarely 2, and if on border, would not be visible at all

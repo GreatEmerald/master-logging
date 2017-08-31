@@ -57,19 +57,22 @@ GetSentinel2Info = function(filenames)
 }
 
 # Utility function to save space and increase readablity
-GetRasterByBand = function(file_df, band)
+GetRasterByBand = function(file_df, target_band)
 {
-    print(paste("Returning raster of:", file_df[file_df$band == band, "filename"]))
-    return(raster(file_df[file_df$band == band, "filename"]))
+    Result = unlist(subset(file_df, file_df$band == target_band)["filename"])
+    print(paste("Returning raster of:", Result))
+    stopifnot(length(Result)==1)
+    return(raster(Result))
 }
 
 # Utility function to save space and increase readablity
 GetOutputFilename = function(file_df, vi_name)
 {
-    SampleFilename = file_df[file_df$band == "B08", "filename"]
+    SampleFilename = unlist(subset(file_df, file_df$band == "B08")["filename"])
     NewFilename = sub("_B08_", paste0("_", vi_name, "_"), basename(SampleFilename))
+    NewFilename = file.path(dirname(SampleFilename), NewFilename)
     print(paste("Writing to file:", NewFilename))
-    return(file.path(dirname(SampleFilename), NewFilename))
+    return(NewFilename)
 }
 
 # Input: path to a granule (the directory with a timestamp), list of VIs to generate
