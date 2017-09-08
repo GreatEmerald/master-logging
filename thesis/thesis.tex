@@ -43,6 +43,10 @@
 \newacronym{NIR}{NIR}{\underletter{N}ear \underletter{I}nfra\underletter{r}ed}
 \newacronym{SWIR}{SWIR}{\underletter{S}hort\underletter{w}ave \underletter{I}nfra\underletter{r}ed}
 \newacronym{RIL}{RIL}{\underletter{R}educed-\underletter{I}mpact \underletter{L}ogging}
+\newacronym{USGS}{USGS}{\underletter{U}.\underletter{S}. \underletter{G}eological \underletter{S}urvey}
+\newacronym{UTM}{UTM}{\underletter{U}niversal \underletter{T}ransverse \underletter{M}ercator}
+\newacronym{ESA}{ESA}{\underletter{E}uropean \underletter{S}pace \underletter{A}gency}
+\newacronym{MSI}{MSI}{\underletter{M}ulti-\underletter{s}pectral \underletter{I}mager}
 \makenoidxglossaries
 
 \geometry{top=1.25cm,bottom=0.96cm,inner=2cm,outer=1.91cm,foot=0cm,includeheadfoot} % First page margins
@@ -61,7 +65,7 @@
     \includegraphics[height=9.5cm,draft]{title/picture.png}
   \end{wrapfigure}
   
-  {\Large \theauthor}\vspace{6.0cm}
+  {\Large \theauthor}\vspace{5.5cm}
   
   \rotatebox{90}{\Large \thedate}\vspace{1.5cm}
   
@@ -145,13 +149,21 @@ The goal of this thesis is to evaluate the potential and added value of new sate
 
 \chapter{Data and methods}
 
+% TODO: Check whether it's worth mentioning Bolivia and Planet Labs; what is the name of the Planet Labs satellite; more references?
+In order to assess the detectability of selective logging events, three areas of interest were selected in the Amazon rainforest where selective logging is known to have taken place. Five vegetation indices derived from Landsat 7, Landsat 8 and Sentinel-2 imagery were used to construct time series in order to test detection of selective logging features, especially treefall gaps. High resolution imagery from the ASTER programme and very high resolution imagery from Planet Labs Flock-1 satellite constellation and the GeoEye-1 satellite were used for validation.
+
 \section{Sensor characteristics}
 
 \subsection{Landsat 7, Landsat 8}
 
+% TODO: Add acronyms to USGS ESPA; cite the product guide
+Data from two Landsat missions was used in order to obtain long-term dense time series of ground observations at 30 m resolution. Landsat 7, launched in 1999, carries the \ac{ETM+} instrument that captures imagery in 3 visible light bands, one \ac{NIR} band, two \ac{SWIR} bands, one thermal band and one broadband panchromatic band. Landsat 8, launched in 2013, carries the \ac{OLI} instrument that captures imagery in comparable bands to \ac{ETM+}, but also adds an additional thermal band as well as coastal aerosol and cirrus bands. Both of the satellites have a revisit time (at the study sites) of around two weeks, and continue transmitting images to this day. The Landsat collection data is available from the \ac{USGS} ESPA system preprocessed into ground reflectance (Level 2A), as well as vegetation indices derived from the reflectance products. The products are in the \ac{UTM} coordinate system.
+
 \subsection{Sentinel-2}
 
-\subsection{ASTER}
+Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{MSI} instrument which captures 12 optical bands at varying spatial resolutions: the three visible bands and the \ac{NIR} band are available in 10 m resolution, the two \ac{SWIR}, three red edge bands and narrow-band \ac{NIR} in 20 m resolution, and coastal aerosol, cirrus and water vapour bands at 60 m resolution. The Sentinel-2 products are available from the Sentinel Data Hub at the Level 1C processing level (top-of-atmosphere radiance).
+
+\subsection{ASTER, GeoEye-1}
 
 \section{Vegetation indices}
 
