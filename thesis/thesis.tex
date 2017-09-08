@@ -1,0 +1,311 @@
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+% To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+
+\documentclass[a4paper,12pt]{scrbook}
+\usepackage[T1]{fontenc} % Include italic fonts
+\usepackage{fontspec} % Compile with \XeLaTeX
+\usepackage{geometry} % Page margins
+\usepackage{titling} % Title page container
+\usepackage{wrapfig} % Picture container
+\usepackage{graphicx} % Including graphics
+\usepackage{natbib}
+\usepackage[colorlinks, allcolors=blue,xetex]{hyperref}
+\usepackage{hyperxmp} % Import license metadata
+\usepackage[acronym,toc,shortcuts,nohypertypes=acronym]{glossaries} % Acronyms
+\renewcommand{\familydefault}{\sfdefault}
+\bibliographystyle{apalike}
+
+\title{Evaluating the potential of Sentinel-2 and Landsat image time series for detecting selective logging in the Amazon}
+\author{Dainius Masiliūnas}
+\date{\today}
+\hypersetup{
+    pdflicenseurl={http://creativecommons.org/licenses/by-sa/4.0/},
+    pdfcopyright={This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.},
+    pdfauthor={\theauthor}, % These are supposed to be the default but don't seem to be
+    pdftitle={\thetitle},
+    pdflang={en-GB}
+}
+
+% Define acronyms
+\newcommand{\underletter}[1]{\textbf{#1}} % Quick toggle of underlines
+\newacronym{NDVI}{NDVI}{\underletter{N}ormalised \underletter{D}ifference \underletter{V}egetation \underletter{I}ndex}
+\newacronym{REDD+}{REDD+}{\underletter{R}educing \underletter{E}missions from \underletter{D}eforestation and forest \underletter{D}egradation}
+\newacronym{LAI}{LAI}{\underletter{L}eaf \underletter{A}rea \underletter{I}ndex}
+\newacronym{EVI}{EVI}{\underletter{E}nhaced \underletter{V}egetation \underletter{I}ndex}
+\newacronym{OLI}{OLI}{\underletter{O}perational \underletter{L}and \underletter{I}mager}
+\newacronym{NBR}{NBR}{\underletter{N}ormalised \underletter{B}urn \underletter{R}atio}
+\newacronym{NDMI}{NDMI}{\underletter{N}ormalised \underletter{D}ifference \underletter{M}oisture \underletter{I}ndex}
+\newacronym{TM}{TM}{\underletter{T}hematic \underletter{M}apper}
+\newacronym{ETM+}{ETM+}{\underletter{E}nhanced \underletter{T}hematic \underletter{M}apper \underletter{Plus}}
+\newacronym{WUR}{WUR}{\underletter{W}ageningen \underletter{U}niversity \& \underletter{R}esearch}
+\newacronym{GPS}{GPS}{\underletter{G}lobal \underletter{P}ositioning \underletter{S}ystem}
+\newacronym{GNSS}{GNSS}{\underletter{G}lobal \underletter{N}avigation \underletter{S}atellite \underletter{S}ystem}
+\newacronym{NIR}{NIR}{\underletter{N}ear \underletter{I}nfra\underletter{r}ed}
+\newacronym{SWIR}{SWIR}{\underletter{S}hort\underletter{w}ave \underletter{I}nfra\underletter{r}ed}
+\newacronym{RIL}{RIL}{\underletter{R}educed-\underletter{I}mpact \underletter{L}ogging}
+\makenoidxglossaries
+
+\geometry{top=1.25cm,bottom=0.96cm,inner=2cm,outer=1.91cm,foot=0cm,includeheadfoot} % First page margins
+\begin{document}
+ \begin{titlingpage}
+  {\Large Geo-information Science and Remote Sensing}\vspace{0.9cm}
+  
+  {\Large Thesis Report GIRS-2017-xx}\vspace{0.9cm}
+  
+  \hrule\vspace{1.1cm}
+  
+  {\bfseries \Large \MakeUppercase{\thetitle}}\vspace{2.0cm}
+  
+  \begin{wrapfigure}{r}{0.55\textwidth}
+    \vspace{1cm}
+    \includegraphics[height=9.5cm,draft]{title/picture.png}
+  \end{wrapfigure}
+  
+  {\Large \theauthor}\vspace{6.0cm}
+  
+  \rotatebox{90}{\Large \thedate}\vspace{1.5cm}
+  
+  \sloppypar{\hspace{-2cm}\includegraphics[width=13cm]{title/WUR_RGB_standard}}
+  
+  \sloppypar{\noindent\makebox[\textwidth]{\hspace*{\dimexpr\evensidemargin-\oddsidemargin}\includegraphics[width=\paperwidth]{title/image2}}}
+  
+  \newgeometry{top=1.25cm,bottom=1.25cm,inner=1.91cm,outer=1.91cm,foot=1.19cm,includeheadfoot} % Subsequent page margins
+  \thispagestyle{empty}
+  
+  \begin{center}
+  {\bfseries \Large \thetitle}\vspace{2.7cm}
+  
+  {\Large \theauthor}\vspace{1.1cm}
+  
+  {Registration number 93 04 07 546 120}\vspace{3.5cm}
+  
+  {\large \underline{Supervisors}:}\vspace{1.1cm}
+  
+  {Dr Jan Verbesselt}
+  
+  {Dr Marielos Peña-Claros}\vspace{3.0cm}
+  
+  {A thesis submitted in partial fulfilment of the degree of Master of Science}
+  
+  {at Wageningen University and Research Centre,}
+  
+  {The Netherlands.}\vspace{2.7cm}
+  \end{center}
+  
+  \begin{flushright}
+    {\thedate}
+  
+    {Wageningen, The Netherlands}
+  \end{flushright}\vspace{0.5cm}
+
+    Thesis code number: GRS-80424
+  
+    Thesis Report: GIRS-2017-xx
+  
+    {Wageningen University and Research Centre}
+  
+    {Laboratory of Geo-Information Science and Remote Sensing}
+ \end{titlingpage}
+
+\newgeometry{top=1.25cm,bottom=1.25cm,inner=1.91cm,outer=1.91cm,foot=1.19cm,includeheadfoot}
+\chapter*{Abstract}
+
+\textbf{Keywords:} 
+
+\tableofcontents
+
+\chapter{Introduction}
+
+% What is selective logging
+Selective logging is a process by which trees in a forest are cut down according to specific criteria rather than indiscriminately. This type of logging has become common practice in tropical forest areas, where high biodiversity leads to a highly complex forest structure with trees of different sizes, shapes and properties. Trees that are commercially viable for logging are typically of a particular species or size, and tend to be spread over an area, mixed with trees of lower commercial value. Once a large tree is cut down, it is likely to fall on neighbouring trees. This causes a disturbance in the area, especially if only the tree stem is extracted, leaving the canopy (large branches and foliage) on top of the understory and forest floor.
+
+% Why is it important to monitor it
+Selective logging contributes to forest degradation, as per the United Nations \ac{REDD+} programme. Selectively logged forests most often remain forests after the logging event \citep{asner_condition_2006}, but they are disturbed, as wood from large trees is removed from the ecosystem. Succession is initiated at the points of disturbance, resulting in the replacement of mature, climax community trees with young pioneer species. Selective logging may be done illegally \citep{rutishauser_rapid_2015}, in which case the result is loss of biodiversity and lowered forest resilience. However, it could also be part of sustainable forestry practices, in which case trees are selected and logged in a way that reduces this negative impact to the forest and creates favourable conditions for succession in managed forests \citep{west_forest_2014, keller_4._2004}. This practice is called \ac{RIL}. Selective tree dieoff may also be caused by natural events, such as windstorms and landslides \citep{frolking_forest_2009}. In all cases, monitoring such forest degradation is a key part of the \ac{REDD+} programme. It is important to monitor such activity in order to minimise illegal logging and allow for more precise estimation of existing and historical carbon stocks \citep{piponiot_carbon_2016, pinard_simulated_2000}.
+
+% Why treefall gaps
+Even though selective logging is widespread in tropical forests, little is known about the real scale of logging activities. Selective logging is difficult to detect and quantify due to the remoteness of the affected forests, problematic accessibility, and limited traces of selective logging activities, which disappear over time due to regrowth. While remote sensing approaches have been employed for detecting selective logging in the past \citep{shimizu_using_2017, frolking_forest_2009, broadbent_recovery_2006, keller_4._2004}, their success has been limited. A typical modern selective logging operation leaves four types of traces that are potentially detectable using remote sensing: logging roads, which are built for easier extraction of logs by trucks; log decks, which are clearings in which logs are stored until they can be picked up by trucks; skid trails, which are made by skidders while attempting to gain access to the selective logging site and dragging the logs to the log decks; and treefall gaps, which are formed in the forest canopy when a tree is cut down \citep{asner_remote_2002}. The two former logging features are rather distinct and have been successfully detected from satellite imagery, however, their prevalence is not necessarily a direct indication of the magnitude of the performed selective logging activities. In some selective logging campaigns, only minor roads are made and log decks are omitted entirely; skidders can carry logs one by one to the nearest existing infrastructure, rather than mandating the creation of new roads and log decks \citep{read_spatial_2003}. Thus treefall gaps and skid trails are the most direct evidence of selective logging. In comparison to all of the other logging features, treefall gaps are by far the most spatially extensive \citep{asner_remote_2002}.
+
+The detection of treefall gaps and skid trails from optical satellite imagery so far has been challenging. While there are some cases in which the treefall gaps have reportedly been detectable \citep{frolking_forest_2009}, either very high resolution, long revisit time sensors were needed \citep{read_spatial_2003}, or the differences in reflectance compared to unlogged forest were found to be minimal \citep{asner_canopy_2004, broadbent_recovery_2006}. With the advent of new satellites and sensors, such as Landsat 8 and Sentinel-2, the ability to detect such small variations in the canopy should improve due to higher spatial resolutions and more frequent revisit times. In the tropical regions, the revisit time is particularly important due to high cloud cover during the rainy season, which inhibits monitoring selective logging sites shortly after the logging event has happened.
+
+% What we could do if we did detect
+If it is doable to detect and track individual treefall gaps in time, it would also allow for estimating the length of succession in the particular area. While full secondary forest regrowth after logging may take up to 125 years \citep{rutishauser_tree_2016}, the canopy closure at the selective logging site happens much faster, estimated at 6-3 months depending on the size of the disturbance \citep{broadbent_recovery_2006}. Precise knowledge of the recovery time after selective logging is important directly for the countries in the area for setting logging policies, as well as indirectly for climate change modelling \citep{rutishauser_rapid_2015}. However, so far such estimation has been challenging \citep{piponiot_carbon_2016} and thus it has only been performed based on chronosequences (forest plots of different timespan since logging) \citep{broadbent_recovery_2006} or extrapolated from recovery rates \citep{rutishauser_rapid_2015}. Making use of the full archive of satellite imagery to construct a time series would allow for a more precise estimate of regrowth time as well as per-tree statistics, while eliminating plot-specific effects. In the long run, a system could be developed that detects such selective logging events and provides for both near-real-time monitoring of selective logging events and information on whether and when selective logging has occurred in the past. This would in turn enhance the knowledge on the current and past state of tropical forests, provide information on how widespread selective logging is and help quantify its effects on the tropical forest ecosystem. In addition, knowing the location of disturbances and their canopy closure times would allow for a more accurate large-scale estimation and monitoring of biomass and carbon stocks in tropical forests by enhancing tropical forest post-logging regrowth models \citep{herault_growth_2010}.
+
+\chapter{Problem definition and research questions}
+
+While satellite image time series trajectory analysis has been relatively well-established in the recent years, few studies focus on the detection of small-extent selective logging features (skid trails and treefall gaps) using this technique. Most studies of tropical forest regrowth make use of chronosequences of plots with different age instead. However, time series analysis is well-suited for this purpose, because it allows detecting the disturbance time and regeneration length in a much more precise manner. In addition, time series analysis is not affected by site-specific effects, as is the case with chronosequences.
+
+Another advantage of using satellite imagery for detecting selective logging is that it is spatially exhaustive. Satellites constantly monitor surface reflectance over the entire globe, it is not limited to a select number of test plots. With the advent of the Sentinel-2 programme, the public now has access to data that is of much finer spatial resolution ($10\times10$ m, as opposed to $30\times30$ m of Landsat) while maintaining a short revisit time. This new data may allow better detection and monitoring of selective logging sites, including treefall gaps and skid trails, compared to what was possible before.
+
+The goal of this thesis is to evaluate the potential and added value of new satellite imagery for detecting selective logging events by employing time series detection methods on Sentinel-2 and Landsat 8 imagery in select areas in the Amazon region. The research questions that the thesis aims to answer are:
+
+\begin{enumerate}
+ \item How well can selective logging events be detected by employing time series methods on optical satellite imagery?
+ \item What is the sensitivity of different vegetation indices for detecting selective logging treefall gaps?
+\end{enumerate}
+
+\chapter{Data and methods}
+
+\section{Sensor characteristics}
+
+\subsection{Landsat 7, Landsat 8}
+
+\subsection{Sentinel-2}
+
+\subsection{ASTER}
+
+\section{Vegetation indices}
+
+\subsection{NDVI}
+
+(cloud) shadows are shown as very high \ac{NDVI}, because red is 0 and \ac{NIR} is low but non-zero
+
+\subsection{NDMI, NBR}
+
+Cloud shadows do not matter: both \ac{NIR} and \ac{SWIR} are darker by the same amount and non-zero; tree shadows are highlighted because SWIR is relatively homogeneous
+
+\subsection{EVI, MSAVI}
+
+Cloud shadows are dark, light clouds are compensated by \ac{EVI}
+
+\section{Field campaigns}
+
+\subsection{Peru, 2013}
+
+\subsection{Guyana, 2014}
+
+\subsection{Guyana, 2017}
+
+\section{Preprocessing workflow}
+
+\subsection{Top-of-canopy reflectance (Level 2A) processing}
+
+\subsection{Cloud masking}
+
+\subsection{Mosaicking}
+
+\subsection{Time series stacking}
+
+\section{Time series analysis}
+
+\chapter{Results}
+
+\section{Gap detectability}
+
+Automation possibilities, pictures of areas, some telling time series examples, Landsat-to-Sentinel comparison
+
+\section{Vegetation index comparison}
+
+Sensitivity, threshold values, correlation, images at small scale and large scale
+
+\chapter{Discussion}
+
+\section{Selective logging detection possibilities}
+
+What is possible to detect, in a case study format; this should answer the first research question
+
+\subsection{Moderate size gaps in dense forests with a soil background}
+
+Case of Guyana 2017: cutting down a tree makes soil appear, visible in \ac{NDVI}
+
+\subsection{Small gaps in dense forests}
+
+Case of Guyana 2017: cutting down a tree results in a shift in shadows, visible in \ac{NDMI}
+
+\subsection{Clear-cuts}
+
+Case of Peru 2013: clear-cuts highly affect \ac{NDVI} for a year, followed by an increase in \ac{NDVI} compared to the beginning due to less shadowing
+
+\subsection{Logging roads}
+
+Case of Guyana 2017: logging roads are easy to detect, but not skid trails. In other cases logging roads are not detected either (only skid trails used/under canopy/too narrow)
+
+\section{Comparison of vegetation indices}
+
+Which VI is suited for a particular case
+
+\section{Comparison of sensors}
+
+Analysis of Landsat vs ASTER vs Sentinel-2; which one to use for a particular use-case
+
+\section{Comparison with other studies}
+
+Why did others succeed (reproducibility, validation importance)
+
+\section{Treefall gap detection challenges}
+
+\subsection{Tree seasonality}
+
+``White'' trees, fluctuation in VIs through the year
+
+\subsection{Sparse forests}
+
+Forests with enough light in the understory, or single trees, coupled with \ac{RIL}: no change or even increase in VIs
+
+\subsection{Existing forest gaps}
+
+When a tree is cut down next to an existing clearing/road/logging gap, especially in \ac{RIL}
+
+\subsection{Understory tree logging}
+
+When trees are below the canopy of other trees (Alvaro mentioned this in Guyana 2017)
+
+\subsection{Remote sensing imagery spatial resolution}
+
+Sentinel-2 vs Landsat vs Ikonos et al.
+
+\subsection{Cloud cover}
+
+Especially problematic in the Amazon, case of Peru 2013
+
+\subsection{Time series length}
+
+Case of Sentinel-2: not enough to build a stable history yet
+
+\subsection{Data volume}
+
+Big data, how much space and time it takes to process it all
+
+\section{Recommendations}
+
+What would be possible to improve so as to make detection feasible in the future; perhaps summarise this in a table with listed pros and cons
+
+\subsection{Validation data}
+
+In order to draw better conclusions, more data from larger selective logging campaigns would be needed; also the availibility of more high-resolution sensors helps (like ASTER)
+
+\subsection{Cloud masking}
+
+Perform better cloud and shadow detection (classification/temporal or combination of those)
+
+\subsection{Spatial features}
+
+Other vegetation indices to try; texture analysis; specifics of the extent of a single tree; using the features in time series
+
+\subsection{Post-classification/$F_{Cover}$ comparisons}
+
+Using machine learning for supervised (fuzzy) classification and then compare the results between different times; $F_{Cover}$ is proposed by Copernicus.
+
+\subsection{Higher spatial resolution data}
+
+Ikonos, QuickBird, GeoEye, etc.; using object-oriented methods
+
+\subsection{Multi-sensor data}
+
+Radar and lidar would not have problems with cloud cover, possible sensor fusion (also for classification)
+
+\chapter{Conclusion}
+
+\begin{enumerate}
+ \item Possible to detect large tree gaps using Sentinel-2, almost impossible with Landsat; automation will be possible in the future as Sentinel-2 time series grow longer
+ \item \ac{NDMI} is most sensitive to shadows, so useful for detecting small gaps, but at a risk of false positives; \ac{NDVI} is sensitive to bare soils, so more reliable, but needs higher resolution and a dense forest
+\end{enumerate}
+
+\chapter{Acknowledgements}
+
+Alvaro for the data
+
+\printnoidxglossary[type=acronym]
+
+\bibliography{bibliography}
+
+\end{document}
