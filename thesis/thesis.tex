@@ -34,7 +34,10 @@
 \newacronym{EVI}{EVI}{\underletter{E}nhaced \underletter{V}egetation \underletter{I}ndex}
 \newacronym{OLI}{OLI}{\underletter{O}perational \underletter{L}and \underletter{I}mager}
 \newacronym{NBR}{NBR}{\underletter{N}ormalised \underletter{B}urn \underletter{R}atio}
+\newacronym{NBR2}{NBR2}{\underletter{N}ormalised \underletter{B}urn \underletter{R}atio \underletter{2}}
 \newacronym{NDMI}{NDMI}{\underletter{N}ormalised \underletter{D}ifference \underletter{M}oisture \underletter{I}ndex}
+\newacronym{SAVI}{SAVI}{\underletter{S}oil \underletter{A}djusted \underletter{V}egetation \underletter{I}ndex}
+\newacronym{MSAVI}{MSAVI}{\underletter{M}odified \underletter{S}oil \underletter{A}djusted \underletter{V}egetation \underletter{I}ndex}
 \newacronym{TM}{TM}{\underletter{T}hematic \underletter{M}apper}
 \newacronym{ETM+}{ETM+}{\underletter{E}nhanced \underletter{T}hematic \underletter{M}apper \underletter{Plus}}
 \newacronym{WUR}{WUR}{\underletter{W}ageningen \underletter{U}niversity \& \underletter{R}esearch}
@@ -47,6 +50,11 @@
 \newacronym{UTM}{UTM}{\underletter{U}niversal \underletter{T}ransverse \underletter{M}ercator}
 \newacronym{ESA}{ESA}{\underletter{E}uropean \underletter{S}pace \underletter{A}gency}
 \newacronym{MSI}{MSI}{\underletter{M}ulti-\underletter{s}pectral \underletter{I}mager}
+\newacronym{ASTER}{ASTER}{\underletter{A}dvanced \underletter{S}paceborne \underletter{T}hermal \underletter{E}mission and Reflection \underletter{R}adiometer}
+\newacronym{SLC}{SLC}{\underletter{S}can \underletter{L}ine \underletter{C}orrector}
+\newacronym{LP DAAC}{LP DAAC}{\underletter{L}and \underletter{P}rocesses \underletter{D}istributed \underletter{A}ctive \underletter{A}rchive \underletter{C}enter}
+\newacronym{ESPA}{ESPA}{Earth Resources Observation and Science (\underletter{E}ROS) Center \underletter{S}cience \underletter{P}rocessing \underletter{A}rchitecture}
+\newacronym{RGB}{RGB}{\underletter{R}ed, \underletter{G}reen, \underletter{B}lue}
 \makenoidxglossaries
 
 \geometry{top=1.25cm,bottom=0.96cm,inner=2cm,outer=1.91cm,foot=0cm,includeheadfoot} % First page margins
@@ -150,26 +158,37 @@ The goal of this thesis is to evaluate the potential and added value of new sate
 \chapter{Data and methods}
 
 % TODO: Check whether it's worth mentioning Bolivia and Planet Labs; what is the name of the Planet Labs satellite; more references?
-In order to assess the detectability of selective logging events, three areas of interest were selected in the Amazon rainforest where selective logging is known to have taken place. Five vegetation indices derived from Landsat 7, Landsat 8 and Sentinel-2 imagery were used to construct time series in order to test detection of selective logging features, especially treefall gaps. High resolution imagery from the ASTER programme and very high resolution imagery from Planet Labs Flock-1 satellite constellation and the GeoEye-1 satellite were used for validation.
+In order to assess the detectability of selective logging events, three areas of interest were selected in the Amazon rainforest where selective logging is known to have taken place. Five vegetation indices derived from Landsat 7, Landsat 8 and Sentinel-2 imagery were used to construct time series in order to test detection of selective logging features, especially treefall gaps. High resolution imagery from the \ac{ASTER} programme and very high resolution imagery from Planet Labs Flock-1 satellite constellation and DigitalGlobe satellites were used for validation.
 
 \section{Sensor characteristics}
 
 \subsection{Landsat 7, Landsat 8}
 
-% TODO: Add acronyms to USGS ESPA; cite the product guide
-Data from two Landsat missions was used in order to obtain long-term dense time series of ground observations at 30 m resolution. Landsat 7, launched in 1999, carries the \ac{ETM+} instrument that captures imagery in 3 visible light bands, one \ac{NIR} band, two \ac{SWIR} bands, one thermal band and one broadband panchromatic band. Landsat 8, launched in 2013, carries the \ac{OLI} instrument that captures imagery in comparable bands to \ac{ETM+}, but also adds an additional thermal band as well as coastal aerosol and cirrus bands. Both of the satellites have a revisit time (at the study sites) of around two weeks, and continue transmitting images to this day. The Landsat collection data is available from the \ac{USGS} ESPA system preprocessed into ground reflectance (Level 2A), as well as vegetation indices derived from the reflectance products. The products are in the \ac{UTM} coordinate system.
+Data from two Landsat missions was used in order to obtain long-term dense time series of ground observations at 30 m resolution. Landsat 7, launched in 1999, carries the \ac{ETM+} instrument that captures imagery in 3 visible light bands, one \ac{NIR} band, two \ac{SWIR} bands, one thermal band and one broadband panchromatic band \citep{u.s._geological_survey_product_2017_2}. Landsat 8, launched in 2013, carries the \ac{OLI} instrument that captures imagery in comparable bands to \ac{ETM+}, but also adds an additional thermal band as well as coastal aerosol and cirrus bands \citep{u.s._geological_survey_product_2017}. Both of the satellites have a revisit time (at the study sites) of around two weeks, and continue transmitting images to this day, although in 2003 Landsat 7 experienced an \ac{SLC} failure that resulted in it transmitting 22\% less data than before. The Landsat collection data is available from the \ac{USGS} \ac{ESPA} system preprocessed into ground reflectance (Level 2A), as well as vegetation indices derived from the reflectance products. The products are in the \ac{UTM} coordinate system.
 
 \subsection{Sentinel-2}
 
-Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{MSI} instrument which captures 12 optical bands at varying spatial resolutions: the three visible bands and the \ac{NIR} band are available in 10 m resolution, the two \ac{SWIR}, three red edge bands and narrow-band \ac{NIR} in 20 m resolution, and coastal aerosol, cirrus and water vapour bands at 60 m resolution. The Sentinel-2 products are available from the Sentinel Data Hub at the Level 1C processing level (top-of-atmosphere radiance).
+Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{MSI} instrument which captures 12 optical bands at varying spatial resolutions: the three visible bands and the \ac{NIR} band are available in 10 m resolution, the two \ac{SWIR}, three red edge bands and narrow-band \ac{NIR} in 20 m resolution, and coastal aerosol, cirrus and water vapour bands at 60 m resolution \citep{suhet_sentinel-2_2015}. The Sentinel-2 products are available from the \ac{ESA} Sentinel Data Hub at the Level 1C processing level (top-of-atmosphere radiance).
 
-\subsection{ASTER, GeoEye-1}
+\subsection{ASTER, DigitalGlobe}
+
+\ac{ASTER} is a joint NASA-Japan government mission and an instrument (comprised of three separate sensors) on board the Terra satellite, launched in 1999, which captures images in 14 spectral bands with varying resolutions: 15 m for the two visible bands (green-yellow and red) and two \ac{NIR} bands (nadir and backwards-facing), 30 m for six \ac{SWIR} bands and 90 m for five thermal bands. The revisit time for the images taken during the day varies and is on average three times a year. Since 2016, the data is freely available through the \ac{USGS} \ac{LP DAAC} as Level 2 (surface reflectance) products \citep{nasa_lp_daac_aster_2006}. On April 6, 2008 the \ac{SWIR} sensor overheated, resulting in completely saturated and thus unusable \ac{SWIR} bands from that date up to the present \citep{meyer_advanced_2015}.
+
+Images from the DigitalGlobe satellite fleet (GeoEye-1, WorldView-2), available through Google Earth, were also used for validation. These images are displayed in \ac{RGB} and have a pan-sharpened spatial resolution of 0.5 m. The revisit time in the areas of interest vary but is very long (several years per visit).
 
 \section{Vegetation indices}
 
+Five vegetation indices, as defined by \citet{u.s._geological_survey_product_2017_3}, were compared in this study. \ac{SAVI} and \ac{NBR2} were not used due to their similarity with \ac{MSAVI} and \ac{NBR}, respectively. In the case of Landsat imagery, precomputed vegetation indices were used, and for the other imagery, vegetation indices were derived from the imagery manually.
+
 \subsection{NDVI}
 
-(cloud) shadows are shown as very high \ac{NDVI}, because red is 0 and \ac{NIR} is low but non-zero
+\ac{NDVI} is a commonly used vegetation index that is a ratio between the red and \ac{NIR} bands:
+
+$$ NDVI = \frac{NIR - Red}{NIR + Red} $$
+
+where $NIR$ is the spectral band centred around 830 nm and $Red$ is the spectral band centred around 660 nm \citep{tucker_monitoring_1979}.
+
+\ac{NDVI} is easy to interpret and has a range of 0-1, but it is known to be insensitive to small changes in areas with dense vegetation, as the vegetation index saturates. In addition, cloud shadows over vegetation have \ac{NDVI} values close to 1, because the values of the red band are close or equal to zero.
 
 \subsection{NDMI, NBR}
 
