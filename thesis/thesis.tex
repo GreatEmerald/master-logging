@@ -172,7 +172,7 @@ Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{
 
 \subsection{ASTER, DigitalGlobe}
 
-\ac{ASTER} is a joint NASA-Japan government mission and an instrument (comprised of three separate sensors) on board the Terra satellite, launched in 1999, which captures images in 14 spectral bands with varying resolutions: 15 m for the two visible bands (green-yellow and red) and two \ac{NIR} bands (nadir and backwards-facing), 30 m for six \ac{SWIR} bands and 90 m for five thermal bands. The revisit time for the images taken during the day varies and is on average three times a year. Since 2016, the data is freely available through the \ac{USGS} \ac{LP DAAC} as Level 2 (surface reflectance) products \citep{nasa_lp_daac_aster_2006}. On April 6, 2008 the \ac{SWIR} sensor overheated, resulting in completely saturated and thus unusable \ac{SWIR} bands from that date up to the present \citep{meyer_advanced_2015}.
+\ac{ASTER} is a joint NASA-Japan government mission and an instrument (comprised of three separate sensors) on board the Terra satellite, launched in 1999, which captures images in 14 spectral bands with varying resolutions: 15 m for the two visible bands (green-yellow and red) and two \ac{NIR} bands (nadir and backwards-facing), 30 m for six \ac{SWIR} bands and 90 m for five thermal bands. The revisit time for the images taken during the day varies from 11 to 0 times per year. Since 2016, the data is freely available through the \ac{USGS} \ac{LP DAAC} as Level 2 (surface reflectance) products \citep{nasa_lp_daac_aster_2006}. On April 6, 2008 the \ac{SWIR} sensor overheated, resulting in completely saturated and thus unusable \ac{SWIR} bands from that date up to the present \citep{meyer_advanced_2015}.
 
 Images from the DigitalGlobe satellite fleet (GeoEye-1, WorldView-2), available through Google Earth, were also used for validation. These images are displayed in \ac{RGB} and have a pan-sharpened spatial resolution of 0.5 m. The revisit time in the areas of interest vary but is very long (several years per visit).
 
@@ -184,25 +184,64 @@ Five vegetation indices, as defined by \citet{u.s._geological_survey_product_201
 
 \ac{NDVI} is a commonly used vegetation index that is a ratio between the red and \ac{NIR} bands:
 
-$$ NDVI = \frac{NIR - Red}{NIR + Red} $$
+$$ NDVI = \frac{\rho_{NIR} - \rho_{Red}}{\rho_{NIR} + \rho_{Red}} $$
 
-where $NIR$ is the spectral band centred around 830 nm and $Red$ is the spectral band centred around 660 nm \citep{tucker_monitoring_1979}.
+where $\rho_{NIR}$ is the surface reflectance in the spectral band centred around 830 nm and $\rho_{Red}$ is the surface reflectance in the spectral band centred around 660 nm \citep{tucker_monitoring_1979}.
 
-\ac{NDVI} is easy to interpret and has a range of 0-1, but it is known to be insensitive to small changes in areas with dense vegetation, as the vegetation index saturates. In addition, cloud shadows over vegetation have \ac{NDVI} values close to 1, because the values of the red band are close or equal to zero.
-
-\subsection{NDMI, NBR}
-
-Cloud shadows do not matter: both \ac{NIR} and \ac{SWIR} are darker by the same amount and non-zero; tree shadows are highlighted because SWIR is relatively homogeneous
+\ac{NDVI} is easy to interpret and has a range of 0-1, but it is known to be insensitive to small changes in areas with dense vegetation, as the vegetation index saturates \citep{huete_modis_1999}. In addition, cloud shadows over vegetation have \ac{NDVI} values close to 1, because the values of the red band are close or equal to zero.
 
 \subsection{EVI, MSAVI}
 
-Cloud shadows are dark, light clouds are compensated by \ac{EVI}
+In order to overcome the shortcomings of \ac{NDVI}, two more complex vegetation indices have been developed: \ac{EVI} and the \ac{SAVI} family. \ac{EVI} is designed to not saturate with high biomass the way NDVI does, and reduce atmospheric and background noise (for instance, thin clouds are compensated for). It requires the use of the blue visible band and several coefficients, and in this study the default ones adopted by NASA were used:
+
+$$ EVI = 2.5 \cdot \frac{\rho_{NIR} - \rho_{Red}}{\rho_{NIR}+6 \cdot \rho_{Red} - 7.5 \cdot \rho_{Blue} + 1} $$
+
+Here, $\rho_{Blue}$ is the surface reflectance in the blue band (centred around 485 nm in \ac{ETM+}) \citep{huete_modis_1999}. Cloud shadows have a low EVI value, as opposed to NDVI.
+
+The \ac{SAVI} family was developed for solving the issue of vegetation on different soil backgrounds having an effect on NDVI. \ac{MSAVI} is a modification of \ac{SAVI} to maximise the reduction in soil background effects and increase the dynamic range of the vegetation signal \citep{qi_modified_1994}. In this case the coeffiecients employed by NASA were used as well:
+
+$$ MSAVI = \frac{2 \cdot \rho_{NIR} + 1 - \sqrt{(2 \cdot \rho_{NIR} + 1)^2 - 8 \cdot (\rho_{NIR} - \rho_{Red})}}{2} $$
+
+In the study area, \ac{MSAVI} visually appears very similar to \ac{EVI}, the main apparent difference is the lack of atmospheric noise reduction in \ac{MSAVI}. However, \ac{MSAVI} does not require the blue band, which allows calculation of \ac{MSAVI} with the \ac{ASTER} sensor that does not capture the blue band.
+
+\subsection{NDMI, NBR}
+
+\ac{NDMI} and \ac{NBR} are vegetation indices that are a normalised ratio between reflectance in the blue band and the \ac{SWIR} band \citep{key_normalized_2002}. The difference is the wavelength of the \ac{SWIR} band:
+
+$$ NDMI = \frac{\rho_{NIR} - \rho_{1600}}{\rho_{NIR} + \rho_{1600}} $$
+
+$$ NBR = \frac{\rho_{NIR} - \rho_{2220}}{\rho_{NIR} + \rho_{2220}} $$
+
+$\rho_{1600}$ indicates surface reflectance in the \ac{SWIR} band centered around 1600 nm, whereas $\rho_{2220}$ indicates surface reflectance in the \ac{SWIR} band centered around 2220 nm. These vegetation indices are related to moisture in that water interferes with reflectance in the \ac{SWIR} region, and dry leaf biomass has a similar reflectance in \ac{NIR} as in \ac{SWIR}, whereas a healthy leaf has lower reflectance in \ac{SWIR} \citep{cibula_response_1992}.
+
+\ac{NBR} is commonly used for selective logging detection, as it is perceived to be more sensitive to disturbance events \citep{schneibel_assessment_2017, shimizu_using_2017}. Both \ac{NBR} and \ac{NDMI} are insensitive to cloud shadows, since they appear to lower the reflectance in both \ac{NIR} and \ac{SWIR} equally.
 
 \section{Field campaigns}
 
+In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_estimation_2017} was used. In three areas during different years, selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself.
+
 \subsection{Peru, 2013}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{thesis-figures/01-peru-sites}
+    \caption{The location of known selective logging sites and canopy gaps in the Peru study site, overlaid on Google satellite imagery.}
+    \label{fig-peru}
+\end{figure}
+
+The first field campaign was in November of 2013 in the Madre de Dios region of Peru. The selective logging operation took place in a forest east of the village Planchón, which is 37 km north of the region's capital city Puerto Maldonado (see figure \ref{fig-peru}). This region has a dry and a wet season, the latter spans from December to March. In the area, shifting cultivation is encroaching upon previously intact forest, due to the proximity to the Interoceanic Road that crosses Puerto Maldonado and goes through Planchón to Bolivia and Brazil. The trees in the study area have a canopy diameter of 20-30 m.
+
+Nine trees to be cut down were imaged from 13 positions arranged in a rectangle whose centre is the approximate location of where the tree crown would fall after logging. The location of each of the positions was determined using two separate Garmin \ac{GPS} devices. After logging, the same sites were imaged a second time. In this study, the centroid of all the measured points for each imaging site was used as a the location of the trees that were logged. Both dates before and after logging were recorded. The actual logging event happened in between the two dates, which were between 2 and 6 days apart.
+
+In addition to the logged tree data, there were also point locations of canopy gaps (seven in total) that may have been the result of previously logged trees in the selective logging campaign. In the case of gaps, only the post-logging date was recorded. In addition to \ac{GPS} data, there was also data on the nine main sites in a database, however, the locations did not match the locations mesured by GPS. The entries in the database were offset from the GPS measurements by 540 metres to the north. Therefore in total 25 points from the Peru campaign were analysed for changes in reflectance following a selective logging event.
+
+% TODO: What are 'gaps'?
+
 \subsection{Guyana, 2014}
+
+The second field campaign took place in the east of the Cuyuni-Mazaruni region of Guyana in November 2014. The nine selectively logged trees that were imaged are located in the Wineperu concession, 40 kilometres south of the region's capital, Bartica. The town is connected to the selective logging sites by a road. The sites are very close to the road, 300 m away at most.
+
+% TODO: How large are the trees?
 
 \subsection{Guyana, 2017}
 
