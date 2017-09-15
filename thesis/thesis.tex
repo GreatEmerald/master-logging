@@ -12,6 +12,7 @@
 \usepackage[colorlinks, allcolors=blue,xetex]{hyperref}
 \usepackage{hyperxmp} % Import license metadata
 \usepackage[acronym,toc,shortcuts,nohypertypes=acronym]{glossaries} % Acronyms
+\usepackage{tikz} % Charts
 \renewcommand{\familydefault}{\sfdefault}
 \bibliographystyle{apalike}
 
@@ -25,6 +26,18 @@
     pdftitle={\thetitle},
     pdflang={en-GB}
 }
+
+% Flowchart blocks
+\usetikzlibrary{shadows,arrows,positioning,shapes}
+\tikzstyle{block} = [rectangle, draw, fill=white, 
+    text width=8em, text centered, rounded corners, minimum height=3em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{data} = [trapezium, trapezium left angle=70, trapezium right angle=110, text centered, draw,
+    text width=7em, fill=gray!30, double copy shadow, minimum height=3em]
+\tikzstyle{datasingle} = [trapezium, trapezium left angle=70, trapezium right angle=110, text centered, draw,
+    text width=8em, fill=gray!30]
+\tikzstyle{bigdata} = [trapezium, trapezium left angle=80, trapezium right angle=100, text centered, draw,
+    text width=14em, fill=gray!30, double copy shadow, minimum height=3em]
 
 % Define acronyms
 \newcommand{\underletter}[1]{\textbf{#1}} % Quick toggle of underlines
@@ -56,6 +69,9 @@
 \newacronym{ESPA}{ESPA}{Earth Resources Observation and Science (\underletter{E}ROS) Center \underletter{S}cience \underletter{P}rocessing \underletter{A}rchitecture}
 \newacronym{RGB}{RGB}{\underletter{R}ed, \underletter{G}reen, \underletter{B}lue}
 \newacronym{DBH}{DBH}{\underletter{D}iameter at \underletter{B}reast \underletter{H}eight}
+\newacronym{DEM}{DEM}{\underletter{D}igital \underletter{E}levation \underletter{M}odel}
+\newacronym{SRTM}{SRTM}{\underletter{S}huttle \underletter{R}adar \underletter{T}opography \underletter{M}ission}
+\newacronym{NA}{NA}{\underletter{N}ot \underletter{A}vailable}
 \makenoidxglossaries
 
 \geometry{top=1.25cm,bottom=0.96cm,inner=2cm,outer=1.91cm,foot=0cm,includeheadfoot} % First page margins
@@ -169,7 +185,7 @@ Data from two Landsat missions was used in order to obtain long-term dense time 
 
 \subsection{Sentinel-2}
 
-Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{MSI} instrument which captures 12 optical bands at varying spatial resolutions: the three visible bands and the \ac{NIR} band are available in 10 m resolution, the two \ac{SWIR}, three red edge bands and narrow-band \ac{NIR} in 20 m resolution, and coastal aerosol, cirrus and water vapour bands at 60 m resolution \citep{suhet_sentinel-2_2015}. The Sentinel-2 products are available from the \ac{ESA} Sentinel Data Hub at the Level 1C processing level (top-of-atmosphere radiance).
+Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{MSI} instrument which captures 12 optical bands at varying spatial resolutions: the three visible bands and the \ac{NIR} band are available in 10 m resolution, the two \ac{SWIR}, three red edge bands and narrow-band \ac{NIR} in 20 m resolution, and coastal aerosol, cirrus and water vapour bands at 60 m resolution \citep{suhet_sentinel-2_2015}. The Sentinel-2 products are available from the \ac{ESA} Sentinel Data Hub at the Level 1C processing level (top-of-atmosphere radiance). Due to how recent the satellite is, its imagery was only used for the Guyana 2017 field campaign area (see section \ref{sec-campaigns}). The logging gaps from the 2013 and 2014 selective logging sites would be indistinguishable from the surroundings by 2016.
 
 \subsection{ASTER, DigitalGlobe}
 
@@ -177,7 +193,7 @@ Sentinel-2 is a satellite launched in 2016 by the \ac{ESA} that carries the \ac{
 
 Images from the DigitalGlobe satellite fleet (GeoEye-1, WorldView-2), available through Google Earth, were also used for validation. These images are displayed in \ac{RGB} and have a pan-sharpened spatial resolution of 0.5 m. The revisit time in the areas of interest vary but is very long (several years per visit).
 
-\section{Vegetation indices}
+\section{Vegetation indices} \label{sec-vis}
 
 Five vegetation indices, as defined by \citet{u.s._geological_survey_product_2017_3}, were compared in this study. \ac{SAVI} and \ac{NBR2} were not used due to their similarity with \ac{MSAVI} and \ac{NBR}, respectively. In the case of Landsat imagery, precomputed vegetation indices were used, and for the other imagery, vegetation indices were derived from the imagery manually.
 
@@ -217,12 +233,13 @@ $\rho_{1600}$ indicates surface reflectance in the \ac{SWIR} band centered aroun
 
 \ac{NBR} is commonly used for selective logging detection, as it is perceived to be more sensitive to disturbance events \citep{schneibel_assessment_2017, shimizu_using_2017}. Both \ac{NBR} and \ac{NDMI} are insensitive to cloud shadows, since they appear to lower the reflectance in both \ac{NIR} and \ac{SWIR} equally.
 
-\section{Field campaigns}
+\section{Field campaigns} \label{sec-campaigns}
 
 In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_estimation_2017} was used. In three areas during different years, selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself.
 
 \subsection{Peru, 2013}
 
+% TODO: What to show in these images? Closest point of interest, Landsat tile, close zoom-in, etc.?
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{thesis-figures/01-peru-sites}
@@ -236,9 +253,12 @@ Nine trees to be cut down were imaged from 13 positions arranged in a rectangle 
 
 In addition to the logged tree data, there were also point locations of canopy gaps (seven in total) that are likely to have been the result of previously logged trees in the selective logging campaign (but may also have been created in earlier selective logging campaigns). In the case of gaps, only the post-logging date was recorded. In addition to \ac{GPS} data, there was also data on the nine main sites in a database, however, the locations did not match the locations measured by GPS. The entries in the database were offset from the GPS measurements by 540 metres to the north. Therefore in total 25 points from the Peru campaign were analysed for changes in reflectance following a selective logging event.
 
+% TODO: Add image count statistics
+The area in which selective logging was known to take place was covered by Landsat images of path 2, rows 68 and 69. 731 Landsat 7 \ac{ETM+} images and 179 Landsat 8 \ac{OLI} images of this area were processed in this study.
+
 \subsection{Guyana, 2014}
 
-The second field campaign took place in the east of the Cuyuni-Mazaruni region of Guyana in November 2014. The nine selectively logged trees that were imaged are located in the Wineperu concession, 40 kilometres south of the region's capital, Bartica. The town is connected to the selective logging sites by a road. The sites are very close to the road, 300 m away at most. Like the Peru campaign, the trees were imaged before and after the selective logging event.
+The second field campaign took place in the east of the Cuyuni-Mazaruni region of Guyana in November 2014. The nine selectively logged trees that were imaged are located in the Wineperu concession, 40 kilometres south of the region's capital, Bartica. The town is connected to the selective logging sites by a road. The sites are very close to the road, 300 m away at most. Like the Peru campaign, the trees were imaged before and after the selective logging event. The area of selective logging was covered by Landsat images of path 231, row 56. In this study, 332 Landsat 7 \ac{ETM+} images of this area were processed in total.
 
 % TODO: How large are the trees? Selective logging lidar info?
 
@@ -246,21 +266,86 @@ The second field campaign took place in the east of the Cuyuni-Mazaruni region o
 
 The third field campaign took place in the East Berbice-Corentyne region of Guyana in January 2017. The area where the trees were imaged is a very remote area at the end of a logging access road originally built in 1997 by the UNAMCO logging company, going south from the town of Kwakwani. After UNAMCO was closed in 2007, the road went unused until 2013, when a new logging company bought the concession and extended the road. For ease of timber extraction, a number of new primary logging roads (20 m across, gravel) were built in the logging site starting from 2014. Kwakwani is 85 kilometres north of the selective logging site.
 
-In this campaign, a large number of inventoried trees were imaged, but only 16 of them were later selectively logged. In addition, no post-logging scans were made. Furthermore, in this campaign, a number of trees with different heights and \ac{DBH} were inventoried at the same points. Some of the trees to be cut down were small and below the canopy of larger trees.
+In this campaign, a large number of inventoried trees were imaged, but only 16 of them were later selectively logged. In addition, no post-logging scans were made. Furthermore, in this campaign, a number of trees with different heights and \ac{DBH} were inventoried at the same points. Some of the trees to be cut down were small (20 cm \ac{DBH}) and below the canopy of larger trees.
+
+The area of selective logging was covered by the Sentinel-2 granules 21NUE and 21NUF, and Landsat tiles with paths 230 and 231, row 57. 185 Landsat 8 \ac{OLI} images and 64 Sentinel-2 \ac{MSI} images of this area were processed in total.
 
 % TODO: Were the trees also all cut down at once, or only a few of the inventoried ones get cut down? Could explain the large gaps with soil. Any data on the height?
 
 \section{Preprocessing workflow}
 
+Satellite imagery of all the products used were available either in the Level 1C (top-of-atmosphere radiance) or Level 2A (top-of-canopy reflenctance) processing levels. For use with time series-based methods, this data had to be further preprocessed. All preprocessing of Level 2A data was done using the R programming language (version 3.3.1). A flowchart of the process is shown in figure \ref{fig-processing}.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[node distance = 0.5cm, auto]
+      \node [data] (l1amp) {Level 1C satellite imagery};
+      \node [block, below= of l1amp] (atcor) {Atmospheric correction};
+      \node [data, below= of atcor] (l2amp) {Level 2A satellite imagery};
+      \node [block, below= of l2amp] (vi) {Vegetation index calculation};
+      \node [block, below= of vi] (cloud) {Cloud masking};
+      \node [block, below= of cloud] (mosaic) {Mosaicking, extent matching};
+      \node [block, below= of mosaic] (stack) {Time series stacking};
+      \node [block, below= of stack] (crop) {Cropping to bounding box};
+      \node [block, right= of crop] (bbox) {Point bounding box calculation};
+      \node [datasingle, above= of bbox] (ref) {Reference points};
+      \node [block, below= of crop] (breaks) {Time series break detection};
+      % Draw edges
+      \path [line] (l1amp) -- (atcor);
+      \path [line] (atcor) -- (l2amp);
+      \path [line] (l2amp) -- (vi);
+      \path [line] (ref) -- (bbox);
+      \path [line] (vi) -- (cloud);
+      \path [line] (bbox) -- (crop);
+      \path [line] (cloud) -- (mosaic);
+      \path [line] (mosaic) -- (stack);
+      \path [line] (stack) -- (crop);
+      \path [line] (crop) -- (breaks);
+  \end{tikzpicture}
+  \caption{Preprocessing chain. Grey blocks are input and output data, rounded blocks are scripts that process the data.}
+  \label{fig-processing}
+\end{figure}
+
 \subsection{Top-of-canopy reflectance (Level 2A) processing}
+
+Sentinel-2 imagery is currently made available as Level 1C products. These products were processed into Level 2A products by using the \texttt{sen2cor} software, version 2.3.1 \citep{mueller-wilm_sen2cor_2016}. \texttt{sen2cor} was set to use the 940 nm bands for water vapour correction, cirrus correction was enabled, a \ac{SRTM} \ac{DEM} was used for terrain correction and ozone column content data was set to be taken as best approximation from the metadata. All the other satellite imagery was already available in Level 2A and for those images this step was skipped.
+
+\subsection{Vegetation index calculation}
+
+For Sentinel-2 imagery, vegetation indices were calculated by using the formulae in section \ref{sec-vis}. In the case of \ac{NDMI} and \ac{NBR}, due to the lower spatial resolution of the \ac{SWIR} bands (20 m vs 10 m), the \ac{SWIR} bands had to be resampled to 10 m resolution by subdividing each pixel into four. Both nearest neighbour and bilinear interpolation resampling methods were tested.
+
+For Landsat imagery, the vegetation indices were provided pre-calculated by \ac{ESPA}, so this step was also skipped.
+
+In the case of \ac{ASTER} imagery, the post-2008 \ac{SWIR} bands are oversaturated, and the blue band is not captured by the \ac{ASTER} sensor, so only \ac{NDVI} and \ac{MSAVI} were calculated for this imagery.
 
 \subsection{Cloud masking}
 
+Clouds and cloud shadows had to be masked out from the satellite imagery in order to prevent spurious extremely high and low value observations in the time series. While some vegetation indices are insensitive to thin clouds and cloud shadows, all clouds and cloud shadows were masked in order to have consistent imagery for all vegetation indices in order to compare them. Masking involves replacing the reported reflectance values in cluded or shadowed areas of the images with \ac{NA} values.
+
+% TODO: references for Fmask and bfastSpatial
+For Landsat data, clouds detected using the \texttt{Fmask} algorithm and included in the pixel QA raster were masked out. Only pixels marked as clear (66 and 130 for \ac{ETM+}, 322 for \ac{OLI}) were kept, all other values were filtered out. This was done by using the R package \texttt{bfastSpatial} (development branch). In addition, values marked as oversaturated (reflectance values set to 20000) or fill (reflectance values set to -9999) in the reflectance images themselves were masked out as well.
+
+For Sentinel-2 data, scene classification maps generated by \texttt{sen2cor} were used to mask out areas marked as no data, saturated, dark area, cloud shadows and all types of clouds.
+
 \subsection{Mosaicking}
+
+All of the study areas except for Guyana 2014 were located on the edge between two Landsat tiles or two Sentinel-2 granules. In order to make use of all the data available, tiles/granules from the same sensor taken at the same date were mosaicked together. Since the data that was mosaicked was in the form of vegetation indices, the rule applied when a pixel was covered by two images was to keep the higher pixel value of the two. This allows for filling in gaps left by masked out clouds and selecting the highest quality pixels. Since cloud shadows and clouds usually lower the value of vegetation indices, selecting higher values filters out the effects of clouds that were not detected (and thus not masked out in the cloud masking phase).
+
+In addition to mosaicking, in this step all tiles were padded with \ac{NA} values in a way so that the extents of all images would match, in preparation for the time series stacking step.
 
 \subsection{Time series stacking}
 
-\section{Time series analysis}
+In order to make use of per-pixel vegetation index time series, all observations had to be stacked into one file with multiple layers, each layer representing one (potential) observation and containing information about the date of the observation. For Landsat data, this was done using the \texttt{bfastSpatial} package. For Sentinel-2 data, a script for stacking was created from scratch.
+
+\subsection{Cropping to treefall gaps}
+
+Tiles and granules cover a large area, whereas only the potential treefall gap areas were the focus of this study. In order to minimise the area to search through, images were cropped to the area around the treefall gap reference points. First, reference points were transformed into the \ac{UTM} projection that was used by the Landsat images of the area, then a buffer of 75 metre radius (150 metre diameter) was made around each point. Next, a bounding box of each buffer was calculated, and each time series stack was cropped to the bounding boxes. The result was one space-time cube per each reference treefall gap per each sensor. The spatial dimensions of the Landsat space-time cubes were 5 by 5 pixels, whereas Sentinel-2 spatial dimensions were 15 by 15 pixels.
+
+\subsection{Time series analysis}
+
+Lastly, pixels of the space-time cubes were analysed one by one by using the \texttt{BFAST} package \citep{verbesselt_detecting_2010} in order to attempt detection of selective logging treefall gaps. This is done by using trajectory analysis: a seasonal model is fit to the data by making use of known stable history prior to a logging event. Then, deviations from the values predicted by the model (residuals) are analysed at the time when a selective logging event potentially could have taken place. If the magnitude of observations exceeds a certain threshold, the first such observation is marked as a detected change.
+
+In addition to treefall gaps, some nearby logging features such as logging roads and shifting cultivation were analysed with \texttt{BFAST} as well. The individual layers of the space-time cubes were also analysed visually, also in larger context and with comparison with higher resolution imagery from \ac{ASTER}, PlanetScope and DigitalGlobe imagery.
 
 \chapter{Results}
 
