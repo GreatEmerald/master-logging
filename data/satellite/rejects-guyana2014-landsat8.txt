@@ -1,0 +1,4 @@
+Requested sr_ndmi products are not available. Remove oli8_collection scenes:
+LO08_L1GT_231056_20150303_20170412_01_T2
+Inputs Not Available:
+LC08_L1TP_231056_20170612_20170612_01_RT

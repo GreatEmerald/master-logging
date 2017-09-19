@@ -22,10 +22,24 @@ library(raster)
 # TODO: How far apart could the trees be for them to be clumped together? I look at 75 metres on both sides
 # -> Looks like 40m is about right
 
+GetSentinel2Date = function(filename)
+{
+    result = character()
+    for (i in 1:length(filename))
+        result = c(result, strsplit(grep(glob2rx("????????T??????"), unlist(strsplit(filename[i], "_")), value=TRUE), "T")[[1]][1])
+    return(result)
+}
+
+PlotTS = function(ts, row, column, ...)
+{
+    plot(GetSentinel2Date(names(ts)), unlist(getValues(ts, row, 1)[column,]), xlab="Date", ylab="Vegetation index", ...)
+}
+
 # NDVI: mostly useless; there are faint marks that something happened
 # But! It's pretty clear later on that the gaps are there
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/35_80-1_20-1_60-1.grd")
 spplot(ndvi)
+PlotTS(ndvi, 8, 9)
 # EVI: pretty good, shows an earlier gap and then the new one
 evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/35_80-1_20-1_60-1.grd")
 spplot(evi)
@@ -38,6 +52,7 @@ spplot(msavi)
 ## NDMI: may be the best, both gaps are vividly standing out; but this is a shadow map!
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/35_80-1_20-1_60-1.grd")
 spplot(ndmi)
+PlotTS(ndmi, 8, 10)
 
 # Other trees
 ## Seems like there was a gap there before just as well! Only new gap in the extreme north-west, and it's the same as 35
@@ -75,13 +90,17 @@ msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/40_8
 spplot(msavi)
 evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/40_80-4.grd")
 spplot(evi)
+
 ## GIANT gap appeared east!
 ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/41_100-6.grd")
 spplot(ndmi) # NBR shows it a bit cleaner
+PlotTS(ndmi, 9, 11)
 nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/41_100-6.grd")
 spplot(nbr) ## Even visible from NDVI
+PlotTS(nbr, 9, 11)
 ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/41_100-6.grd")
 spplot(ndvi) # EVI/MSAVI agrees but had shadow problems
+PlotTS(ndvi, 8, 9)
 evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/41_100-6.grd")
 spplot(evi)
 msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/41_100-6.grd")

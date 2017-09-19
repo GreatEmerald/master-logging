@@ -84,6 +84,8 @@ TimeSeries = TSF("ndvi", 12)
 spplot(TimeSeries, CleanTSIDs(TimeSeries)) ## Also a nice visual on a clear-cut becoming brighter after a year
 BP = bfmPixel(TimeSeries, start=c(2013.7), cell=13, formula=response~harmon, order=1)
 plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) # There is a slight decrease, but mostly because of clouds
+BP = bfmPixel(TimeSeries, start=c(2013.7), cell=7, formula=response~harmon, order=1)
+plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) ## Very good visualisation of NDVI increasing afterwards
 
 # This should be a small tree to the east; the clearing is visible from here too
 TimeSeries = TSF("ndmi", 13)
