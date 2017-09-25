@@ -13,6 +13,7 @@
 \usepackage{hyperxmp} % Import license metadata
 \usepackage[acronym,toc,shortcuts,nohypertypes=acronym]{glossaries} % Acronyms
 \usepackage{tikz} % Charts
+\usepackage{subcaption} % Grid of figures
 \renewcommand{\familydefault}{\sfdefault}
 \bibliographystyle{apalike}
 
@@ -235,7 +236,7 @@ $\rho_{1600}$ indicates surface reflectance in the \ac{SWIR} band centered aroun
 
 \section{Field campaigns} \label{sec-campaigns}
 
-In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_estimation_2017} was used. In three areas during different years, selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself.
+In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_menaca_estimation_2017} was used. In three areas during different years, selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself.
 
 \subsection{Peru, 2013}
 
@@ -344,9 +345,12 @@ Tiles and granules cover a large area, whereas only the potential treefall gap a
 
 \subsection{Time series analysis}
 
+% TODO: Make BFAST into an acronym?
 Lastly, pixels of the space-time cubes were analysed one by one by using the \texttt{BFAST} package \citep{verbesselt_detecting_2010} in order to attempt detection of selective logging treefall gaps. This is done by using trajectory analysis: a seasonal model is fit to the data by making use of known stable history prior to a logging event. Then, deviations from the values predicted by the model (residuals) are analysed at the time when a selective logging event potentially could have taken place. If the magnitude of observations exceeds a certain threshold, the first such observation is marked as a detected change.
 
 In addition to treefall gaps, some nearby logging features such as logging roads and shifting cultivation were analysed with \texttt{BFAST} as well. The individual layers of the space-time cubes were also analysed visually, also in larger context and with comparison with higher resolution imagery from \ac{ASTER}, PlanetScope and DigitalGlobe imagery.
+
+For Sentinel-2 \ac{MSI} imagery analysis, \texttt{BFAST} could not be used due to the lack of stable history to train the seasonal model on. The Sentinel-2A satellite started transmitting imagery in October of 2015; and due to frequent cloud cover over the Amazon the image time series is sparse, with too few observations to determine the natural variance of the vegetation indices. Instead, for this imagery, the pixels of the known treefall location space-time cubes were inspected for visible changes in the area. Pixels that showed changes in NDVI (44 in total) and NDMI (36 in total) were selected, and Welch's two-sample \textit{t}-test was used to determine whether the differences in the vegetation index values before and after logging are significant, as well as to compare the estimated true means of each vegetation index before and after logging.
 
 \chapter{Results}
 
@@ -354,21 +358,65 @@ In addition to treefall gaps, some nearby logging features such as logging roads
 
 \subsection{Treefall gaps}
 
-Automation possibilities, pictures of areas, some telling time series examples, Landsat-to-Sentinel comparison
+% Automation possibilities, pictures of areas, some telling time series examples, Landsat-to-Sentinel comparison
+
+\subsubsection{Sentinel-2}
+
+% TODO: Add points of known trees?
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{thesis-figures/02-guyana-sentinel2-tci}
+  \caption{Sentinel-2 \ac{MSI} true colour image subset from the Guyana 2017 study site. (a): site prior to known selective logging (January 13, 2017). The dark parts on the right are cloud shadows. (b): site after known selective logging (February 12, 2017).}
+  \label{fig-guyana-sentinel2-tci}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{thesis-figures/03-boxplot-ndvi}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{thesis-figures/04-boxplot-ndmi}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{thesis-figures/05-boxplot-nbr}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{thesis-figures/06-boxplot-msavi}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{thesis-figures/07-boxplot-evi}
+  \end{subfigure}
+  \caption{Distribution of vegetation index values before and after the known logging event in affected Sentinel-2 \ac{MSI} pixels. The bold line in the middle represents the median, the hinges of the box represent the 1st and 3rd quartiles, and the whiskers represent 1.5 of the interquartile range, circles are outliers.}
+  \label{fig-boxplots}
+\end{figure}
+
+% TODO: Expand this example: either add NDVI or a control pixel or Landsat
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{thesis-figures/08-guyana-ts-ndmi}
+  \caption{A time series of all Sentinel-2-derived \ac{NDMI} values for an example pixel where a treefall gap appeared. The vertical line indicates the date after which the selective logging event happened.}
+  \label{fig-guyana-ts-ndmi}
+\end{figure}
+
+In the Guyana 2017 study area, from the 16 reference points of known logged trees, only 9 treefall gaps could be identified using Sentinel-2 imagery (see figure \ref{fig-guyana-sentinel2-tci}). Two of the reference points were within a 6 m distance from one another, which made them not distinct from one another. In the other cases where the gap was not visible, an existing gap, logging road or log deck was nearby. In the case there is an existing logging gap, according to \ac{RIL} conventions the tree should be felled in the direction of the gap in order to minimise canopy damage.
+
+% TODO: Make a table?
+Of the treefall gaps that were visible, on average the changes affected 5 pixels (500 m² area) in NDVI and 4 pixels (400 m² area) in NDMI. The values of each vegetation index tested were significantly ($ p < 0.003 $) lower after logging than before it (see figure \ref{fig-boxplots}). See figure \ref{fig-guyana-ts-ndmi} for an example of how the time series of one treefall gap pixel looks like.
+
+\subsubsection{Landsat imagery}
+
+In Landsat imagery of the Guyana 2017 study area, only 3 gaps within the vicinity of the known logged trees could be identified. In the case of the others, one was not visible due to cloud cover in Landsat scenes, and the rest due to pixel border effects: gap centre going through the boundary of 2 or 4 pixels, therefore dispersing the signal into several pixels. That makes the treefall gaps unidentifiable due to a low signal-to-noise ratio.
+
+The gaps that can be identified in Landsat imagery also show a smaller magnitude of change due to the larger area covered by each pixel (900 m² compared to 100 m² in Sentinel-2 \ac{MSI}).
+
+% Which sensors can be used with BFAST due to history, what are the effects of the resolution
+
+\subsubsection{ASTER}
 
 \subsection{Clearcut areas}
 
 \subsection{Logging roads}
-
-\section{Satellite sensor comparison}
-
-Which sensors can be used with BFAST due to history, what are the effects of the resolution
-
-\subsection{Landsat}
-
-\subsection{Sentinel-2}
-
-\subsection{ASTER}
 
 \section{Vegetation index comparison}
 

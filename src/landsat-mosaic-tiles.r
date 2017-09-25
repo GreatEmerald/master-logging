@@ -27,7 +27,7 @@ library(optparse)
 # Command-line options
 parser = OptionParser()
 parser = add_option(parser, c("-i", "--input-dir"), type="character", default="../data/satellite",
-    help="Directory of input files. May be compressed. (Default: %default)", metavar="path")
+    help="Root directory (containing subdirectories with names of vegetation indices) of input files. Should have no clouds. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="path",
     default="../data/intermediary/cloud-free",
     help="Output directory. Subdirectories for each vegetation index will be created. (Default: %default)")

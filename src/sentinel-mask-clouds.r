@@ -30,7 +30,7 @@ parser = add_option(parser, c("-i", "--input-directory"), type="character", defa
 parser = add_option(parser, c("-o", "--output-directory"), type="character", metavar="path",
     default="../data/intermediary/cloud-free/Guyana2017", help="Directory to store masked files in. (Default: %default)")
 parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
-    default=2, help="Number of threads to use. (Default: %default)")
+    default=2, help="Number of threads to use. Needs 2.1 GiB RAM per thread of 20m, up to 8 GiB per thread of 10m (Default: %default)")
 parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",
     help="Glob for finding Sentinel SAFE directories if the input directory contains multiple of them (for example: *.SAFE)")
 sink("/dev/null") # Silence rasterOptions
@@ -40,7 +40,7 @@ parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="pa
 sink()
 args = parse_args(parser)
 
-source("preprocessing/sentinel-apply-mask.r")
+source("preprocessing/sentinel-mask-clouds.r")
 
 S2ApplyMaskToProducts(args[["input-directory"]], args[["pattern"]], output_dir=args[["output-directory"]],
     temp_dir=args[["temp-dir"]], threads=args[["threads"]])
