@@ -65,13 +65,20 @@ BP = bfmPixel(TimeSeries, start=c(2013.7), cell=8, formula=response~harmon, orde
 plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) ## Showing off the clear-cuts: 2006 to the south-east
 BP = bfmPixel(TimeSeries, start=c(2001.7), cell=19, formula=response~harmon, order=1)
 plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) ## 2001, 2006, 2009 and 2015 to the south-west
-BP = bfmPixel(TimeSeries, start=c(2001), cell=16, formula=response~harmon, order=1)
-plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) ## Looks like it regenerates in slightly less than a year
+pdf("../../thesis/thesis-figures/13-peru-shifting.pdf", 9, 6)
+BP = bfmPixel(TimeSeries/10000, start=c(2001), cell=16, formula=response~harmon, order=1)
+plot(BP$bfm); #abline(v=2013.7); abline(v=2013.74) ## Looks like it regenerates in slightly less than a year
+dev.off()
 TimeSeries = TSF("ndvi", 11)
 spplot(TimeSeries, CleanTSIDs(TimeSeries))
 BP = bfmPixel(TimeSeries, start=c(2013.7), cell=8, formula=response~harmon, order=1)
 plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) ## Showing off the clear-cuts: 2006 to the (south-)east; see how NDVI later on increases
 BP = bfmPixel(TimeSeries, start=c(2006), cell=14, formula=response~harmon, order=1)
+plot(BP$bfm); abline(v=2013.7); abline(v=2013.74)
+pdf("../../thesis/thesis-figures/14-peru-shifting-ndvi.pdf", 9, 5)
+BP = bfmPixel(TimeSeries/10000, start=c(2006), cell=19, formula=response~harmon, order=1)
+plot(BP$bfm)#; abline(v=2013.7); abline(v=2013.74)
+dev.off()
 
 # This is also next to the clearing; it is a very obvious single tree that got cut down in Google, right in the centre
 TimeSeries = TSF("ndmi", 12)
@@ -84,8 +91,8 @@ TimeSeries = TSF("ndvi", 12)
 spplot(TimeSeries, CleanTSIDs(TimeSeries)) ## Also a nice visual on a clear-cut becoming brighter after a year
 BP = bfmPixel(TimeSeries, start=c(2013.7), cell=13, formula=response~harmon, order=1)
 plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) # There is a slight decrease, but mostly because of clouds
-BP = bfmPixel(TimeSeries, start=c(2013.7), cell=7, formula=response~harmon, order=1)
-plot(BP$bfm); abline(v=2013.7); abline(v=2013.74) ## Very good visualisation of NDVI increasing afterwards
+BP = bfmPixel(TimeSeries, start=c(2006), cell=7, formula=response~harmon, order=1)
+plot(BP$bfm)#; abline(v=2013.7); abline(v=2013.74) ## Very good visualisation of NDVI increasing afterwards
 
 # This should be a small tree to the east; the clearing is visible from here too
 TimeSeries = TSF("ndmi", 13)

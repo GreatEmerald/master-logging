@@ -54,6 +54,7 @@ AppendGapRegister = function(tree_id, vi, row, column, best)
 # Note: "NDMI" means "everything except NDVI", because only NDVI is insensitive to shadows
 # 8 8 is the central pixel; gaps can reasonably be within the 5-11 range
 # First count down, then count right
+# In Landsat: 1-3 is 1, 4-6 is 2, 7-9 is 3, 10-12 is 4, 13-15 is 5
 
 GapRegister = AppendGapRegister("35", "NDVI", 9, 5, FALSE)
 GapRegister = AppendGapRegister("35", "NDVI", 9, 4, FALSE)

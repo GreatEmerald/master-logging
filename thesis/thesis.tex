@@ -356,11 +356,12 @@ For Sentinel-2 \ac{MSI} imagery analysis, \texttt{BFAST} could not be used due t
 
 \section{Logging feature detectability}
 
-\subsection{Treefall gaps}
+\subsection{Treefall gaps, skid trails}
 
 % Automation possibilities, pictures of areas, some telling time series examples, Landsat-to-Sentinel comparison
 
 \subsubsection{Sentinel-2}
+\label{sec-treefall-sentinel2}
 
 % TODO: Add points of known trees?
 \begin{figure}
@@ -406,23 +407,81 @@ Of the treefall gaps that were visible, on average the changes affected 5 pixels
 
 \subsubsection{Landsat imagery}
 
-In Landsat imagery of the Guyana 2017 study area, only 3 gaps within the vicinity of the known logged trees could be identified. In the case of the others, one was not visible due to cloud cover in Landsat scenes, and the rest due to pixel border effects: gap centre going through the boundary of 2 or 4 pixels, therefore dispersing the signal into several pixels. That makes the treefall gaps unidentifiable due to a low signal-to-noise ratio.
+\begin{figure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=0.75\textwidth]{thesis-figures/09-guyana17-landsat-ndmi-undetected}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=0.75\textwidth]{thesis-figures/10-guyana17-landsat-ndmi-detected}
+  \end{subfigure}
+  
+  \caption{\texttt{BFAST} Monitor analysis of an \ac{NDMI} time series for two Landsat 8 \ac{OLI} pixels where treefall gaps are visible in Sentinel-2 \ac{MSI} imagery of the same areas. Top: no change is detected due to too low magnitude of change, and some unfiltered clouded pixels in the history period. Bottom: change is detected successfully.}
+  \label{fig-guyana17-landsat-ndmi}
+\end{figure}
 
-The gaps that can be identified in Landsat imagery also show a smaller magnitude of change due to the larger area covered by each pixel (900 m² compared to 100 m² in Sentinel-2 \ac{MSI}).
+In Landsat imagery of the Guyana 2017 study area, only 3 gaps within the vicinity of the known logged trees could be identified. The rest were not visible either due to cloud cover in Landsat scenes, or due to pixel border effects: gap centre going through the boundary of 2 or 4 pixels, therefore dispersing the signal into several pixels. That makes the treefall gaps unidentifiable due to a low signal-to-noise ratio. The gaps that can be identified in Landsat imagery also show a smaller magnitude of change due to the larger area covered by each pixel (900 m² compared to 100 m² in Sentinel-2 \ac{MSI}).
+
+\texttt{BFAST} analysis of Landsat imagery in the Guyana 2017 study site yielded only a single detection of a treefall gap, and only when using \ac{NDMI}. The other two gaps, while visible when inspecting the time-space cube (the value of the pixel changes compared to the surroundings), are not detected by \texttt{BFAST} due to the low magnitude of change (see figure \ref{fig-guyana17-landsat-ndmi}).
+
+\texttt{BFAST} was not able to detect any treefall gaps in other study sites. In the case of Landsat 8 \ac{OLI} imagery of the Guyana 2014 site, a lot of false positives were generated due to too few observations in stable history (which was a period of less than one year). When using Landsat 7 \ac{ETM+} imagery of the same areas, no breaks were detected.
+
+Skid trails were not visible from any of the satellite imagery used, in any of the study sites. In \ac{RIL}, skid trails are planned in advance in a way that minimises the damage done, which means that there are no changes to the top of canopy that would be visible from satellite imagery.
 
 % Which sensors can be used with BFAST due to history, what are the effects of the resolution
 
 \subsubsection{ASTER}
 
-\subsection{Clearcut areas}
+% TODO: Add some reference images?
 
-\subsection{Logging roads}
+\ac{ASTER} imagery of all the study sites were useful for better visualisation of the forest structure and the effects of forest features to vegetation index values, due to the finer pixel size compared to Landsat. However, the combination of a long revisit time and frequent cloud cover resulted in only one or two usable images per year, which is not enough for neither time-series-based analysis nor statistical analysis. At 15 m resolution, individual trees cannot be visually picked out unless they stand apart from other trees or have a different seasonal cycle compared to neighbouring trees.
+
+Another limiting factor of \ac{ASTER} imagery is the range of digital numbers. Whereas Landsat and Sentinel-2 use the range of 0-10000 for digital numbers of each band, \ac{ASTER} uses the range of 0-1000. This affects the range of derived vegetation index values: the smallest step between two values is 0.005. Any value in between is clamped to one or the other side and may not be distinguishable from the surroundings if neighbouring trees have similar values, which happens at the higher end of vegetation index saturation.
+
+\subsection{Clearcut areas, logging roads, log decks}
+
+\begin{figure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=0.75\textwidth]{thesis-figures/11-guyana17-landsat-ndvi-deck}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=0.75\textwidth]{thesis-figures/12-guyana17-landsat-ndvi-road}
+  \end{subfigure}
+  \caption{\texttt{BFAST} Monitor analysis of Landsat 8 \ac{OLI} \ac{NDVI} time series in the Guyana 2017 study site. Top: the central pixel of a log deck built in 2016. Bottom: a pixel on a road built in 2014. The increase visible in 2016 is due to the shifting of the road one pixel to the north in that image, which could be due to georeferencing issues or different sun-sensor angle.}
+  \label{fig-guyana17-landsat-ndvi-deck}
+\end{figure}
+
+Larger-scale disturbances associated with selective logging, such as major logging roads as well as clearcuts or slash-and-burn activities, were detectable from both Landsat and Sentinel-2 imagery. Given sufficient historical data, \texttt{BFAST} was able to automatically detect such disturbances and determine the approximate time at which they happened, using any of the tested vegetation indices (see figure \ref{fig-guyana17-landsat-ndvi-deck}).
+
+\begin{figure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{thesis-figures/13-peru-shifting}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{thesis-figures/14-peru-shifting-ndvi}
+  \end{subfigure}
+  \caption{Landsat 7 \ac{ETM+} time series of a pixel in a shifting cultivation plot in the Peru study site. Top: \ac{NDMI}. Several disturbance and regrowth cycles are visible and the first one is detected by \texttt{BFAST} Monitor. Bottom: \ac{NDVI}. Only the largest disturbance is visible and is detected, but the \ac{NDVI} values after the disturbance are higher than before it.}
+  \label{fig-peru-shifting-cultivation}
+\end{figure}
+
+However, the presence of these disturbances varied greatly across the different study sites: in Peru and Guyana 2014, the selective logging campaigns were carried out close to an existing road, therefore no additional disturbances that would indicate that selective logging had occurred appeared in that area. In Guyana 2017, logging roads and log decks were built specifically for facilitating the selective logging campaign, some of them several years in advance (see figure \ref{fig-guyana17-landsat-ndvi-deck}). The Peru study site was the only one where land use was being changed from forest to shifting cultivation or rangelands, next to the selective logging site. The Landsat time series in that area was unique, with multiple points of disturbance spaced out over several years (see figure \ref{fig-peru-shifting-cultivation}, top). The \ac{NDVI} values after a clearcut go down quickly, and take a year to recover to their pre-disturbance values; after that point, \ac{NDVI} values exceed those of the original undisturbed forest (see figure \ref{fig-peru-shifting-cultivation}, bottom).
 
 \section{Vegetation index comparison}
 
-Sensitivity, threshold values, correlation, images at small scale and large scale
+% Sensitivity, threshold values, correlation, images at small scale and large scale
+For treefall gap detection, as discussed in section \ref{sec-treefall-sentinel2}, there were significant differences in means before and after a selective logging event in all of the tested vegetation indices. However, the magnitude of change differed (see figure \ref{fig-boxplots}), and so did the ability to detect larger logging features (see figure \ref{fig-peru-shifting-cultivation}).
 
 \subsection{NDVI}
+
+\ac{NDVI} was found to be less sensitive to changes in forest structure than the other vegetation indices tested. Changes in \ac{NDVI} are also dependent on the forest floor in the particular area: if the forest floor under the logged tree consisted of photosynthetic vegetation, the change in NDVI was small, or even positive (see figure \ref{fig-peru-shifting-cultivation}). In contrast, if the forest floor consisted mainly of non-photosynthetic vegetation or bare soil, or if the forest floor was damaged, \ac{NDVI} was a reliable indicator of treefall gaps and other logging features (see figure \ref{fig-guyana17-landsat-ndvi-deck}).
+
+% TODO: Add ASTER/Landsat/Sentinel-2 image of NDVI
+One unique property of \ac{NDVI} was found to be its relation to shadows. Since \ac{NDVI} is a ratio of the reflectance in the red band and the reflectance in the \ac{NIR} band, when vegetation is shadowed (e.g. by a cloud shadow), the reflectance in red becomes close to 0 and thus \ac{NDVI} becomes close to 1. On the other hand, the reflectance in \ac{NIR}, and thus \ac{NDVI}, is lower in forests compared to grasslands due to the complex canopy structure. The result of both of these properties combined is that grasslands appear brighter than forests, but cloud shadows and tree shadows over photosynthetic vegetation appear brighter compared to unshadowed area and tree canopies, respectively.
 
 \subsection{EVI, MSAVI}
 
