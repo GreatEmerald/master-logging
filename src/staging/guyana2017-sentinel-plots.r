@@ -484,3 +484,18 @@ ControlMSAVIs = GetPixelValues(ControlRegister, "MSAVI", TRUE)
 boxplot(Value/10000~When, notch=TRUE, data=ControlMSAVIs)
 ControlEVIs = GetPixelValues(ControlRegister, "EVI", TRUE)
 boxplot(Value/10000~When, notch=TRUE, data=ControlEVIs)
+
+## Test correlation between indices nearby our points
+
+ndviVals = ndmiVals = nbrVals = eviVals = msaviVals = integer(0)
+for (i in 35:50)
+{
+    ndviVals = c(ndviVals, getValues(GetTSByID(i, "NDVI")))
+    ndmiVals = c(ndmiVals, getValues(GetTSByID(i, "NDMI")))
+    nbrVals = c(nbrVals, getValues(GetTSByID(i, "NBR")))
+    eviVals = c(eviVals, getValues(GetTSByID(i, "EVI")))
+    msaviVals = c(msaviVals, getValues(GetTSByID(i, "MSAVI")))
+}
+
+AllVals = data.frame(ndviVals, ndmiVals, nbrVals, eviVals, msaviVals)
+cor(AllVals, use="complete.obs")

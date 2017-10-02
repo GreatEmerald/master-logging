@@ -478,42 +478,110 @@ For treefall gap detection, as discussed in section \ref{sec-treefall-sentinel2}
 
 \subsection{NDVI}
 
-\ac{NDVI} was found to be less sensitive to changes in forest structure than the other vegetation indices tested. Changes in \ac{NDVI} are also dependent on the forest floor in the particular area: if the forest floor under the logged tree consisted of photosynthetic vegetation, the change in NDVI was small, or even positive (see figure \ref{fig-peru-shifting-cultivation}). In contrast, if the forest floor consisted mainly of non-photosynthetic vegetation or bare soil, or if the forest floor was damaged, \ac{NDVI} was a reliable indicator of treefall gaps and other logging features (see figure \ref{fig-guyana17-landsat-ndvi-deck}).
+\ac{NDVI} was found to be less sensitive to changes in forest structure than the other vegetation indices tested; on average NDVI values in pixels affected by selective logging decreased from 0.80 to 0.74. Changes in \ac{NDVI} are also dependent on the forest floor in the particular area: if the forest floor under the logged tree consisted of photosynthetic vegetation, the change in NDVI was small, or even positive (see figure \ref{fig-peru-shifting-cultivation}). In contrast, if the forest floor consisted mainly of non-photosynthetic vegetation or bare soil, or if the forest floor was damaged, \ac{NDVI} was a reliable indicator of treefall gaps and other logging features (see figure \ref{fig-guyana17-landsat-ndvi-deck}).
 
 % TODO: Add ASTER/Landsat/Sentinel-2 image of NDVI
-One unique property of \ac{NDVI} was found to be its relation to shadows. Since \ac{NDVI} is a ratio of the reflectance in the red band and the reflectance in the \ac{NIR} band, when vegetation is shadowed (e.g. by a cloud shadow), the reflectance in red becomes close to 0 and thus \ac{NDVI} becomes close to 1. On the other hand, the reflectance in \ac{NIR}, and thus \ac{NDVI}, is lower in forests compared to grasslands due to the complex canopy structure. The result of both of these properties combined is that grasslands appear brighter than forests, but cloud shadows and tree shadows over photosynthetic vegetation appear brighter compared to unshadowed area and tree canopies, respectively.
+One unique property of \ac{NDVI} was found to be its relation to shadows. Since \ac{NDVI} is a ratio of the reflectance in the red band and the reflectance in the \ac{NIR} band, when vegetation is shadowed (e.g. by a cloud shadow), the reflectance in red becomes close to 0 and thus \ac{NDVI} becomes close to 1. On the other hand, the reflectance in \ac{NIR}, and thus \ac{NDVI}, may be lower in forests compared to grasslands due to the complex canopy structure (however, this varies seasonally due to leaf flush). The result of both of these properties combined is that grasslands and forests have differing \ac{NDVI} values, and cloud shadows and tree shadows over photosynthetic vegetation appear brighter compared to unshadowed area and tree canopies, respectively.
+
+\subsection{NDMI, NBR}
+
+The \ac{SWIR}-based vegetation indices \ac{NDMI} and \ac{NBR} were the most sensitive to changes in forest structure from all the vegetation indices tested, as seen in figure \ref{fig-boxplots}. After a logging event, mean \ac{NDMI} values in affected pixels decreased from 0.30 to 0.15, whereas \ac{NBR} values decreased from 0.60 to 0.48. The relative magnitude of change was higher in \ac{NDMI} than in \ac{NBR}. \ac{NDMI} values differ more within forests, revealing their structure, whereas \ac{NBR} tends to vary less within forests but highlight only particularly large disturbances. However, the two indices are highly correlated with one another (Pearson's correlation: 0.94), as the only difference between them is the choice of the \ac{SWIR} wavelength.
+
+The \ac{SWIR}-based indices turned out to be highly sensitive to internal shadows within forests, but insensitive to cloud shadows, because unlike the red band, \ac{NIR} values are higher than zero when a cloud shadow is over vegetation, and cloud shadows reduce the reflectance in \ac{NIR} and \ac{SWIR} almost equally. This is a useful property, because it allows the use of pixels that for other vegetation indices would not be useful, and it also helps when the cloud shadow masks are not perfectly reliable (as is often the case). Sensitivity to internal shadows comes from the \ac{NIR} band, whereas the \ac{SWIR} band is smooth and does not capture internal shadows, but is good at capturing the high reflectance from bare soils.
+
+One issue of calculating \ac{NDMI} and \ac{NBR} is that the \ac{SWIR} band often times has a coarser resolution than the visible and \ac{NIR} bands due to lower amounts of energy returned from the land surface at those wavelengths. This is the case in Sentinel-2 and \ac{ASTER} imagery. Therefore in order not to lose information from the \ac{NIR} band, the \ac{SWIR} band data has to be upsampled to match the \ac{NIR} band pixels. This can be done by using nearest neighbour interpolation or bilinear interpolation. Testing of both interpolation methods revealed that in forests, nearest neighbour resampling leads to block artefacts and could be misleading, whereas bilinear interpolation was more appropriate, however the differences are overall small for gaps. The largest differences were within logging roads, where the road outlines would become blurred when using bilinear interpolation and blocky in a salt-and-pepper pattern when using nearest neighbour interpolation.
 
 \subsection{EVI, MSAVI}
 
-\subsection{NDMI, NBR}
+The other two vegetation indices tested, \ac{EVI} and \ac{MSAVI}, are both complex indices that were designed to overcome the deficiencies in \ac{NDVI}. Even though the approaches differ, the result is largely the same: both vegetation indices are highly correlated in forests (Pearson's correlation: 0.94). The two indices are in between \ac{NDVI} and the \ac{SWIR}-based indices in sensitivity: they capture bare soils and non-photosynthetic vegetation like \ac{NDVI} does, and are sensitive to internal shadowing like the \ac{SWIR}-based indices. However, they are less sensitive to either compared to the other types of vegetation indices, thus the overall sensitivity to selective logging events is rather poor (see figure \ref{fig-boxplots}).
+
+\ac{EVI} is unique in that it compensates for the presence of thin clouds and cloud edges. This is a useful property, since while most cloud masking approaches are good at detecting thick clouds, thin ones are much more difficult to detect. However, unlike the \ac{SWIR}-based indices, \ac{EVI} is affected by the presence of cloud shadows. \ac{EVI} was also the vegetation index that is least correlated with any of the others except \ac{MSAVI}: 0.68 correlation with \ac{NDMI} and 0.69 correlation with \ac{NDVI} and \ac{NBR}.
+
+\ac{MSAVI} is highly correlated with \ac{EVI}, and the main difference between the two is that \ac{MSAVI} does not share the property of atmospheric noise correction and thus is affected by light clouds. On the other hand, only the red and \ac{NIR} bands are required to calculate \ac{MSAVI}, whereas \ac{EVI} also requires the blue band, which is not always captured (e.g. by \ac{ASTER}).
 
 \chapter{Discussion}
 
 \section{Selective logging detection possibilities}
 
-What is possible to detect, in a case study format; this should answer the first research question
+% What is possible to detect, in a case study format; this should answer the first research question
+
+The results showed that the ability to detect selective logging treefall gaps from Landsat imagery is extremely limited, which confirms the findings of \citet{asner_remote_2002} and \citet{asner_canopy_2004}. Even when the location and appearance time of the canopy gap is known, the 30 m resolution of Landsat is not enough to reliably detect changes, neither in an automated way nor manually. While the tree canopy size in the Amazon rainforest tends to reach 30 m in diameter, it is very rare that the pixel grid would align with the gap left by logging a particular tree. The more common case is for the gap to be split into two or four pixels, in which case the effect that the logging event has to vegetation index values are too low due to the influence of the surrounding untouched vegetation.
+
+However, the results showed that the 10 m resolution of Sentinel-2 \ac{MSI} is enough to visually detect most treefall gaps, and that it should be possible to detect the gaps in an automated way in the future, when Sentinel-2 imagery time series grow in length so as to allow using time-series-based detection methods.
+
+From the other selective logging features identified by \citet{asner_remote_2002}, skid trails were not identifiable from any of the satellite imagery used, whereas large logging roads and log decks were both identifiable and automatically detectable from both Landsat and Sentinel-2 imagery. These findings are similar to those of \citet{read_spatial_2003}.
+
+% TODO: Could make it into an enumerate list; the rest of the information can go into the VI section
+An analysis of detected logging features follows.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{thesis-figures/15-gap-vi-model}
+  \caption{A simple theoretical 2D model of changes in vegetation indices in a forest following selective logging of two trees. Orange arrows indicate the sun incidence angle, black lines indicate pixel boundaries of a nadir-facing satellite sensor. At timestep $ t_{1} $ all three pixels have high \ac{NDVI} and \ac{NDMI} values. After logging at timestep $ t_{2} $, pixel A has high \ac{NDVI} and \ac{NDMI}, pixel B has low \ac{NDVI} and \ac{NDMI}, pixel C has high \ac{NDVI} but low \ac{NDMI} values. In case of a smaller gap, pixel B would have the same values as pixel A, and so \ac{NDVI} would not be useful for gap identification.}
+  \label{fig-gap-vi-model}
+\end{figure}
 
 \subsection{Moderate size gaps in dense forests with a soil background}
 
-Case of Guyana 2017: cutting down a tree makes soil appear, visible in \ac{NDVI}
+% Case of Guyana 2017: cutting down a tree makes soil appear, visible in \ac{NDVI}
+
+If the forest floor is bare soil or non-photosynthetic vegetation, as in Guyana 2017 study site, then the treefall gaps are identifiable by a change in \ac{NDVI} (see figure \ref{fig-gap-vi-model}, B). This is due to photosynthetic vegetation strongly absorbing light in the red band and strongly reflecting light in the \ac{NIR} band.
+
+% TODO: can add an image of NDVI
+These types of gaps are also discernable visually by inspecting the \ac{NDVI} values, as fresh treefall gaps are small and thus stand out from intact forest. However, they do not stay visible for long due to canopy and forest floor regrowth.
 
 \subsection{Small gaps in dense forests}
 
-Case of Guyana 2017: cutting down a tree results in a shift in shadows, visible in \ac{NDMI}
+% Case of Guyana 2017: cutting down a tree results in a shift in shadows, visible in \ac{NDMI}
 
-\subsection{Clear-cuts}
-
-Case of Peru 2013: clear-cuts highly affect \ac{NDVI} for a year, followed by an increase in \ac{NDVI} compared to the beginning due to less shadowing
+If the treefall gaps are too small to cover a pixel size area, or if the forest floor is vegetated, the gaps can still be identified indirectly using \ac{NDMI} due to a shift in the forest texture, as new internal shadows from nearby trees appear on the edges of the newly created gap (see figure \ref{fig-gap-vi-model}, C). This allows for identifying selective logging of smaller trees, however, it is an indirect indicator of gaps. Shadows may also shift due to sun-sensor angle geometry, potentially confounding automated detection algorithms.
 
 \subsection{Logging roads}
 
 Case of Guyana 2017: logging roads are easy to detect, but not skid trails. In other cases logging roads are not detected either (only skid trails used/under canopy/too narrow)
 
+\subsection{Clear-cuts}
+
+% Case of Peru 2013: clear-cuts highly affect \ac{NDVI} for a year, followed by an increase in \ac{NDVI} compared to the beginning due to less shadowing
+
+When deforestation happens as part of slash-and-burn agriculture or shifting cultivation, as the case was in the Peru study site, it can be identified using methods based on time series in an automated way. Since the area that is affected is large, Landsat imagery can be used for this purpose, and its long archive is andvantageous in that case. In case of tree plantations or shifting cultivation, this method can be used to determine the time it takes for the canopy to regrow and reach pre-harvest levels, though the estimates depend on how fast the vegetation index used saturates (see figure \ref{fig-peru-shifting-cultivation}). However, this type of logging is already relatively well-understood and is not usually considered to be selective logging.
+
+% In \ac{NDVI} the post-harvest values may become higher than pre-harvest ones due to 
+
 \section{Comparison of vegetation indices}
 
-Which VI is suited for a particular case
+Of the five vegetation indices tested (\ac{NDVI}, \ac{NDMI}, \ac{NBR}, \ac{EVI}, \ac{MSAVI}), three groups were identified according to how the indices perform in forests and what changes are evident when a selective logging event occurs. No one index is best for detecting selective logging, and a combination of several indices may be advantageous for detection purposes.
+
+\subsection{NDVI}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{thesis-figures/16-guyana17-ndvi-texture}
+  \caption{Texture analysis of the Guyana 2017 study site Sentinel-2 image of February 12. Black corresponds to a standard devation in \ac{NDVI} of 0.0044, white to 0.0921 in a 3 by 3 pixel moving window.}
+  \label{fig-ndvi-texture}
+\end{figure}
+
+\ac{NDVI} was unlike other vegetation indices tested in that shadows cause high rather than low values of the vegetation index. This makes \ac{NDVI} especially useful for initial detection of selective logging treefall gaps. As long as the background behind the canopy is non-photosynthetic and the gap size compared to sensor spatial resolution allows for it, gaps in \ac{NDVI} stand out clearly from the surroundings. Forests appear rather homogeneous in \ac{NDVI}, since internal shadowing causes an increase in \ac{NDVI}, but a small one, since \ac{NDVI} is close to saturation (0.85-0.95) in forests in the first place. A gap with a soil background visible causes a marked decrease in \ac{NDVI}.
+
+One possible application for \ac{NDVI} in treefall gap detection would be in spatial texture analysis. \citet{asner_remote_2002} used variance in a 3 by 3 pixel moving window on Landsat \ac{ETM+} imagery as an indicator of texture, and while it did not result in useful detection of treefall gaps, it could be useful in combination with Sentinel-2 \ac{MSI} imagery (see figure \ref{fig-ndvi-texture}, cf. figure \ref{fig-guyana-sentinel2-tci}). There is a number of spatial texture analysis methods, such as the median above 90th percentile used by \citet{hamunyela_using_2016}, and more research is needed to determine the most appropriate method specifically for treefall gap detection.
+
+\subsection{NDMI, NBR}
+
+While \ac{NBR} is a highly popular index for logging detection \citep{shimizu_using_2017, schneibel_assessment_2017}, the related \ac{NDMI} had a more pronounced change in values after a selective logging event, the most of all indices tested (see figure \ref{fig-boxplots}). Thus \ac{NDMI} is the most useful single vegetation index for detecting selective logging events of all the ones tested in this study.
+
+Furthermore, neither \ac{NDMI} nor \ac{NBR} are affected by cloud shadows, therefore more data can be used. \ac{NDMI} is also less affected by thin clouds compared to other indices, with the exception of \ac{EVI}. This is a major advantage in the Amazon region, where cloud cover if frequent, and is also useful in the cases when the built-in cloud and cloud shadow detection algorithms for satellite imagery products fail to detect thin clouds and cloud shadows properly.
+
+However, while \ac{NDMI} is highly sensitive to logging events, it is important to keep in mind that its sensitivity to internal shadows is at least as strong as the sensitivity to newly appearing bare soil. This property of \ac{NDMI} is in part the reason why it is sensitive to selective logging events in the first place, as logged trees with a small canopy will leave only a shift in shadows visible. But this means that there is a risk of false positives caused by internal shaows shifting due to a shift in sun-camera angle geometry, rather than real logging events. For methods based on time series, images taken at similar solar angles are necessary for consistency. Another issue with \ac{NDMI} and \ac{NBR} is the need for \ac{SWIR} bands that are often available at a lower spatial resolution than visible and \ac{NIR} bands. Bilinear interpolation was found to work well for upsampling Sentinel-2 \ac{SWIR} bands, but at a cost of blurring roads.
+
+One way to get the best of both \ac{NDVI} and \ac{NDMI} could be to use \ac{NDVI} for detecting the larger selective logging features (newly built roads and log decks, large treefall gaps) in order to detect the presence of a selective logging operation in an area, and then use \ac{NDMI} to detect the smaller treefall gaps in order to determine the intensity of the selective logging operation within the area.
+
+\subsection{EVI, MSAVI}
+
+\ac{EVI} and \ac{MSAVI} have been found to have a medium sensitivity to treefall gaps, in between that of \ac{NDVI} and \ac{NDMI}. They are sensitive to both internal shadows and bare soil, but less than \ac{NDMI}. This makes \ac{EVI} and \ac{MSAVI} less useful than the other vegeteation indices tested, since the treefall gaps do not stand out from natural internal shadowing of a forest when looking at the spatial pattern, and the difference in values before and after logging from time series is low compared to other vegetation indices (see figure \ref{fig-boxplots}). The main use of \ac{EVI} is that it is capable of minimising the impact of thin clouds (but not cloud shadows) on the vegetation signal underneath, whereas the main use of \ac{MSAVI} is that it only requires the red and \ac{NIR} reflecatance bands, so it can be derived from sensors that capture few optical bands.
 
 \section{Comparison of sensors}
+
+\citet{read_spatial_2003} that were made by looking at the very high resolution Ikonos imagery. This suggests that 10 m resolution is a good starting point for selective logging detection and monitoring, since it allows for a frequent revisit time needed for time-series-based methods, and allows for detecting treefall gaps, which is a direct measure of selective logging intensity.
 
 Analysis of Landsat vs ASTER vs Sentinel-2; which one to use for a particular use-case
 
@@ -522,6 +590,8 @@ Analysis of Landsat vs ASTER vs Sentinel-2; which one to use for a particular us
 Why did others succeed (reproducibility, validation importance)
 
 \section{Treefall gap detection challenges}
+
+However, detecting selective logging from satellite imagery is nonetheless a complex issue, with a number of different cases where some methods may apply and some may not. An overview of the cases where detecting logging is possible as identified in this study follows.
 
 \subsection{Tree seasonality}
 
