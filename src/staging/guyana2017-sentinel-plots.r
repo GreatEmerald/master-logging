@@ -406,6 +406,23 @@ GetPixelValues = function(register, vi, filter_clouds=FALSE)
     return(PixelValues)
 }
 
+# Append t-test results into a data.frame
+TTestToDF = function(df=NULL, modeldata, name="")
+{
+    model = t.test(Value/10000~When, data=modeldata)
+    DiffInMeans = model$estimate[2] - model$estimate[1]
+    # Separate t-tests to get confidence of means
+    ConfidenceBefore = t.test(modeldata[modeldata$"When"=="Before","Value"]/10000)
+    CBError = ConfidenceBefore$conf.int[2] - ConfidenceBefore$estimate
+    ConfidenceAfter = t.test(modeldata[modeldata$"When"=="After","Value"]/10000)
+    CAError = ConfidenceAfter$conf.int[2] - ConfidenceAfter$estimate
+    NewRow = data.frame(Name=name, MeanBefore=model$estimate[1], MeanBeforeError=CBError,
+        MeanAfter=model$estimate[2], MeanAfterError=CAError,
+        Difference=DiffInMeans, DiffError=-DiffInMeans-model$conf.int[1], PValue = model$p.value, # Negate diff because t.test interval is after-before
+        stringsAsFactors=FALSE, row.names=NULL)
+    return(rbind(df, NewRow))
+}
+
 ## Plot everything
 
 # Not the best
@@ -413,35 +430,35 @@ AllNDVIs = GetPixelValues(GapRegister, "NDVI")
 pdf("../../thesis/thesis-figures/03-boxplot-ndvi.pdf", 3, 4)
 boxplot(Value/10000~When, data=AllNDVIs, main="NDVI")
 dev.off()
-t.test(Value/10000~When, data=AllNDVIs) # Significant; before 0.83, after 0.75
+TTT = TTestToDF(modeldata=AllNDVIs, name="NDVI in affected pixels") # Significant; before 0.83, after 0.75
 
 # The best
 AllNDMIs = GetPixelValues(GapRegister, "NDMI")
 pdf("../../thesis/thesis-figures/04-boxplot-ndmi.pdf", 3, 4)
 boxplot(Value/10000~When, data=AllNDMIs, main="NDMI")
 dev.off()
-t.test(Value/10000~When, data=AllNDMIs) # Significant; before 0.31, after 0.15
+TTT = TTestToDF(TTT, AllNDMIs, name="NDMI in affected pixels") # Significant; before 0.31, after 0.15
 
 # Second best; with filtering may be the best
 AllNBRs = GetPixelValues(GapRegister, "NBR")
 pdf("../../thesis/thesis-figures/05-boxplot-nbr.pdf", 3, 4)
 boxplot(Value/10000~When, data=AllNBRs, main="NBR")
 dev.off()
-t.test(Value/10000~When, data=AllNBRs) # Significant; before 0.63, after 0.48
+TTT = TTestToDF(TTT, AllNBRs, name="NBR in affected pixels") # Significant; before 0.63, after 0.48
 
 # Like NDVI
 AllMSAVIs = GetPixelValues(GapRegister, "MSAVI")
 pdf("../../thesis/thesis-figures/06-boxplot-msavi.pdf", 3, 4)
 boxplot(Value/10000~When, data=AllMSAVIs, main="MSAVI")
 dev.off()
-t.test(Value/10000~When, data=AllMSAVIs) # Significant; before 0.54, after 0.44
+TTT = TTestToDF(TTT, AllMSAVIs, name="MSAVI in affected pixels") # Significant; before 0.54, after 0.44
 
 # Like NDVI
 AllEVIs = GetPixelValues(GapRegister, "EVI")
 pdf("../../thesis/thesis-figures/07-boxplot-evi.pdf", 3, 4)
 boxplot(Value/10000~When, data=AllEVIs, main="EVI")
 dev.off()
-t.test(Value/10000~When, data=AllEVIs) # Significant; before 0.54, after 0.47
+TTT = TTestToDF(TTT, AllEVIs, name="EVI in affected pixels") # Significant; before 0.54, after 0.47
 
 ## Plot best pixels only
 
@@ -475,15 +492,27 @@ t.test(Value/10000~When, data=BestEVIs) # Insignificant; before 0.49, after 0.46
 ControlRegister = expand.grid(tree_id=seq(35,50,1), vi=c("NDVI", "NDMI"), row=c(1, 15), column=c(1,15), best=FALSE)
 
 ControlNDVIs = GetPixelValues(ControlRegister, "NDVI", TRUE)
+TTT = TTestToDF(TTT, ControlNDVIs, "NDVI control")
 boxplot(Value/10000~When, notch=TRUE, data=ControlNDVIs)
 ControlNDMIs = GetPixelValues(ControlRegister, "NDMI", TRUE)
+TTT = TTestToDF(TTT, ControlNDMIs, "NDMI control") ## Significant...
 boxplot(Value/10000~When, notch=TRUE, data=ControlNDMIs)
 ControlNBRs = GetPixelValues(ControlRegister, "NBR", TRUE)
+TTT = TTestToDF(TTT, ControlNBRs, "NBR control")
 boxplot(Value/10000~When, notch=TRUE, data=ControlNBRs)
 ControlMSAVIs = GetPixelValues(ControlRegister, "MSAVI", TRUE)
+TTT = TTestToDF(TTT, ControlMSAVIs, "MSAVI control") ## Very significant...
 boxplot(Value/10000~When, notch=TRUE, data=ControlMSAVIs)
 ControlEVIs = GetPixelValues(ControlRegister, "EVI", TRUE)
+TTT = TTestToDF(TTT, ControlEVIs, "EVI control") ## Also very significant...
 boxplot(Value/10000~When, notch=TRUE, data=ControlEVIs)
+
+## Write table to disk
+
+RoundedTTT = data.frame(Name=TTT$Name, MeanBefore=round(TTT$MeanBefore, 3), MeanBeforeError=round(TTT$MeanBeforeError, 3),
+    MeanAfter=round(TTT$MeanAfter, 3), MeanAfterError=round(TTT$MeanAfterError, 3), Difference=round(TTT$Difference, 3),
+    DiffError=round(TTT$DiffError, 3), PValue=round(TTT$PValue, 3))
+write.csv(RoundedTTT, "../data/output/Guyana2017-VI-magnitudes.csv")
 
 ## Test correlation between indices nearby our points
 
