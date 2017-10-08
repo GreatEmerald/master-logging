@@ -14,6 +14,7 @@
 \usepackage[acronym,toc,shortcuts,nohypertypes=acronym]{glossaries} % Acronyms
 \usepackage{tikz} % Charts
 \usepackage{subcaption} % Grid of figures
+\usepackage{tabulary} % Autostretch columns
 \renewcommand{\familydefault}{\sfdefault}
 \bibliographystyle{apalike}
 
@@ -73,6 +74,8 @@
 \newacronym{DEM}{DEM}{\underletter{D}igital \underletter{E}levation \underletter{M}odel}
 \newacronym{SRTM}{SRTM}{\underletter{S}huttle \underletter{R}adar \underletter{T}opography \underletter{M}ission}
 \newacronym{NA}{NA}{\underletter{N}ot \underletter{A}vailable}
+\newacronym{GiB}{GiB}{\underletter{G}ib\underletter{i}\underletter{b}ytes}
+\newacronym{RAM}{RAM}{\underletter{R}andom \underletter{A}ccess \underletter{M}emory}
 \makenoidxglossaries
 
 \geometry{top=1.25cm,bottom=0.96cm,inner=2cm,outer=1.91cm,foot=0cm,includeheadfoot} % First page margins
@@ -238,19 +241,35 @@ $\rho_{1600}$ indicates surface reflectance in the \ac{SWIR} band centered aroun
 
 \section{Field campaigns} \label{sec-campaigns}
 
-In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_menaca_estimation_2017} was used. In three areas during different years, selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself.
+\begin{table}
+  \resizebox{\textwidth}{!}{
+    \begin{tabulary}{1.13\textwidth}{lLLLLLLLL}
+    &  &  & \multicolumn{2}{l}{\textbf{Landsat 7 \ac{ETM+}}} & \multicolumn{2}{l}{\textbf{Landsat 8 \ac{OLI}}} & \multicolumn{2}{l}{\textbf{Sentinel-2 \ac{MSI}}}\\
+    \cline{4-9}
+    \textbf{Study site} & \textbf{Logging date} & \textbf{Known logged trees} & \textbf{Observations} & \textbf{Stable history} & \textbf{Observations} & \textbf{Stable history} & \textbf{Observations} & \textbf{Stable history}\\
+    \hline
+    Peru & 2013-11 & 9 & 731 & Yes & 180 & No & 0 & No\\
+    Guyana 2014 & 2014-11 & 9 & 335 & Yes & 93 & No & 0 & No\\
+    Guyana 2017 & 2017-01 & 16 & 672 & Yes & 186 & Yes & 70 & No
+    \end{tabulary}
+  }
+  \caption{Summary of satellite imagery used for each study site. Observations are the total number of images processed for the study site, stable history indicates whether there were enough observations before the logging event to allow for analysis based on time series.}
+  \label{tab-observations}
+\end{table}
+
+
+In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_menaca_estimation_2017} was used. In three areas during different years (see figure \ref{fig-all-sites}), selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself. See table \ref{tab-observations} for a summary of the satellite imagery used for each study site.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{thesis-figures/17-all-sites-odg}
+    \caption{Study sites with potential locations and numbers of selective logging treefall gaps, in the context of South America.}
+    \label{fig-all-sites}
+\end{figure}
 
 \subsection{Peru, 2013}
 
-% TODO: What to show in these images? Closest point of interest, Landsat tile, close zoom-in, etc.?
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{thesis-figures/01-peru-sites}
-    \caption{The location of known selective logging sites and canopy gaps in the Peru study site, overlaid on Google satellite imagery.}
-    \label{fig-peru}
-\end{figure}
-
-The first field campaign was in November of 2013 in the Madre de Dios region of Peru. The selective logging operation took place in a forest east of the village Planchón, which is 37 km north of the region's capital city Puerto Maldonado (see figure \ref{fig-peru}). This region has a dry and a wet season, the latter spans from December to March. In the area, shifting cultivation with cattle ranging and papaya plantations is encroaching upon previously intact forest, due to the proximity to the Interoceanic Road that crosses Puerto Maldonado and goes through Planchón to Bolivia and Brazil. The selective logging campaign was carried out by small farmland owners who obtained a grant for selective logging in the area, but did not have logging equipment such as skidders (logs were transported on motorcycles). The larger trees in the study area have a canopy diameter of 20-30 m.
+The first field campaign was in November of 2013 in the Madre de Dios region of Peru. The selective logging operation took place in a forest east of the village Planchón, which is 37 km north of the region's capital city Puerto Maldonado. This region has a dry and a wet season, the latter spans from December to March. In the area, shifting cultivation with cattle ranging and papaya plantations is encroaching upon previously intact forest, due to the proximity to the Interoceanic Road that crosses Puerto Maldonado and goes through Planchón to Bolivia and Brazil. The selective logging campaign was carried out by small farmland owners who obtained a grant for selective logging in the area, but did not have logging equipment such as skidders (logs were transported on motorcycles). The larger trees in the study area have a canopy diameter of 20-30 m.
 
 Nine trees to be cut down were imaged from 13 positions arranged in a rectangle whose centre is the approximate location of where the tree crown would fall after logging. The location of each of the positions was determined using two separate Garmin \ac{GPS} devices. After logging, the same sites were imaged a second time. In this study, the centroid of all the measured points for each imaging site was used as a the location of the trees that were logged. Both dates before and after logging were recorded. The actual logging event happened in between the two dates, which were between 2 and 6 days apart.
 
@@ -272,7 +291,7 @@ The third field campaign took place in the East Berbice-Corentyne region of Guya
 
 In this campaign, a large number of inventoried trees were imaged, but only 16 of them were later selectively logged. In addition, no post-logging scans were made. Furthermore, in this campaign, a number of trees with different heights and \ac{DBH} were inventoried at the same points. Some of the trees to be cut down were small (20 cm \ac{DBH}) and below the canopy of larger trees.
 
-The area of selective logging was covered by the Sentinel-2 granules 21NUE and 21NUF, and Landsat tiles with paths 230 and 231, row 57. 185 Landsat 8 \ac{OLI} images and 64 Sentinel-2 \ac{MSI} images of this area were processed in total.
+The area of selective logging was covered by the Sentinel-2 granules 21NUE and 21NUF, and Landsat tiles with paths 230 and 231, row 57. 185 Landsat 8 \ac{OLI} images and 70 Sentinel-2 \ac{MSI} images of this area were processed in total.
 
 % TODO: Were the trees also all cut down at once, or only a few of the inventoried ones get cut down? Could explain the large gaps with soil. Any data on the height?
 
@@ -394,6 +413,20 @@ For Sentinel-2 \ac{MSI} imagery analysis, \texttt{BFAST} could not be used due t
   \label{fig-boxplots}
 \end{figure}
 
+\begin{table}
+  \resizebox{\textwidth}{!}{
+    \begin{tabular}{p{2.5cm}p{2.3cm}p{3.3cm}p{3.3cm}p{3.3cm}p{3.5cm}}
+    Study site and year & Potential gap locations & Known logged trees & Logged trees with known logging date & Identified gaps (low confidence) & Identified gaps (high confidence)\\
+    \hline
+    Peru, 2013 & 25 & 16 & 9 & 1 & 0\\
+    Guyana, 2014 & 9 & 9 & 9 & 4 & 0\\
+    Guyana, 2017 & 16 & 16 & 0 & 9 & 7
+    \end{tabular}
+  }
+    \caption{Summary of known logged tree locations and identified treefall gaps. Trees with known logging date are trees with records of dates both before and after logging (the others were missing either one of the two dates). High confidence for gap identification means that at least two vegetation indices indicated a change and the change was persistent at least in two subsequent images right after the logging date.}
+    \label{tab-tree-count}
+\end{table}
+
 % TODO: Expand this example: either add NDVI or a control pixel or Landsat: NDVI and control is a good idea
 \begin{figure}
   \centering
@@ -402,7 +435,7 @@ For Sentinel-2 \ac{MSI} imagery analysis, \texttt{BFAST} could not be used due t
   \label{fig-guyana-ts-ndmi}
 \end{figure}
 
-In the Guyana 2017 study area, from the 16 reference points of known logged trees, only 9 treefall gaps could be identified using Sentinel-2 imagery (see figure \ref{fig-guyana-sentinel2-tci}). Two of the reference points were within a 6 m distance from one another, which made them not distinct from one another. In the other cases where the gap was not visible, an existing gap, logging road or log deck was nearby. In the case there is an existing logging gap, according to \ac{RIL} conventions the tree should be felled in the direction of the gap in order to minimise canopy damage.
+In the Guyana 2017 study area, from the 16 reference points of known logged trees, only 9 treefall gaps could be identified using Sentinel-2 imagery, and only 7 of them with confidence (see table \ref{tab-tree-count} and figure \ref{fig-guyana-sentinel2-tci}). Two of the reference points were within a 6 m distance from one another, which made them not distinct from one another. In the other cases where the gap was not visible, an existing gap, logging road or log deck was nearby. In the case there is an existing logging gap, according to \ac{RIL} conventions the tree should be felled in the direction of the gap in order to minimise canopy damage.
 
 % TODO: Write about t-tests and controls in methods
 \begin{table}
@@ -638,78 +671,85 @@ All in all, studies so far have shown that it is not feasible to detect treefall
 
 \section{Treefall gap detection challenges}
 
-However, detecting selective logging from satellite imagery is nonetheless a complex issue, with a number of different cases where some methods may apply and some may not. An overview of the cases where detecting logging is possible as identified in this study follows.
+Detecting selective logging from satellite imagery is nonetheless a complex issue. A number of scenarios under which automatic detection of treefall gaps would become more challenging or give erroneous results have been identified in this thesis. The causes of these scanarios fall into three categories: vegetation change issues, sensor issues and data handling issues.
 
 \subsection{Tree seasonality}
 
-``White'' trees, fluctuation in VIs through the year
+% TODO: Can indicate seasonality with the Google Earth image
+
+The first issue is the effects of vegetation seasonality. In the Amazon region, both deciduous and evergreen trees mix, and deciduous trees may not have the same leaf senescence cycle across different species. Individual trees that had their leaves dropped have lower \ac{NDVI} values (and show up as white in true colour imagery) and are typically surrounded by trees with intact leaves. As such, they may not be easily distinguished from treefall gaps; even the fact that the leaves of such trees regrow next season may not be a good differentiator, since canopy regrows rapidly after selective logging too. Time series methods are supposed to be able to deal with such seasonality by use of seasonal models, however, this assumes the availability of sufficient stable history to determine a pixel's seasonality, and that the pixel is homogeneous (covers only a single tree) and its area covered is constant (perfect coregistration of images).
 
 \subsection{Sparse forests}
 
-Forests with enough light in the understory, or single trees, coupled with \ac{RIL}: no change or even increase in VIs
+The second issue is that while the methods employed here are suitable for detecting gaps in dense forests, they might not be suitable for sparser forests whose understory receives a sufficient amount of light to be photosynthetic, or for stand-alone trees. In those cases, the logging event would not have an effect on the vegetation indices. The most notable change in this scenario would instead be the disappearance of the logged tree's shadow, which would increase \ac{NDMI} rather than decrease it. This issue may be compounded by seasonality issues (logging a leafless tree in a sparse area would also increase \ac{NDVI}), and \ac{RIL} schemes may also preclude the creation of visible logging roads and decks in such areas.
 
 \subsection{Existing forest gaps}
 
-When a tree is cut down next to an existing clearing/road/logging gap, especially in \ac{RIL}
+The third issue that was identified is logging next to an existing gap. Especially in \ac{RIL}, if a gap or logging road already exists next to a tree slated for logging, it will be logged in the direction of the existing gap or road. The result is that a new gap does not appear. The existing gap may widen, but the change would be subtle compared to the usual case of logging creating an entirely new treefall gap.
 
 \subsection{Understory tree logging}
 
-When trees are below the canopy of other trees (Alvaro mentioned this in Guyana 2017)
+The fourth issue relates to logging targets: in some cases, the trees slated for logging may not be the ones occupying the upper layer of the canopy, but rather be in the understory. This was a case in the Guyana 2017 study site; at the majority of known logging points, multiple trees had been inventoried, but not necessarily the tallest trees would be cut down. In such a case, no change would be visible from optical remote sensing imagery at all, since the canopy of taller trees would cover such an event up, similar to how it covers skid trails.
 
 \subsection{Remote sensing imagery spatial resolution}
 
-Sentinel-2 vs Landsat vs Ikonos et al.
+The spatial resolution of a sensor and the division of the raw data into pixels has an effect on what area a given pixel covers. The coarser the resolution, the larger the area that is integrated over to obtain the reflecatance value, which dilutes the effect of a logging event. The effect is made worse if the canopy of a particular tree falls on the boundary between two or even four pixels, since the integrated area doubles or quadruples in such a case, effectively making it impossible to detect such a logging event. At a resolution of 10 m (100 m² area), there is a reasonable chance that at least one pixel will fall within the canopy of a single tree, but at a 30 m resolution (900 m²) this chance is much lower. As such, whether the logging of a particular tree can be detected may come down to luck of whether the pixel grid aligns favourably or not. In addition, good coregistration of images is important for time series methods; if the images shift by a pixel in between acquisitions, one observation in the time series may refer to a completely different neighbouring tree compared to a subsequent observation.
 
 \subsection{Cloud cover}
 
-Especially problematic in the Amazon, case of Peru 2013
+Another issue with optical remote sensing imagery is the cloud cover, which is very frequent over the Amazon and especially during the rainy season. Dense clouds obscure the tree canopies, whereas light clouds and cloud shadows change the reflectance values. Different vegetation indices react differently to such atmospheric effects: \ac{NDMI} and \ac{NBR} can largely compensate for cloud shadows, \ac{EVI} can compensate for light clouds and cloud edges, whereas the other tested indices are affected by both. Compounding the problem is unreliable cloud and cloud shadow detection algorithms employed by different preprocessing methods. While the \texttt{fmask} algorithm for Landsat data continues to be refined \citep{zhu_improvement_2015, qiu_improving_2017}, it is not yet reliable enough to mask all instances of clouds and cloud shadows (e.g. see figure \ref{fig-peru-shifting-cultivation}, bottom: the single-date downward spikes of lower \ac{NDVI} values are all caused by clouds, but may be detected as logging; in this and other cases, pixels with even the lowest probability of clouds and cloud shadows reported in the quality control layer were masked out). While temporal outliers could be removed using time series, it would also risk removal of true selective logging effects.
 
 \subsection{Time series length}
 
-Case of Sentinel-2: not enough to build a stable history yet
+Data availability over time is an issue as well. While Sentinel-2 \ac{MSI} imagery was found to be sufficient to detect larger treefall gaps, its archive only dates back to late 2015. Given cloud cover, this was not enough to build a stable history for time series analysis. The same issue occurred with Landsat 8 \ac{OLI} data in the Peru study site: while there were enough points for the algorithm to attempt analysis, the history was too brief and so the algorithm reported numerous false positives. The archive lengths are always growing, so the situation is expected to get better in the future (especially for Sentinel-2, with the launch of the Sentinel-2B satellite in 2017), but the detectability of historical selective logging events will largely stay as it is now.
 
 \subsection{Data volume}
 
-Big data, how much space and time it takes to process it all
+Lastly, while time series analysis is powerful and the increasing lengths of pixel times series allows for more opportunities of detection, it comes at a cost of very large volumes of data that have to be processed. For example, Sentinel-2 \ac{MSI} imagery before the end of 2016 is available in collections of granules with a download size of around 5 \ac{GiB}, and after that in single granules with a size of around 0.5 \ac{GiB}. A full time series consisted of 70 such granules. Landsat imagery was smaller, with around 0.3 \ac{GiB} download for 5 vegetation indices per tile, but the time series was much longer, with 731 tiles of \ac{ETM+} and 179 tiles of \ac{OLI} imagery to process for the Peru study site alone. Intermediary results of each processing step had to be stored for validation purposes as well, multiplying the disk space required. The imagery was processed using an 8-thread Intel Core i7-3770 processor with 16 \ac{GiB} \ac{RAM}, and yet it took around a week to obtain the time series of a single sensor for a single study site. Some preprocessing steps were also highly memory-intensive, for instance, the Sentinel-2 atmospheric correction software \texttt{sen2cor} required over 8 \ac{GiB} of \ac{RAM} to process a single granule, precluding the ability to process several granules at a time.
 
 \section{Recommendations}
 
-What would be possible to improve so as to make detection feasible in the future; perhaps summarise this in a table with listed pros and cons
+% TODO: perhaps summarise this in a table with listed pros and cons
+For further research, there are a number of areas that could be improved in order to further advance the ability to automatically detect selective logging events from remote sensing data.
 
 \subsection{Validation data}
 
-In order to draw better conclusions, more data from larger selective logging campaigns would be needed; also the availibility of more high-resolution sensors helps (like ASTER)
+First of all, the availability of validation data is very important. In order to draw better conclusions, more data from larger selective logging field campaigns would be needed, with more observations of logged trees and their logging gaps. The locations of the logging gaps and other logging features, their size, the size of the logged trees and such are all valuable data that could give further insight in what is posible to detect and what is not. Given the results in this thesis, validation data specifically from selective logging campaigns from 2017 onwards would be the most useful due to the availability of Sentinel-2 \ac{MSI} imagery. The availibility of more imagery from higher-resolution sensors (such as ASTER, Ikonos, SPOT) would also help validate the results of a selective logging detection attempt.
 
 \subsection{Cloud masking}
 
-Perform better cloud and shadow detection (classification/temporal or combination of those)
+Extra processing for cloud masking, or improved methods for cloud masking, would help create consistent time series. Since different vegetation indices can deal with certain types of clouds or cloud shadows, different masking approaches for specific vegetation index types (or a chosen vegetation index, if there is only one) would allow making use of partially clouded or shadowed pixels where they can be used, maximising available observations, and masking out cloud influence for vegetation indices that cannot make use of such pixels. Temporal cloud masking (discarding single-date negative outliers), masking based on spatial context such as sNDVI \citep{hamunyela_using_2016}, or a combination of these metods might also improve methods based on time series, however, it might also lead to discarding selective logging events as well. All of these extra processing steps would also require more processing power and storage.
+
+Improvements to the cloud masks provided in the quality control layers of satellite imagery products would benefit all users of the imagery. There are several approaches to cloud masking available, such as using thresholds of cloud indices to predict the presence of clouds (such as done by \texttt{fmask} or PROBA-V quality control) or using machine learning to classify pixels as clouded or not (such as done by Sentinel-2 \texttt{sen2cor} software). More research is needed to identify the best option, or a combination of options, and to apply this knowledge to improve cloud masking for all the sensors.
 
 \subsection{Spatial features}
 
-Other vegetation indices to try; texture analysis; specifics of the extent of a single tree; using the features in time series
+In order to improve the ability to detect treefall gaps, more appraches can be tested. There are additional vegetation indices such as tasseled cap transformation, Normalised Difference Fraction Index \citep{souza_combining_2005}, Transformed Chlorophyll Absorbtion Ratio \citep{haboudane_integrated_2002}, etc. that can be tested for suitability to detect treefall gaps. Spatial features such as various forms of texture analysis and normalisation based on neighbouring pixels can also be tested, in order to see whether making use of information in the surrounding pixels in time series analysis, rather than looking at pixels individually, improves detectability. Trees neighbouring the site of a logged tree are likely to have had similar changes in reflectance over time before the logging event, and divergent ones after the event. However, unfiltered cloud cover or cloud shadows may also cause differences in time series even in adjacent pixels.
 
 \subsection{Post-classification/$F_{Cover}$ comparisons}
 
-Using machine learning for supervised (fuzzy) classification and then compare the results between different times; $F_{Cover}$ is proposed by Copernicus.
+Another option for detecting treefall gaps and other logging features, perhaps even from Landsat imagery, would be to extend the spectral unmixing approach suggested by \citet{asner_canopy_2004} into a fuzzy classification approach using machine learning methods. Such an approach would be able to make use of all optical bands at once, as well as auxiliary data such as time series metrics, spatial context, data from other sensors etc. and be possible to train on mixed pixels rather than assuming a linear mixture. Such a trained fuzzy classification model could then be used to predict either the location of treefall gaps directly, or a well-understood intermediary variable such as $f_{Cover}$ that has a direct relation with canopy gaps (such as done by \citet{bacour_neural_2006}) in order to attempt to locate the gaps using this variable.
 
 \subsection{Higher spatial resolution data}
 
-Ikonos, QuickBird, GeoEye, etc.; using object-oriented methods
+Another option would be to make use of satellite imagery that is of even finer resolution than 10 m, such as that of the PlanetScope satellite constellation (which would be suitable for time series analysis due to a quick revisit time), Ikonos, QuickBird, GeoEye or other such satellites with very high resolution sensors. At such spatial resolution, a tree canopy is represented by several pixels, so object-oriented methods would be necessary to analyse such data, but it would allow tracking individual trees over time by coregistering the unique canopy shapes and relations to neighbouring trees between subsequent acquisitions and detecting any changes to the forest layout over time. The downsides of using such an approach is the massive amounts of data that would need to be processed, and the fact that most of the very high resolution imagery products are commercial and thus not freely available.
 
 \subsection{Multi-sensor data}
 
-Radar and lidar would not have problems with cloud cover, possible sensor fusion (also for classification)
+Imagery from radar or lidar sensors could be either an alternative to optical imagery or used together. Radar imagery would be useful in areas such as the Amazon due to its property of penetrating clouds, and the various beam polarisations giving information about the structure of the objects on the ground. A time series of radar imagery, such as from the Sentinel-1 satellites, would be more consistent than optical imagery, barring speckle effects. Spaceborne and airborne lidar data would also be useful for determining canopy structure changes; a shift in canopy height would be a good indication of a selective logging event. However, currently there are too few operational spaceborne lidar sensors, whereas airborne lidar campaigns are costly and thus lidar data is updated infrequently.
+
+Lastly, data from multiple sensors, optical or otherwise, could be fused to enhance time series of a specific location. For instance, Landsat 7 \ac{ETM+} and Landsat 8 \ac{OLI} imagery have the same spatial resolution and mostly the same optical bands, so imagery pooled together can be used to make time series denser. However, images still need to be calibrated across sensors, since either or both spectral information retrieval and geometric correction may not match precisely between sensors, resulting in the difference between time steps being driver by differences between sensors rather than real difference on the ground. Fusing data from sensors that are even more different, such as with different spatial resolutions and projections, is even more challenging. On the other hand, a machine learning approach could make use of data from different sensors easier, as the data they provide would be treated as separate variables, that may potentially help to predict the location of selective logging features.
 
 \chapter{Conclusion}
 
 \begin{enumerate}
- \item Possible to detect large tree gaps using Sentinel-2, almost impossible with Landsat; automation will be possible in the future as Sentinel-2 time series grow longer
- \item \ac{NDMI} is most sensitive to shadows, so useful for detecting small gaps, but at a risk of false positives; \ac{NDVI} is sensitive to bare soils, so more reliable, but needs higher resolution and a dense forest
+ \item Larger treefall gaps were discernable from surrounding forest in Sentinel-2 \ac{MSI} image time series, but not in Landsat 7 \ac{ETM+} or Landsat 8 \ac{OLI} imagery; skid trails were not discernable in any of the imagery, whereas logging roads and log decks were discernable in all of the imagery. It was not possible to automate detection of treefall gaps using Sentinel-2 \ac{MSI} imagery because of the short time series so far.
+ \item \ac{NDMI} was found to be the most sensitive index to newly created treefall gaps due to its sensitivity to internal shadowing in forests but low sensitivity to cloud shadows. \ac{NDVI} was found to be a good indicator of large gaps with soil background. \ac{EVI} was found to be insensitive to thin cloud cover, but also less sensitive to newly formed treefall gaps.
 \end{enumerate}
 
 \chapter{Acknowledgements}
 
-Jose and Alvaro for the data
+I would like to thank Jose Gonzalez de Tanago Menaca and Alvaro Lau Sarmiento for producing and providing the raw data of treefall gap locations in the study sites used in this thesis, a description of the ecological and social background of the study sites, as well as the description of data collection protocols.
 
 \printnoidxglossary[type=acronym]
 

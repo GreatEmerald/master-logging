@@ -199,7 +199,7 @@ BP = bfmPixel(TimeSeries, start=c(2013.7), cell=13, formula=response~harmon, ord
 plot(BP$bfm)
 
 ## Google Earth shows a post-2010 gap that's right at the border between this and the north pixel
-# See landsat 8 also
+# See landsat 8 also; it shows a persistent gap post-2015 but here it's not consistent
 TimeSeries = TSF("ndmi", 22)
 spplot(TimeSeries, CleanTSIDs(TimeSeries))
 BP = bfmPixel(TimeSeries, start=c(2013.7), cell=13, formula=response~harmon, order=1)

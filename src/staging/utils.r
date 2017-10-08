@@ -10,11 +10,11 @@ TSF = function(VI, index, dir="/run/media/dainius/Landsat/Peru/landsat7/time-sta
 # Remove all NAs, order by date
 CleanTSIDs = function(TS)
 {
-    Order = order(getZ(TimeSeries))
+    Order = order(getZ(TS))
     OrderNonNA = integer()
     for (i in 1:nlayers(TS))
     {
-        if (!all(is.na(getValues(TimeSeries[[Order[i]]]))))
+        if (!all(is.na(getValues(TS[[Order[i]]]))))
             OrderNonNA = c(OrderNonNA, Order[i])
     }
     return(OrderNonNA)
