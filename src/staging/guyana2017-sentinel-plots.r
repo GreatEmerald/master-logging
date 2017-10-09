@@ -19,6 +19,7 @@
 
 library(raster)
 library(lubridate)
+library(ggplot2)
 
 # TODO: How far apart could the trees be for them to be clumped together? I look at 75 metres on both sides
 # -> Looks like 40m is about right
@@ -528,3 +529,49 @@ for (i in 35:50)
 
 AllVals = data.frame(ndviVals, ndmiVals, nbrVals, eviVals, msaviVals)
 cor(AllVals, use="complete.obs")
+
+## Get correlation between size and amount of affected pixels
+GapSizes = NULL
+for (i in unique(GapRegister$tree_id))
+{
+    NDVIPixels = nrow(GapRegister[GapRegister$tree_id == i & GapRegister$vi == "NDVI",])
+    NDMIPixels = nrow(GapRegister[GapRegister$tree_id == i & GapRegister$vi == "NDMI",])
+    TotalPixels = NDVIPixels + NDMIPixels
+    GapSizes = rbind(GapSizes, data.frame(tree_id=i, total=TotalPixels, ndvi=NDVIPixels, ndmi=NDMIPixels))
+}
+
+# DBH is from the logged trees CSV; note that these are DBH classes, where the number refers to the lowest DBH in the class ("20" means 20 to 40).
+GapSizes = cbind(GapSizes, dbh_min=c(20, 40, 60, 80, 100, 80, 100, 20, 20, 40)+10)
+GapSizes = cbind(GapSizes, dbh_max=c(80, 40, 60, 80, 100, 80, 100, 80, 100, 100)+10)
+GapSizes = cbind(GapSizes, dbh_mean=c(mean(c(80, 20, 60)), 40, 60, 80, 100, 80, 100, mean(c(80, 20)), mean(c(100, 20)), mean(c(100, 60, 40)))+10)
+
+# Some plots
+plot(total~dbh_mean, data=GapSizes)
+summary(lm(total~dbh_mean, data=GapSizes)) # r2 = 0.19, insignificant
+plot(ndvi~dbh_mean, data=GapSizes)
+summary(lm(ndvi~dbh_mean, data=GapSizes)) # r2 = 0, very insignificant
+plot(ndmi~dbh_mean, data=GapSizes)
+summary(lm(ndmi~dbh_mean, data=GapSizes)) # r2 = 0.44, borderline significant
+
+plot(total~dbh_max, data=GapSizes)
+summary(lm(total~dbh_max, data=GapSizes)) # r2 = 0, very insignificant
+plot(ndvi~dbh_max, data=GapSizes)
+summary(lm(ndvi~dbh_max, data=GapSizes)) # r2 = 0.26, insignificant
+plot(ndmi~dbh_max, data=GapSizes)
+summary(lm(ndmi~dbh_max, data=GapSizes)) # r2 = 0.19, insignificant
+
+plot(total~dbh_min, data=GapSizes)
+summary(lm(total~dbh_min, data=GapSizes)) # r2 = 0.38, borderline insignificant
+plot(ndvi~dbh_min, data=GapSizes)
+summary(lm(ndvi~dbh_min, data=GapSizes)) # r2 = 0.11, insignificant
+plot(ndmi~dbh_min, data=GapSizes)
+summary(lm(ndmi~dbh_min, data=GapSizes)) # r2 = 0.40, borderline insignificant
+
+# Separate into groups by NDVI and NDMI
+GapsSizesLong = reshape(GapSizes, varying=c("ndvi","ndmi"), idvar="tree_id", direction="long", v.names="Gap.size",
+    timevar="v.index", times=c("NDVI", "NDMI"), drop="total")
+
+cairo_pdf("../thesis/thesis-figures/18-gap-vs-dbh.pdf", 5, 3)
+p = ggplot(GapsSizesLong, aes(dbh_max, Gap.size*100, colour=v.index))
+p + theme(legend.title=element_blank()) + geom_jitter(width=1.5, height=1.5) + geom_smooth(method="lm", se=FALSE) + xlab("Diameter at breast height (cm)") + ylab("Gap size (m²)")
+dev.off()

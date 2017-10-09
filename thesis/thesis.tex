@@ -143,7 +143,10 @@
 \newgeometry{top=1.25cm,bottom=1.25cm,inner=1.91cm,outer=1.91cm,foot=1.19cm,includeheadfoot}
 \chapter*{Abstract}
 
-\textbf{Keywords:} 
+% 300 words max
+Logging in the Amazon is primarily selective, with individual valuable trees cut down, leaving the others untouched. The direct effects of selective logging are difficult to quantify using remote sensing techniques due to a small extent of treefall gaps left after logging, and the quick canopy regrowth that follows. In this thesis, the time series of five vegetation indices (NDVI, NDMI, NBR, EVI, MSAVI) derived from Landsat 7 ETM+, Landsat 8 OLI and Sentinel-2 MSI imagery were evaluated for detecting selective logging features in three study sites in the Amazon. Logging roads and log decks could be identified both manually and automatically using imagery from any of the sensors, given enough history for building a stable time series. Skid trails could not be identified using any sensors. Treefall gaps could not be identified using Landsat imagery, but most treefall gaps could be manually identified in Sentinel-2 MSI imagery. From the vegetation indices, NDMI was the most sensitive to reflectance changes in treefall gaps after logging, followed by NBR, due to their sensitivity to changes in forest internal shadowing. NDVI was sensitive only to soil and non-photosynthetic vegetation uncovered after logging. Changes in EVI and MSAVI reflected changes in both internal shadows and uncovered soil and non-photosynthetic vegetation, but the magnitude of change was the lowest of all indices tested. This study shows that it is possible to detect treefall gaps in Sentinel-2 imagery, and potentially automate it in the future, so that estimates of selective logging volumes could be based on direct observations of treefall gaps, rather than assuming a correlation between roads and log decks with the volume of timber harvested.
+
+\textbf{Keywords:} selective logging, treefall gap, logging road, skid trail, log deck, time series, Landsat, Sentinel-2, BFAST, Amazon, Peru, Guyana
 
 \tableofcontents
 
@@ -258,7 +261,7 @@ $\rho_{1600}$ indicates surface reflectance in the \ac{SWIR} band centered aroun
 \end{table}
 
 
-In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_menaca_estimation_2017} was used. In three areas during different years (see figure \ref{fig-all-sites}), selective logging campaigns were organised by the governments of the respective countries, and a team of researchers from \ac{WUR} went to take lidar scans of a number of trees that were selected to be cut down. Not all selectively logged trees were scanned, and a number of scans were taken of trees that did not get logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself. See table \ref{tab-observations} for a summary of the satellite imagery used for each study site.
+In order to be able to detect treefall gaps and other selective logging features, the exact location of trees that have been selectively logged and the time of logging was needed. For this purpose, the metadata of selective logging site lidar scans by \citet{gonzalez_de_tanago_menaca_estimation_2017} was used. Data about three areas of the Amazon during different years was used (see figure \ref{fig-all-sites}), where a team of researchers from \ac{WUR} took lidar scans of a number of trees that were selected to be cut down. Not all of the trees that had been logged in the selective logging campaigns were scanned, and a number of scans were taken of trees that ended up not getting logged. In this study, only the metadata (site location information) of the lidar scans were used, not the lidar scan data itself. Satellite imagery of each of these areas was used in order to attempt detection of selective logging features, see table \ref{tab-observations} for a summary.
 
 \begin{figure}
     \centering
@@ -269,9 +272,11 @@ In order to be able to detect treefall gaps and other selective logging features
 
 \subsection{Peru, 2013}
 
-The first field campaign was in November of 2013 in the Madre de Dios region of Peru. The selective logging operation took place in a forest east of the village Planchón, which is 37 km north of the region's capital city Puerto Maldonado. This region has a dry and a wet season, the latter spans from December to March. In the area, shifting cultivation with cattle ranging and papaya plantations is encroaching upon previously intact forest, due to the proximity to the Interoceanic Road that crosses Puerto Maldonado and goes through Planchón to Bolivia and Brazil. The selective logging campaign was carried out by small farmland owners who obtained a grant for selective logging in the area, but did not have logging equipment such as skidders (logs were transported on motorcycles). The larger trees in the study area have a canopy diameter of 20-30 m.
+The first field campaign was in November of 2013 in the Madre de Dios region of Peru. The selective logging operation took place in a forest east of the village Planchón, which is 37 km north of the region's capital city Puerto Maldonado. This region has a dry and a wet season, the latter spans from December to March. In the region, agricultural areas are encroaching upon previously intact forest \citep{scullion_assessing_2014}. Around Planchón, the agricultural fields are gradually expanding towards the forest from the Interoceanic Road that crosses Puerto Maldonado and goes through Planchón to Bolivia and Brazil.
 
-Nine trees to be cut down were imaged from 13 positions arranged in a rectangle whose centre is the approximate location of where the tree crown would fall after logging. The location of each of the positions was determined using two separate Garmin \ac{GPS} devices. After logging, the same sites were imaged a second time. In this study, the centroid of all the measured points for each imaging site was used as a the location of the trees that were logged. Both dates before and after logging were recorded. The actual logging event happened in between the two dates, which were between 2 and 6 days apart.
+The selective logging campaign was carried out by local villagers who obtained a permit for selective logging and harvesting of Brazil nuts (\textit{Bertholletia excelsa} Humb. \& Bonpl.) in a Brazil nut concession in a natural forest. The villagers did not have logging equipment such as skidders; instead, logs were processed on the spot using chainsaws, and the resulting planks were transported from the forest to the nearest road on tricycles. The larger trees in the study area have a canopy crown size of 20-30 m.
+
+Nine trees to be cut down were scanned from 8 positions arranged in 30 by 50 m rectangles. The trees that were slated for logging were located on one end of the rectangle and were cut in a way so that they fall towards the middle of the plots. The location of each of the positions was determined using two separate Garmin \ac{GPS} devices. After logging, the same sites were scanned a second time. In this study, the centroid of all the measured points for each scanning site was used as a the approximate location of the treefall gaps. The scan dates both before and after logging were recorded. The actual logging event happened in between the two dates, which were between 2 and 6 days apart.
 
 In addition to the logged tree data, there were also point locations of canopy gaps (seven in total) that are likely to have been the result of previously logged trees in the selective logging campaign (but may also have been created in earlier selective logging campaigns). In the case of gaps, only the post-logging date was recorded. In addition to \ac{GPS} data, there was also data on the nine main sites in a database, however, the locations did not match the locations measured by GPS. The entries in the database were offset from the GPS measurements by 540 metres to the north. Therefore in total 25 points from the Peru campaign were analysed for changes in reflectance following a selective logging event.
 
@@ -281,19 +286,17 @@ The area in which selective logging was known to take place was covered by Lands
 
 \subsection{Guyana, 2014}
 
-The second field campaign took place in the east of the Cuyuni-Mazaruni region of Guyana in November 2014. The nine selectively logged trees that were imaged are located in the Wineperu concession, 40 kilometres south of the region's capital, Bartica. The town is connected to the selective logging sites by a road. The sites are very close to the road, 300 m away at most. Like the Peru campaign, the trees were imaged before and after the selective logging event. The area of selective logging was covered by Landsat images of path 231, row 56. In this study, 332 Landsat 7 \ac{ETM+} images of this area were processed in total.
+In both of the Guyana selective logging campaigns, logging was carried out by the Guyana Forestry Commission, a governmental organisation responsible for supervising forest concessions as well as granting and renewing logging permits in them. Lidar scanning was done as a research partnership between it and \ac{WUR} under the project \textit{SilvaCarbon}. The scans in these study sites were made by making plots of 30 by 40 m, and scanning from 13 positions. The trees were cut from a side towards the middle of the plot as well.% (funded by USAID): Measuring forest degradation for REDD+: a synthesis study across five SilvaCarbon countries.
 
-% TODO: How large are the trees? Selective logging lidar info?
+The second field campaign took place in the east of the Cuyuni-Mazaruni region of Guyana in November 2014. The nine selectively logged trees that were scanned are located in the Wineperu concession of the Vairtana company, 40 kilometres south of the region's capital, Bartica. The town is connected to the selective logging sites by a road. The sites are very close to the road, 300 m away at most. Like the Peru campaign, the trees were scanned before and after the selective logging event. The area of selective logging was covered by Landsat images of path 231, row 56. In this study, 332 Landsat 7 \ac{ETM+} images of this area were processed in total.
 
 \subsection{Guyana, 2017}
 
-The third field campaign took place in the East Berbice-Corentyne region of Guyana in January 2017. The area where the trees were imaged is a very remote area at the end of a logging access road originally built in 1997 by the UNAMCO logging company, going south from the town of Kwakwani. After UNAMCO was closed in 2007, the road went unused until 2013, when a new logging company bought the concession and extended the road. For ease of timber extraction, a number of new primary logging roads (20 m across, gravel) were built in the logging site starting from 2014. Kwakwani is 85 kilometres north of the selective logging site.
+The third field campaign took place in the East Berbice-Corentyne region of Guyana in January 2017. The area where the trees were scanned is a very remote area at the end of a logging access road originally built in 1997 by the UNAMCO logging company, going south from the town of Kwakwani. After UNAMCO was closed in 2007, the road went unused until 2013, when the Ro-Anc company bought the concession and extended the road. For ease of timber extraction, a number of new primary logging roads (20 m across, gravel) were built in the logging site starting from 2014. Kwakwani is 85 kilometres north of the selective logging site.
 
-In this campaign, a large number of inventoried trees were imaged, but only 16 of them were later selectively logged. In addition, no post-logging scans were made. Furthermore, in this campaign, a number of trees with different heights and \ac{DBH} were inventoried at the same points. Some of the trees to be cut down were small (20 cm \ac{DBH}) and below the canopy of larger trees.
+In this campaign, a large number of inventoried trees were scanned, but trees were logged only in 16 of the locations. In some of these locations, clumps of more than one tree was inventoried and logged, with different heights and \ac{DBH}, up to a total of 26 trees. The \ac{DBH} class (20-40 cm, 40-60 cm, 60-80 cm, 80-100 cm and over 100 cm) of each tree was recorded. Some of the logged trees were relatively small (20-40 cm \ac{DBH}) and below the canopy of larger trees. In addition, no post-logging scans were made, so it is unknown when exactly the logging events happened. In this study it was assumed that the logging happened a similar time after the pre-logging scan as in the previous campaigns.
 
 The area of selective logging was covered by the Sentinel-2 granules 21NUE and 21NUF, and Landsat tiles with paths 230 and 231, row 57. 185 Landsat 8 \ac{OLI} images and 70 Sentinel-2 \ac{MSI} images of this area were processed in total.
-
-% TODO: Were the trees also all cut down at once, or only a few of the inventoried ones get cut down? Could explain the large gaps with soil. Any data on the height?
 
 \section{Preprocessing workflow}
 
@@ -384,11 +387,10 @@ For Sentinel-2 \ac{MSI} imagery analysis, \texttt{BFAST} could not be used due t
 \subsubsection{Sentinel-2}
 \label{sec-treefall-sentinel2}
 
-% TODO: Add points of known trees? Arrows, or transparent circles
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{thesis-figures/02-guyana-sentinel2-tci}
-  \caption{Sentinel-2 \ac{MSI} true colour image subset from the Guyana 2017 study site. (a): site prior to known selective logging (January 13, 2017). The dark parts on the right are cloud shadows. (b): site after known selective logging (February 12, 2017).}
+  \caption{Sentinel-2 \ac{MSI} true colour image subset from the Guyana 2017 study site. White circles indicate the 75 m radius around known logging locations. (a): site prior to known selective logging (January 13, 2017). The dark parts on the right are cloud shadows. (b): site after known selective logging (February 12, 2017).}
   \label{fig-guyana-sentinel2-tci}
 \end{figure}
 
@@ -462,6 +464,16 @@ In the Guyana 2017 study area, from the 16 reference points of known logged tree
 
 
 Of the treefall gaps that were visible, on average the changes affected 5 pixels (500 m² area) in NDVI and 4 pixels (400 m² area) in NDMI. The values of each vegetation index tested were significantly ($ p < 0.003 $) lower after logging than before it (see table \ref{tab-vi-magnitudes} and figure \ref{fig-boxplots}). See figure \ref{fig-guyana-ts-ndmi} for an example of how the time series of one treefall gap pixel looks like.
+
+\begin{figure}
+  \centering
+  \includegraphics{thesis-figures/18-gap-vs-dbh}
+  \caption{Regressions between the apparent gap size and the \ac{DBH} of the largest tree logged at the location of each gap, grouped by vegetation index. The points are jittered to avoid overplotting. Precision of \ac{DBH} is 20 cm, precision of gap size is 100 m², sample size is 10 gaps.}
+  \label{fig-gap-vs-dbh}
+\end{figure}
+
+
+The correlations between the visible gap size and the \ac{DBH} of the logged tree were insignificant in both NDVI ($r^2=0.26$, $p=0.13$) and NDMI ($r^2=0.19$, $p=0.21$), see figure \ref{fig-gap-vs-dbh}.
 
 \subsubsection{Landsat imagery}
 
