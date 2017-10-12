@@ -1,5 +1,4 @@
-#!/usr/bin/env Rscript
-# Script for detecting deforestation breaks in Sentinel-2 time series
+# Functions to use in raster::overlay; these are for Sentinel-2/Landsat values
 #
 # Copyright (C) 2017  Dainius Masiliunas
 #
@@ -18,16 +17,32 @@
 # You should have received a copy of the GNU General Public License
 # along with the scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-library(bfastSpatial)
+EVI = function(red, nir, blue)
+{
+    red = red/10000
+    nir = nir/10000
+    blue = blue/10000
+    2.5 * (nir-red) / (nir+6*red-7.5*blue+1) * 10000
+} 
 
-input = "/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/41_100-6.grd" # cell 8 is interesting
-TimeSeries = brick(input)
-
-# Unfortunately BFAST has not enough time series to make this work without additional data
-for (i in 1:225){
-BMP = bfmPixel(TimeSeries, start = c(2017, 01), cell=i, formula=response~harmon, order=1)
-plot(BMP$bfm)
-abline(v=2017.0049)
+MSAVI = function(red, nir)
+{
+    red = red/10000
+    nir = nir/10000
+    (2*nir+1 - sqrt((2*nir+1)^2 - 8*(nir-red)))/2 * 10000
 }
 
-# Could try STEF or fuse imagery; but the gap in the important time cannot be easily filled
+NDVI = function(red, nir)
+{
+    (nir-red)/(nir+red) * 10000
+}
+
+NDMI = function(swir, nir)
+{
+    (nir-swir)/(nir+swir) * 10000
+}
+
+NBR = function(swir2, nir)
+{
+    (nir-swir2)/(nir+swir2) * 10000
+}

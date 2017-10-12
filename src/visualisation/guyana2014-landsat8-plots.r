@@ -2,7 +2,7 @@
 
 library(bfastSpatial)
 
-source("staging/utils.r")
+source("visualisation/utils.r")
 
 dir = "/run/media/dainius/Landsat/Guyana2014/Landsat8/time-stacks/"
 dir7 = "/run/media/dainius/Landsat/Guyana2014/Landsat7/time-stacks/"

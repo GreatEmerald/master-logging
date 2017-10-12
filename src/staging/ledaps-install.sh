@@ -9,24 +9,11 @@
 #    by USGS so we don't need to bother with it, but it is less reproducible and it requires waiting for
 #    USGS to actually process the data.
 
-# Try the second approach.
-# See what the example tile can be processed into
-curl --user GreatEmerald https://espa.cr.usgs.gov/api/v1/available-products/LE07_L1TP_230070_20050527_20170115_01_T1
-# We want surface reflectance and EVI for the test
-# Order it in GeoTIFF format, don't care about projections or cropping
-curl --user GreatEmerald -d '{"etm7": {
-                                                    "inputs": ["LE07_L1TP_230070_20050527_20170115_01_T1"], 
-                                                    "products": ["sr", "sr_evi"]
-                                                 }, 
-                                     "format": "gtiff"
-                                     }' https://espa.cr.usgs.gov/api/v1/order
+# The second approach has a web API, but at the moment the transition from Pre-Collection to Collection 1 makes it
+# impossible to download anything. The main way to "order" processing and download is through the web UI by dropping
+# the "products-*.txt" file into the upload box.
 
-                                     
-                                     curl  --user GreatEmerald -d '{"inputs":["LE70290302003123EDC00",
-               "MOD09A1.A2000073.h12v11.005.2008238080250.hdf", "bad_scene_id"]}' https://espa.cr.usgs.gov/api/v1/available-product
-# ...and it's broken, because the API requires the old scene ID as input but cannot locate products by it.
-
-# Looks like we need to fall back to solution #1, or else all we can do is use the web interface...
+# The first approach would require LEDAPS. On CentOS 7:
 
 # Download LEDAPS
 # Install dependencies

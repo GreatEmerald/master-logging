@@ -18,8 +18,10 @@
 # along with the scripts.  If not, see <http://www.gnu.org/licenses/>.
 
 library(raster)
+source("preprocessing/index-utils.r")
 
-Dir = "/run/media/dainius/Landsat/Peru/aster/AST_07XT_00304182013145807_20170821093010_5067/"
+# Set to the target directory
+Dir = "../data/satellite/Peru/aster/AST_07XT_00304182013145807_20170821093010_5067/"
 
 SWIR = raster(file.path(Dir, "band4.tif"))
 SWIR2 = raster(file.path(Dir, "band6.tif"))
@@ -37,6 +39,7 @@ MSAVI = function(red, nir)
     (2*nir+1 - sqrt((2*nir+1)^2 - 8*(nir-red)))/2 * 10000
 }
 
+# SWIR-based indices do not work with post-2008 data!
 Result = overlay(SWIR, NIR, fun=NDMI, filename=file.path(Dir, "ndmi.tif"), datatype="INT2S",
     options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"), progress="text")
 

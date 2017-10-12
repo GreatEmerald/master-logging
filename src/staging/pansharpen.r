@@ -7,3 +7,4 @@ SWIR = raster("../../userdata/master-logging/sentinel/21NUE/S2A_MSIL2A_20170712T
 
 # Pansharpen SWIR with NIR
 SharpSWIR = panSharp(SWIR, NIR, datatype="INT2U", filename="../../userdata/tmp/pansharpened.tif", progress="text")
+# Works, but with artefacts

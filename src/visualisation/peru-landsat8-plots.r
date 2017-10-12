@@ -19,7 +19,7 @@
 
 library(bfastSpatial) 
 
-source("staging/util.r")
+source("visualisation/utils.r")
 
 dir="/run/media/dainius/Landsat/Peru/landsat8/time-stacks/"
 

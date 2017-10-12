@@ -2,7 +2,7 @@
 
 library(bfastSpatial)
 
-source("staging/utils.r")
+source("visualisation/utils.r")
 
 dir="/run/media/dainius/Landsat/Guyana2017/landsat8/time-stacks/"
 

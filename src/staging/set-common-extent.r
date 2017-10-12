@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 # Bash-ready script for extending files to common maximum extent.
+# This works, but has been superseded by landsat-mosaic-tiles.r.
 #
 # Copyright (C) 2017  Dainius Masiliunas
 #

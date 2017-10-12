@@ -22,6 +22,8 @@ library(foreach)
 library(doParallel)
 library(tools)
 
+source("preprocessing/index-utils.r")
+
 # This will enhance the R10m directory with new "bands" for NDVI, NBR, etc.
 # For indices that require bands at 20m resolution, they get disaggregated to 10m
 
@@ -108,13 +110,6 @@ S2CalcIndicesGranule = function(path, indices=c("EVI", "NBR", "MSAVI", "NDMI", "
 
 CalcEVI = function(file_df)
 {
-    EVI = function(red, nir, blue)
-    {
-        red = red/10000
-        nir = nir/10000
-        blue = blue/10000
-        2.5 * (nir-red) / (nir+6*red-7.5*blue+1) * 10000
-    }
     print("Calculating EVI...")
     overlay(GetRasterByBand(file_df, "B04"), GetRasterByBand(file_df, "B08"), GetRasterByBand(file_df, "B02"),
         fun=EVI, filename=GetOutputFilename(file_df, "EVI"), datatype="INT2S", progress="text",
@@ -123,12 +118,6 @@ CalcEVI = function(file_df)
 
 CalcMSAVI = function(file_df)
 {
-    MSAVI = function(red, nir)
-    {
-        red = red/10000
-        nir = nir/10000
-        (2*nir+1 - sqrt((2*nir+1)^2 - 8*(nir-red)))/2 * 10000
-    }
     overlay(GetRasterByBand(file_df, "B04"), GetRasterByBand(file_df, "B08"),
         fun=MSAVI, filename=GetOutputFilename(file_df, "MSAVI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
@@ -136,10 +125,6 @@ CalcMSAVI = function(file_df)
 
 CalcNDVI = function(file_df)
 {
-    NDVI = function(red, nir)
-    {
-        (nir-red)/(nir+red) * 10000
-    }
     overlay(GetRasterByBand(file_df, "B04"), GetRasterByBand(file_df, "B08"),
         fun=NDVI, filename=GetOutputFilename(file_df, "NDVI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
@@ -147,10 +132,6 @@ CalcNDVI = function(file_df)
 
 CalcNDMI = function(file_10_df, file_20_df)
 {
-    NDMI = function(swir, nir)
-    {
-        (nir-swir)/(nir+swir) * 10000
-    }
     overlay(disaggregate(GetRasterByBand(file_20_df, "B11"), 2, "bilinear"), GetRasterByBand(file_10_df, "B08"),
         fun=NDMI, filename=GetOutputFilename(file_10_df, "NDMI"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
@@ -158,10 +139,6 @@ CalcNDMI = function(file_10_df, file_20_df)
 
 CalcNBR = function(file_10_df, file_20_df)
 {
-    NBR = function(swir2, nir)
-    {
-        (nir-swir2)/(nir+swir2) * 10000
-    }
     overlay(disaggregate(GetRasterByBand(file_20_df, "B12"), 2, "bilinear"), GetRasterByBand(file_10_df, "B08"),
         fun=NBR, filename=GetOutputFilename(file_10_df, "NBR"), datatype="INT2S", progress="text",
         options=c("COMPRESS=DEFLATE", "ZLEVEL=9", "SPARSE_OK=TRUE"))
