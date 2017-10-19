@@ -39,7 +39,7 @@ PlotTS = function(ts, row, column, ...)
     plot(GetSentinel2Date(ts), GetVIValues(ts, row, column)/10000, xlab="Date", ylab="", ...)
 }
 
-GetTSByID = function(id, vi, path="/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks")
+GetTSByID = function(id, vi, path="../data/output/Guyana2017/sentinel2")
 {
     return(brick(list.files(file.path(path, vi), glob2rx(paste0(id, "*.grd")), full.names=TRUE)))
 }
@@ -150,65 +150,65 @@ GapRegister = AppendGapRegister("48", "NDMI", 7+1, 10-4, FALSE)
 
 # This is the same general area as 48/49; they are closer to this point, so only consider the gap to the west
 ## There is change in NDVI, but no change in others: existing gap
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/35_80-1_20-1_60-1.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/35_80-1_20-1_60-1.grd")
 spplot(ndvi)
 PlotTS(ndvi, 8, 9)
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/35_80-1_20-1_60-1.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/35_80-1_20-1_60-1.grd")
 spplot(evi)
-nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/35_80-1_20-1_60-1.grd")
+nbr = brick("../data/output/Guyana2017/sentinel2/NBR/35_80-1_20-1_60-1.grd")
 spplot(nbr)
-msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/35_80-1_20-1_60-1.grd")
+msavi = brick("../data/output/Guyana2017/sentinel2/MSAVI/35_80-1_20-1_60-1.grd")
 spplot(msavi)
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/35_80-1_20-1_60-1.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/35_80-1_20-1_60-1.grd")
 spplot(ndmi)
 
 # Other trees
 ## Seems like there was a gap there before just as well! Only new gap in the extreme north-west, and it's the same as 35
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/36_40-3.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/36_40-3.grd")
 spplot(ndmi) ## But NDVI does show something; but one timestep later, could be delayed logging? Looks like it!
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/36_40-3.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/36_40-3.grd")
 spplot(ndvi)
 
 # One pixel to the south maybe (but faint), also plenty of older gaps around
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/37_60-4_20-3.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/37_60-4_20-3.grd")
 spplot(ndmi) # Nothing new in NDVI
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/37_60-4_20-3.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/37_60-4_20-3.grd")
 spplot(ndvi) # EVI and NDMI are chaotic
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/37_60-4_20-3.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/37_60-4_20-3.grd")
 spplot(evi)
 
 ## Central pixel already had a gap
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/38_20-4.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/38_20-4.grd")
 spplot(ndmi)
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/38_20-4.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/38_20-4.grd")
 spplot(ndvi)
 
 ## Also already a gap; but it got bigger
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/39_60-5.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/39_60-5.grd")
 spplot(ndmi) ##...but not according to NDVI! 
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/39_60-5.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/39_60-5.grd")
 spplot(ndvi) # All other indices agree that it's prior art though
-nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/39_60-5.grd")
+nbr = brick("../data/output/Guyana2017/sentinel2/NBR/39_60-5.grd")
 spplot(nbr)
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/39_60-5.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/39_60-5.grd")
 spplot(evi)
-msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/39_60-5.grd")
+msavi = brick("../data/output/Guyana2017/sentinel2/MSAVI/39_60-5.grd")
 spplot(msavi)
 
 ## Two gaps to the north (closest one deepened a lot, further one is a different tree)
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/40_80-4.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/40_80-4.grd")
 spplot(ndmi) # Including visible from NDVI
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/40_80-4.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/40_80-4.grd")
 spplot(ndvi)
-nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/40_80-4.grd")
+nbr = brick("../data/output/Guyana2017/sentinel2/NBR/40_80-4.grd")
 spplot(nbr) # MSAVI and EVI say it's prior art
-msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/40_80-4.grd")
+msavi = brick("../data/output/Guyana2017/sentinel2/MSAVI/40_80-4.grd")
 spplot(msavi)
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/40_80-4.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/40_80-4.grd")
 spplot(evi)
 
 ## GIANT gap appeared east!
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/41_100-6.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/41_100-6.grd")
 spplot(ndmi) # NBR shows it a bit cleaner
 pdf("../../thesis/thesis-figures/08-guyana-ts-ndmi.pdf", 5, 3)
 PlotTS(ndmi, 9, 11, main="NDMI", ylim=c(-0.15, 0.4))
@@ -218,52 +218,52 @@ pdf("../../thesis/thesis-figures/21-guyana-ts-control.pdf", 5, 3)
 PlotTS(ndmi, 15, 1, main="NDMI control", ylim=c(-0.15, 0.4))
 abline(v=as.Date("2017-01-18"))
 dev.off()
-nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/41_100-6.grd")
+nbr = brick("../data/output/Guyana2017/sentinel2/NBR/41_100-6.grd")
 spplot(nbr) ## Even visible from NDVI
 PlotTS(nbr, 9, 11)
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/41_100-6.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/41_100-6.grd")
 spplot(ndvi) # EVI/MSAVI agrees but had shadow problems
 pdf("../../thesis/thesis-figures/20-guyana-ts-ndvi.pdf", 5, 3)
 PlotTS(ndvi, 9, 9, main="NDVI")
 abline(v=as.Date("2017-01-18"))
 dev.off()
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/41_100-6.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/41_100-6.grd")
 spplot(evi)
-msavi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/MSAVI/41_100-6.grd")
+msavi = brick("../data/output/Guyana2017/sentinel2/MSAVI/41_100-6.grd")
 spplot(msavi)
 
 # Two gaps to the north, these are 40-41
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/42_40-10_40-11_60-8.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/42_40-10_40-11_60-8.grd")
 spplot(ndmi) # Nothing much happened in NDVI; slight tint change
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/42_40-10_40-11_60-8.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/42_40-10_40-11_60-8.grd")
 spplot(ndvi)
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/42_40-10_40-11_60-8.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/42_40-10_40-11_60-8.grd")
 spplot(evi)
 
 ## One gap immediately to the west
 ## Smiley face
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/43_80-7.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/43_80-7.grd")
 spplot(ndmi) # Poorly visible in NBR
-nbr = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NBR/43_80-7.grd")
+nbr = brick("../data/output/Guyana2017/sentinel2/NBR/43_80-7.grd")
 spplot(nbr) ## There is a small change in NDVI
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/43_80-7.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/43_80-7.grd")
 spplot(ndvi) # EVI shows it too
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/43_80-7.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/43_80-7.grd")
 spplot(evi)
 
 ## Existing gaps deepened; possibly new gap-branch to the south
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/44_100-8.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/44_100-8.grd")
 spplot(ndmi) # NDVI also shows the gap deepen but later
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/44_100-8.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/44_100-8.grd")
 spplot(ndvi)
 
 # There already was a huge clearing; looks like it's a former (c. 2016) logging road
 # And then it got turned into a log deck!
-ndmi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDMI/45_80-10_20-8.grd")
+ndmi = brick("../data/output/Guyana2017/sentinel2/NDMI/45_80-10_20-8.grd")
 spplot(ndmi, at=seq(4000, -1000, -100)) ## Actually there is something faint to the south-east! Have to change scale to filter out negative 4000
-ndvi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/NDVI/45_80-10_20-8.grd")
+ndvi = brick("../data/output/Guyana2017/sentinel2/NDVI/45_80-10_20-8.grd")
 spplot(ndvi)
-evi = brick("/run/media/dainius/Landsat/Guyana2017/sentinel2/stacks/EVI/45_80-10_20-8.grd")
+evi = brick("../data/output/Guyana2017/sentinel2/EVI/45_80-10_20-8.grd")
 spplot(evi)
 
 # Also was already a clearing (pretty much the same place, but right in the log deck)

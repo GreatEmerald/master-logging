@@ -27,9 +27,9 @@ library(tools)
 # different vegetation indices than all of the default 5.
 
 parser = OptionParser()
-parser = add_option(parser, c("-i", "--input-directory"), type="character", default="../data/intermediate/cloud-free/Guyana2017",
+parser = add_option(parser, c("-i", "--input-directory"), type="character", default="../data/intermediate/mosaics/",
     help="Directory that contains Sentinel-2-derived vegetation indices. (Default: %default)", metavar="path")
-parser = add_option(parser, c("-o", "--output-directory"), type="character", default="../data/intermediate/mosaics/Guyana2017",
+parser = add_option(parser, c("-o", "--output-directory"), type="character", default="../data/output",
     help="Output directory. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
     default=8, help="Number of threads to use. You need next to no RAM per thread when using small AOIs. (Default: %default)")

@@ -1,5 +1,4 @@
-#!/usr/bin/env Rscript
-# Script for detecting deforestation breaks in time series
+# Plotting space-time cubes of Landsat 7
 #
 # Copyright (C) 2017  Dainius Masiliunas
 #
@@ -23,11 +22,11 @@ library(raster)
 
 library(bfastSpatial)
 
-input = "../data/intermediary/time-stacks/Guyana2014/ndvi/33_T09.grd" # cell 8 is interesting
+input = "../data/output/Guyana2014/landsat7/ndvi/33_T09.grd" # cell 8 is interesting
 # nbr is interesting: it does not show a large cloud on 2015-01-06 LE072310562015010601T1
-input = "../data/intermediary/time-stacks/Guyana2014/nbr/26_T02.grd"
-input = "../data/intermediary/time-stacks/Guyana2014/ndvi/34_T10.grd"
-input = "../data/intermediary/time-stacks/Guyana2014/nbr/32_T08.grd"
+input = "../data/output/Guyana2014/landsat7/nbr/26_T02.grd"
+input = "../data/output/Guyana2014/landsat7/ndvi/34_T10.grd"
+input = "../data/output/Guyana2014/landsat7/nbr/32_T08.grd"
 TimeSeries = brick(input)
 
 getSceneinfo(names(TimeSeries))

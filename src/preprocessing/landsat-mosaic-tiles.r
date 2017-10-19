@@ -22,7 +22,6 @@ library(bfastSpatial)
 library(stringr)
 
 # Mosaic matching tiles of a given path/row into one (both are set to 999 in output)
-# Note: this can also be used in lieu of set-common-extent.r, since it does the extending anyway.
 LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
 {
     Files = list.files(input_dir, pattern=glob2rx(pattern), full.names=TRUE)
@@ -136,6 +135,7 @@ LSMosaicVI = function(input_dir, pattern="*.tif", output_dir)
     }
 }
 
+# Do the same over all vegetation indices; no parallel here since there is parallel in LSMosaicVI
 LSMosaicVIs = function(input_dir, pattern="*.tif", output_dir)
 {
     VIDirs = list.dirs(input_dir, recursive=FALSE)

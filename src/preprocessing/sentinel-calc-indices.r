@@ -62,7 +62,7 @@ GetSentinel2Info = function(filenames)
 GetRasterByBand = function(file_df, target_band)
 {
     Result = unlist(subset(file_df, file_df$band == target_band)["filename"])
-    print(paste("Returning raster of:", Result))
+    #print(paste("Returning raster of:", Result))
     stopifnot(length(Result)==1)
     return(raster(Result))
 }

@@ -25,10 +25,10 @@ library(raster)
 # a different set of granules or resolutions than the two default ones.
 
 parser = OptionParser()
-parser = add_option(parser, c("-i", "--input-directory"), type="character", default="../data/satellite/Guyana2017",
+parser = add_option(parser, c("-i", "--input-directory"), type="character", default="../data/satellite",
     help="Directory that contains Sentinel-2 product files, or a Sentinel SAFE directory. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-o", "--output-directory"), type="character", metavar="path",
-    default="../data/intermediary/cloud-free/Guyana2017", help="Directory to store masked files in. (Default: %default)")
+    default="../data/intermediary/cloud-free", help="Directory to store masked files in. (Default: %default)")
 parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
     default=2, help="Number of threads to use. Needs 2.1 GiB RAM per thread of 20m, up to 8 GiB per thread of 10m (Default: %default)")
 parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",

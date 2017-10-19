@@ -21,7 +21,7 @@ library(bfastSpatial)
 
 source("visualisation/utils.r")
 
-dir="/run/media/dainius/Landsat/Peru/landsat8/time-stacks/"
+dir="../data/output/Peru/landsat8/"
 
 # The first nine are database points, probably incorrect placement. Should see nothing
 # NDMI<=2500 is a clearing

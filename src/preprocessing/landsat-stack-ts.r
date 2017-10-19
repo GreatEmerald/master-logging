@@ -1,4 +1,3 @@
-#!/usr/bin/env Rscript
 # Creates a time series stack for each VI for each tree
 #
 # Copyright (C) 2017  Dainius Masiliunas
@@ -29,10 +28,7 @@ library(tools)
 
 # This is meant to run in point mode only: stack only the buffer around our known trees.
 # For this we need to load tree information with extents. And since that's a lot of data, campaigns.
-# Run once per campaign per VI. This does not recurse.
-
-# In tile mode, there is no reason to save the stack to disk, that will just eat space for no gain.
-# That is thus handled by the scripts further in the processing chain. Do not run this in that case.
+# Run once per campaign per VI (see StackTSs) because this does not recurse.
 StackTS = function(input_dir, output_dir, extent_file, campaign)
 {
     # Parse the tree data

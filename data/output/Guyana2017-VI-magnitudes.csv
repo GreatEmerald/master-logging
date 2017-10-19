@@ -1,0 +1,11 @@
+"","Name","MeanBefore","MeanBeforeError","MeanAfter","MeanAfterError","Difference","DiffError","PValue"
+"1","NDVI in affected pixels",0.798,0.014,0.743,0.02,-0.055,0.024,0
+"2","NDMI in affected pixels",0.3,0.01,0.15,0.017,-0.15,0.019,0
+"3","NBR in affected pixels",0.599,0.012,0.481,0.017,-0.118,0.021,0
+"4","MSAVI in affected pixels",0.494,0.02,0.438,0.017,-0.056,0.026,0
+"5","EVI in affected pixels",0.504,0.019,0.463,0.019,-0.041,0.027,0.003
+"6","NDVI control",0.819,0.017,0.84,0.02,0.021,0.026,0.117
+"7","NDMI control",0.306,0.011,0.289,0.012,-0.018,0.016,0.036
+"8","NBR control",0.611,0.013,0.601,0.014,-0.009,0.019,0.338
+"9","MSAVI control",0.524,0.016,0.583,0.018,0.059,0.024,0
+"10","EVI control",0.525,0.015,0.588,0.016,0.063,0.022,0

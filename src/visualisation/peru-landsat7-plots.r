@@ -1,4 +1,4 @@
-# Scratchpad for plotting time series of Peru Landsat 7
+# Plotting time series of Peru Landsat 7
 #
 # Copyright (C) 2017  Dainius Masiliunas
 #
@@ -19,7 +19,7 @@
 
 library(bfastSpatial) 
 
-TSF = function(VI, index, dir="/run/media/dainius/Landsat/Peru/landsat7/time-stacks/")
+TSF = function(VI, index, dir="../data/output/Peru/landsat7/")
 {
     TS = brick(list.files(file.path(dir, VI), glob2rx(paste0(index, "*.grd")), full.names=TRUE)[1])
     TS = setZ(TS, getSceneinfo(names(TS))$date)

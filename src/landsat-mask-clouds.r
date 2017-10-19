@@ -52,5 +52,3 @@ MemoryInCells = args[["memory"]]*1024*1024*1024/16
 rasterOptions(maxmemory=MemoryInCells, chunksize=MemoryInCells/4)
 
 MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["threads"]])
-
-# Could keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows (or maybe that makes NBR higher)

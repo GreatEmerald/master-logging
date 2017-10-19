@@ -1,4 +1,4 @@
-# Scratchpad for calculating vegetation indicaes from ASTER data.
+# Scratchpad for calculating vegetation indices from ASTER data.
 #
 # Copyright (C) 2017  Dainius Masiliunas
 #
@@ -20,7 +20,9 @@
 library(raster)
 source("preprocessing/index-utils.r")
 
-# Set to the target directory
+# Note: this script is not part of the preprocessing chain, this is for validation and thus is not automated.
+
+# Set to the input directory with ASTER imagery, for instance
 Dir = "../data/satellite/Peru/aster/AST_07XT_00304182013145807_20170821093010_5067/"
 
 SWIR = raster(file.path(Dir, "band4.tif"))

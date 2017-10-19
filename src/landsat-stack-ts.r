@@ -24,7 +24,7 @@ library(optparse)
 
 parser = OptionParser()
 parser = add_option(parser, c("-i", "--input-dir"), type="character",
-    default="../data/intermediary/cropped",
+    default="../data/intermediary/mosaics",
     help="Directory with cloud-free VI files. (Default: %default)", metavar="path")
 parser = add_option(parser, c("-f", "--extent-file"), type="character", metavar="path",
     default="../data/reference/LoggedTreeBoundaries.csv",
@@ -32,7 +32,7 @@ parser = add_option(parser, c("-f", "--extent-file"), type="character", metavar=
 parser = add_option(parser, c("-c", "--campaign"), type="character", metavar="name",
     help="Name of the campaign to process.")
 parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="path",
-    default="../data/intermediary/time-stacks",
+    default="../data/output",
     help="Output directory. (Default: %default)")
 parser = add_option(parser, c("-t", "--threads"), type="integer", metavar="num",
     default=detectCores()-1, help="Number of threads to use. You need almost no RAM per thread when using small AOIs. (Default: %default)")

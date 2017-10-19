@@ -48,31 +48,24 @@ MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, threads,
     if (!exists("GriPattern"))
         GriPattern = glob2rx("*.gri")
         
-    Extent = NULL
     KeepValues = NULL
     Files = list.files(input_dir, filter_pattern, full.names=TRUE)
     FileInfo = getSceneinfo(Files)
     Path = FileInfo[1, "path"]
     Row = FileInfo[1, "row"]
     Sensor = FileInfo[1, "sensor_letter"]
-    if (Path == 231 && Row == 56) # NOTE: These are unused for now. Use the cropper script afterwards to crop all files.
-        Extent = extent(172785, 433215, 533385, 747015)
-    if (Path == 230 && Row == 57)
-        Extent = extent(334785, 562215, 363285, 595815)
-    if (Path == 231 && Row == 57)
-        Extent = extent(161685, 389715, 363285, 595815)
     if (Sensor == "C") # Landsat 8
         KeepValues = 322 # 386 could be kept in too (medium probability of clouds), but seems to be clouds
     if (Sensor == "E") # Landsat 7
-        KeepValues = c(66, 130) # Could keep=c(0:223, 225:255) for nbr since it seems to be able to deal with shadows (or maybe that makes NBR higher)
+        KeepValues = c(66, 130) # Could keep=c(0:223, 225:255) for nbr/ndmi since it seems to be able to deal with shadows
     
     psnice(value = min(threads - 1, 19))
     processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=KeepValues,
         vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
-        mc.cores=threads, ...) # was: e=Extent
+        mc.cores=threads, ...)
     
     # Repack files and remove 20000 (oversaturated AKA NA)
-    # TODO: move this into cropper
+    # This should ideally be handled by bfastSpatial
     FileList = list.files(output_dir, recursive = TRUE, pattern = GrdPattern, full.names = TRUE)
     if (length(FileList) <= 0)
         stop("Could not repack files: no files found to repack.")
