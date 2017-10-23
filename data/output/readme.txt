@@ -1,1 +1,3 @@
-This directory should contain output data, the actual data of interest to end-users. It should be generated automatically by the scripts.
+This directory contains output data, namely the space-time cubes at the points of interest. It is generated automatically by the scripts, but the outputs are provided for convenience. Remove them if you wish to regenerate them.
+
+The CSV file is output from the Guyana 2017 t.test functions.
