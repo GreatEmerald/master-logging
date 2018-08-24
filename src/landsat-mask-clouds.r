@@ -31,12 +31,14 @@ parser = add_option(parser, c("-o", "--output-dir"), type="character", metavar="
     help="Output directory. Subdirectories for each vegetation index will be created. (Default: %default)")
 parser = add_option(parser, c("-e", "--file-type"), type="character", metavar="extension", default="grd",
     help="Output file type. grd is native uncompressed, tif is lightly compresssed. (Default: %default)")
-parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex",
-    help="Pattern to filter input files on. Should not include the extension (end with a *).")
+parser = add_option(parser, c("-p", "--pattern"), type="character", metavar="regex", default="*",
+    help="Pattern to filter input files on. Should not include the extension (end with a *). (Default: %default)")
 parser = add_option(parser, c("-t", "--threads"), type="numeric", default=detectCores()-1,  metavar="num",
     help="Number of threads to use for multicore processing. (Default: %default)")
 parser = add_option(parser, c("-r", "--memory"), type="numeric", default=3,  metavar="num",
     help="Maximum RAM consumption per thread, in GiB. raster defaults use 1.6 GiB RAM per thread, but increasing it is highly beneficial (Default: %default)")
+parser = add_option(parser, c("-v", "--vegetation-indices"), type="character", metavar="list", default="ndvi,evi,ndmi",
+    help="Comma-delimited list of vegetation indices to process. (Default: %default)")
 sink("/dev/null") # Silence rasterOptions
 parser = add_option(parser, c("-m", "--temp-dir"), type="character", metavar="path",
     help=paste0("Path to a temporary directory to store results in. (Default: ",
@@ -51,4 +53,4 @@ if (!is.null(args[["temp-dir"]]))
 MemoryInCells = args[["memory"]]*1024*1024*1024/16
 rasterOptions(maxmemory=MemoryInCells, chunksize=MemoryInCells/4)
 
-MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["threads"]])
+MaskClouds(args[["input-dir"]], args[["output-dir"]], args[["file-type"]], args[["pattern"]], args[["threads"]], args[["vegetation-indices"]])

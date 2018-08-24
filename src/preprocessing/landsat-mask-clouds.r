@@ -35,7 +35,7 @@ library(gdalUtils)
 library(tools)
 library(bfastSpatial)
 
-MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, threads, ...)
+MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, threads, vis, ...)
 {
     if (!is.null(filter_pattern))
     {
@@ -48,6 +48,8 @@ MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, threads,
     if (!exists("GriPattern"))
         GriPattern = glob2rx("*.gri")
         
+    vis = unlist(strsplit(vis, ","))
+        
     KeepValues = NULL
     Files = list.files(input_dir, filter_pattern, full.names=TRUE)
     FileInfo = getSceneinfo(Files)
@@ -57,11 +59,12 @@ MaskClouds = function(input_dir, output_dir, file_type, filter_pattern, threads,
     if (Sensor == "C") # Landsat 8
         KeepValues = 322 # 386 could be kept in too (medium probability of clouds), but seems to be clouds
     if (Sensor == "E") # Landsat 7
-        KeepValues = c(66, 130) # Could keep=c(0:223, 225:255) for nbr/ndmi since it seems to be able to deal with shadows
+        #KeepValues = c(66, 130) # Could keep=c(0:223, 225:255) for nbr/ndmi since it seems to be able to deal with shadows
+        KeepValues = c(2:159, 161:175, 177:223, 225) # Don't keep only high and medium confidence clouds
     
     psnice(value = min(threads - 1, 19))
     processLandsatBatch(x=input_dir, outdir=output_dir, fileExt=file_type, mask="pixel_qa", keep=KeepValues,
-        vi=c("ndvi", "evi", "msavi", "nbr", "ndmi"), delete=TRUE, pattern=filter_pattern,
+        vi=vis, delete=TRUE, pattern=filter_pattern,
         mc.cores=threads, ...)
     
     # Repack files and remove 20000 (oversaturated AKA NA)
