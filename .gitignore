@@ -229,5 +229,3 @@ thesis/*.pdf
 thesis/redd.tex
 data/reference/staging
 data/output/*/*/*/*.gr?
-# Temporary: remove when final
-thesis/proposal-figures
