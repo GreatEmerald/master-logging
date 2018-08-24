@@ -223,3 +223,9 @@ TSWLatexianTemp*
 */.kile/*
 .Rhistory
 */.Rproj.user/
+
+# custom
+thesis/*.pdf
+thesis/redd.tex
+data/reference/staging
+data/output/*/*/*/*.gr?
